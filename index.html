@@ -80,14 +80,14 @@
     /* Layout */
     .dashboard-grid {
       display: grid;
-      grid-template-columns: 350px 1fr; /* Fixed sidebar for summary */
+      grid-template-columns: 350px 1fr;
       gap: 24px;
       align-items: start;
     }
 
     @media (max-width: 900px) {
       .dashboard-grid {
-        grid-template-columns: 1fr; /* Stack on mobile */
+        grid-template-columns: 1fr;
       }
     }
 
@@ -118,7 +118,6 @@
     .card h2.profit-title { border-color: var(--accent-green); }
     .card h2.chips-title { border-color: var(--accent-purple); }
 
-    /* Inputs Section */
     .inputs-wrapper {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -182,7 +181,6 @@
       border-color: var(--accent-blue);
     }
 
-    /* Buttons */
     .btn-add {
       background: var(--accent-blue);
       color: white;
@@ -196,7 +194,6 @@
     .btn-add:hover { background: #2563eb; }
     .btn-add:active { transform: scale(0.96); }
 
-    /* Preset Buttons */
     .presets {
       display: flex;
       gap: 6px;
@@ -229,7 +226,6 @@
       font-family: 'Rubik', sans-serif;
     }
 
-    /* Summary Panel Styles */
     .summary-item {
       display: flex;
       justify-content: space-between;
@@ -256,7 +252,6 @@
       font-weight: 600;
     }
 
-    /* Info Tooltip */
     .info-tooltip {
       display: none;
       background: #1e293b;
@@ -272,7 +267,6 @@
 
     @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Footer Buttons */
     .actions-bar {
       margin-top: 30px;
       display: flex;
@@ -299,7 +293,6 @@
     .btn-secondary { background: #334155; color: white; }
     .btn-secondary:hover { background: #475569; }
 
-    /* History Table */
     .history-wrapper {
       margin-top: 40px;
       overflow-x: auto;
@@ -600,9 +593,6 @@
 </div>
 
 <script>
-  // --- לוגיקה זהה, עם חישוב תקופה שבועיים מחמישי לחמישי ---
-
-  // פונקציית עזר למילוי מהיר (Presets)
   window.fillInput = function(inputId, amount) {
     const el = document.getElementById(inputId);
     let currentVal = Number(el.value) || 0;
@@ -655,8 +645,6 @@
     } catch (e) { return []; }
   }
 
-  // לסנכרן את תחילת התקופה הנוכחית לפי ההיסטוריה:
-  // אם יש שורה אחרונה, התחלת התקופה = היום אחרי endDate האחרון.
   function syncCurrentPeriodStartWithHistory() {
     if (!historyData || !historyData.length) return;
     const lastRow = historyData[historyData.length - 1];
@@ -665,7 +653,7 @@
     if (isNaN(lastEnd.getTime())) return;
 
     const expectedStart = new Date(lastEnd);
-    expectedStart.setDate(expectedStart.getDate() + 1); // יום אחרי סוף התקופה הקודמת
+    expectedStart.setDate(expectedStart.getDate() + 1);
     const expectedStartStr = formatDate(expectedStart);
 
     if (!currentState.startedAt || currentState.startedAt !== expectedStartStr) {
@@ -701,7 +689,6 @@
     localStorage.setItem(HISTORY_KEY, JSON.stringify(historyData));
   }
 
-  // מחשב טווח תקופה: startDate = startedAt, endDate = startedAt + 13 ימים (14 ימים כולל)
   function getCurrentPeriodRange() {
     let start;
     if (currentState && currentState.startedAt) {
@@ -711,7 +698,7 @@
       start = new Date();
     }
     const end = new Date(start);
-    end.setDate(start.getDate() + 13); // 14 ימים כולל שני הקצוות
+    end.setDate(start.getDate() + 13);
 
     return {
       startDate: formatDate(start),
@@ -754,6 +741,16 @@
     chipsTournaments: document.getElementById("chipsTournamentsAdd"),
     chipsAmbassadors: document.getElementById("chipsAmbassadorsAdd"),
     chipsBirthday: document.getElementById("chipsBirthdayAdd"),
+  };
+
+  const nonCumulativeFields = {
+    bitMaor: true,
+    bitIdo: true,
+    paybox: true,
+    cashMaor: true,
+    cashIdo: true,
+    debtIdo: true,
+    debtMaor: true,
   };
 
   function formatMoney(value) {
@@ -833,10 +830,15 @@
     if (!input) return;
 
     const value = Number(input.value);
-    if (isNaN(value) || value === 0) return;
+    if (isNaN(value)) return;
 
-    if (!currentState[fieldKey]) currentState[fieldKey] = 0;
-    currentState[fieldKey] = Number(currentState[fieldKey]) + value;
+    if (nonCumulativeFields[fieldKey]) {
+      currentState[fieldKey] = value || 0;
+    } else {
+      if (!value) return;
+      if (!currentState[fieldKey]) currentState[fieldKey] = 0;
+      currentState[fieldKey] = Number(currentState[fieldKey]) + value;
+    }
 
     input.value = "";
     saveCurrentState();
@@ -910,7 +912,6 @@
       }
     }
     
-    // תקופה חדשה: מתחילה יום אחרי endDate של התקופה שנסגרה
     const nextStart = new Date(endDate);
     nextStart.setDate(nextStart.getDate() + 1);
     currentState = defaultCurrentState();
@@ -967,7 +968,6 @@
     }
   }
 
-  // אתחול
   setupEventListeners();
   updateUIFromState();
   renderHistoryTable();
@@ -975,4 +975,3 @@
 </script>
 </body>
 </html>
-
