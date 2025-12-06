@@ -89,7 +89,6 @@
       .dashboard-grid {
         grid-template-columns: 1fr; /* Stack on mobile */
       }
-      /* Move summary to top visually on mobile if desired, simply change order in HTML or flex order */
     }
 
     /* Cards */
@@ -451,7 +450,7 @@
 
           <div class="input-group">
             <div class="label-row">
-              <span>קאש קאש (מאור)</span>
+              <span>מזומן (מאור)</span>
             </div>
             <div class="presets">
               <button class="preset-btn" onclick="fillInput('cashMaorAdd', 50)">50</button>
@@ -467,7 +466,7 @@
 
           <div class="input-group">
             <div class="label-row">
-              <span>קאש קאש (עידו)</span>
+              <span>מזומן (עידו)</span>
             </div>
             <div class="presets">
               <button class="preset-btn" onclick="fillInput('cashIdoAdd', 50)">50</button>
@@ -535,7 +534,7 @@
           </div>
 
           <div class="input-group">
-            <div class="label-row"><span>צ'יפים שחולקו לעידו</span></div>
+            <div class="label-row"><span>צ'יפים שחולקו למאור</span></div>
             <div class="presets">
               <button class="preset-btn" onclick="fillInput('chipsIdoAdd', 500)">500</button>
               <button class="preset-btn" onclick="fillInput('chipsIdoAdd', 1000)">1000</button>
@@ -601,16 +600,13 @@
 </div>
 
 <script>
-  // --- לוגיקה זהה, עיצוב חדש ---
-
+  // --- לוגיקה זהה, עם חישוב תקופה שבועיים מחמישי לחמישי ---
 
   // פונקציית עזר למילוי מהיר (Presets)
   window.fillInput = function(inputId, amount) {
     const el = document.getElementById(inputId);
     let currentVal = Number(el.value) || 0;
     el.value = currentVal + amount;
-    
-    // אנימציה קטנה
     el.style.transform = "scale(1.05)";
     setTimeout(() => el.style.transform = "scale(1)", 100);
   }
@@ -622,33 +618,8 @@
     return `${year}-${month}-${day}`;
   }
 
-  // *** חדש: טווח התקופה לפי startedAt + שבועיים ***
-  function getCurrentPeriodRange() {
-    let start;
-    if (typeof currentState !== "undefined" && currentState && currentState.startedAt) {
-      const parsed = new Date(currentState.startedAt);
-      start = isNaN(parsed.getTime()) ? new Date() : parsed;
-    } else {
-      start = new Date();
-    }
-
-    const end = new Date(start);
-    end.setDate(start.getDate() + 14); // שבועיים קדימה – מחמישי לחמישי
-
-    return {
-      startDate: formatDate(start),
-      endDate: formatDate(end),
-    };
-  }
-
-  function updateDateRangeDisplay() {
-    const { startDate, endDate } = getCurrentPeriodRange();
-    document.getElementById("dateRangeText").textContent = `${startDate} עד ${endDate}`;
-  }
-
   const CURRENT_KEY = "poker_club_current_period_v4";
   const HISTORY_KEY = "poker_club_closures_history_v4";
-  // URL של ה-Web App ב-Google Apps Script
   const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxumX8N4YQBT25hoYd4XLaaScj8qyVvaOd0Q4Jqf8Syv48uw182Z3ejUdsLmuObMP_0wg/exec";
 
   function defaultCurrentState() {
@@ -676,12 +647,38 @@
     } catch (e) { return defaultCurrentState(); }
   }
 
-  // *** שמירה גם ל-Google Sheets ***
+  function loadHistory() {
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      if (!raw) return [];
+      return JSON.parse(raw);
+    } catch (e) { return []; }
+  }
+
+  // לסנכרן את תחילת התקופה הנוכחית לפי ההיסטוריה:
+  // אם יש שורה אחרונה, התחלת התקופה = היום אחרי endDate האחרון.
+  function syncCurrentPeriodStartWithHistory() {
+    if (!historyData || !historyData.length) return;
+    const lastRow = historyData[historyData.length - 1];
+    if (!lastRow.endDate) return;
+    const lastEnd = new Date(lastRow.endDate);
+    if (isNaN(lastEnd.getTime())) return;
+
+    const expectedStart = new Date(lastEnd);
+    expectedStart.setDate(expectedStart.getDate() + 1); // יום אחרי סוף התקופה הקודמת
+    const expectedStartStr = formatDate(expectedStart);
+
+    if (!currentState.startedAt || currentState.startedAt !== expectedStartStr) {
+      currentState.startedAt = expectedStartStr;
+      saveCurrentState();
+    }
+  }
+
+  syncCurrentPeriodStartWithHistory();
+
   function saveCurrentState() {
-    // שמירה מקומית כמו קודם
     localStorage.setItem(CURRENT_KEY, JSON.stringify(currentState));
 
-    // שליחה ל-Google Sheets (אם יש URL)
     if (!GOOGLE_SCRIPT_URL) return;
     try {
       fetch(GOOGLE_SCRIPT_URL, {
@@ -700,17 +697,33 @@
     }
   }
 
-  function loadHistory() {
-    try {
-      const raw = localStorage.getItem(HISTORY_KEY);
-      if (!raw) return [];
-      return JSON.parse(raw);
-    } catch (e) { return []; }
+  function saveHistory() {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(historyData));
   }
 
-  function saveHistory() { localStorage.setItem(HISTORY_KEY, JSON.stringify(historyData)); }
+  // מחשב טווח תקופה: startDate = startedAt, endDate = startedAt + 13 ימים (14 ימים כולל)
+  function getCurrentPeriodRange() {
+    let start;
+    if (currentState && currentState.startedAt) {
+      const parsed = new Date(currentState.startedAt);
+      start = isNaN(parsed.getTime()) ? new Date() : parsed;
+    } else {
+      start = new Date();
+    }
+    const end = new Date(start);
+    end.setDate(start.getDate() + 13); // 14 ימים כולל שני הקצוות
 
-  // DOM Elements mapping
+    return {
+      startDate: formatDate(start),
+      endDate: formatDate(end),
+    };
+  }
+
+  function updateDateRangeDisplay() {
+    const { startDate, endDate } = getCurrentPeriodRange();
+    document.getElementById("dateRangeText").textContent = `${startDate} עד ${endDate}`;
+  }
+
   const totalElements = {
     bitMaor: document.getElementById("bitMaorTotal"),
     bitIdo: document.getElementById("bitIdoTotal"),
@@ -789,11 +802,10 @@
   function updateUIFromState() {
     for (const key in totalElements) {
       if (Object.prototype.hasOwnProperty.call(totalElements, key)) {
-        // אם זה צ'יפים נציג בלי שתי ספרות אחרי הנקודה
-        if(key.startsWith('chips')) {
-            totalElements[key].textContent = (currentState[key] || 0).toLocaleString();
+        if (key.startsWith('chips')) {
+          totalElements[key].textContent = (currentState[key] || 0).toLocaleString();
         } else {
-            totalElements[key].textContent = formatMoney(currentState[key]);
+          totalElements[key].textContent = formatMoney(currentState[key]);
         }
       }
     }
@@ -813,7 +825,6 @@
     document.getElementById("debtMaorSummaryValue").textContent = formatMoney(summary.debtMaor);
     document.getElementById("debtIdoSummaryValue").textContent = formatMoney(summary.debtIdo);
 
-    // לעדכן גם את טווח התאריכים לפי currentState.startedAt
     updateDateRangeDisplay();
   }
 
@@ -833,13 +844,11 @@
   }
 
   function setupEventListeners() {
-    // כפתורי הוספה
     document.querySelectorAll("button[data-add-btn]").forEach((btn) => {
       const fieldKey = btn.getAttribute("data-add-btn");
       btn.addEventListener("click", () => addAmountToField(fieldKey));
     });
 
-    // Enter
     for (const key in addInputs) {
       addInputs[key].addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
@@ -849,7 +858,6 @@
       });
     }
 
-    // שינוי צ'יפים במועדון (עדכון חי)
     const clubInput = document.getElementById("chipsInClubInput");
     clubInput.addEventListener("input", () => {
       currentState.chipsInClub = Number(clubInput.value);
@@ -857,7 +865,6 @@
       updateUIFromState();
     });
 
-    // כפתורי מידע
     document.querySelectorAll(".info-icon").forEach((btn) => {
       btn.addEventListener("click", () => {
         const target = document.getElementById(btn.getAttribute("data-target"));
@@ -865,13 +872,11 @@
       });
     });
 
-    // פעולות ראשיות
     document.getElementById("resetAndCloseBtn").addEventListener("click", closePeriod);
     document.getElementById("downloadCsvBtn").addEventListener("click", downloadCsv);
     document.getElementById("clearAllStorageBtn").addEventListener("click", clearAll);
   }
 
-  // סגירת תקופה גם ל-Google Sheets
   function closePeriod() {
     if (!confirm("לסגור תקופה ולאפס נתונים?")) return;
     
@@ -887,7 +892,6 @@
     historyData.push(row);
     saveHistory();
 
-    // שליחת שורה להיסטוריה ב-Google Sheets
     if (GOOGLE_SCRIPT_URL) {
       try {
         fetch(GOOGLE_SCRIPT_URL, {
@@ -906,7 +910,12 @@
       }
     }
     
+    // תקופה חדשה: מתחילה יום אחרי endDate של התקופה שנסגרה
+    const nextStart = new Date(endDate);
+    nextStart.setDate(nextStart.getDate() + 1);
     currentState = defaultCurrentState();
+    currentState.startedAt = formatDate(nextStart);
+
     saveCurrentState();
     updateUIFromState();
     renderHistoryTable();
@@ -924,7 +933,7 @@
     historyData.slice().reverse().forEach((row, idx) => {
       html += `<tr>
         <td>${historyData.length - idx}</td>
-        <td>${row.startDate}</td>
+        <td>${row.startDate} - ${row.endDate}</td>
         <td style="color:var(--accent-green)">${formatMoney(row.totalProfit)}</td>
         <td>${formatMoney(row.maorNet)}</td>
         <td>${formatMoney(row.idoNet)}</td>
