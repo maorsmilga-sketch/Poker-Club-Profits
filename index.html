@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ניהול קופה - המועדון</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-app: #0f172a;
+      --bg-card: rgba(30, 41, 59, 0.7);
+      --border-color: rgba(148, 163, 184, 0.1);
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-red: #ef4444;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      color: var(--text-main);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      direction: rtl;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h1 {
+      font-family: 'Rubik', sans-serif;
+      font-size: 2rem;
+      margin: 0 0 10px 0;
+      background: linear-gradient(to right, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .status-badges {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-color);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #cbd5e1;
+    }
+
+    /* Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 350px 1fr; /* Fixed sidebar for summary */
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr; /* Stack on mobile */
+      }
+      /* Move summary to top visually on mobile if desired, simply change order in HTML or flex order */
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      font-family: 'Rubik', sans-serif;
+      font-size: 1.25rem;
+      margin-top: 0;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      border-left: 4px solid var(--accent-blue);
+      padding-left: 12px;
+    }
+
+    .card h2.profit-title { border-color: var(--accent-green); }
+    .card h2.chips-title { border-color: var(--accent-purple); }
+
+    /* Inputs Section */
+    .inputs-wrapper {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .input-group {
+      background: rgba(0,0,0,0.2);
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .input-group:focus-within {
+      border-color: var(--accent-blue);
+      background: rgba(0,0,0,0.4);
+    }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+    }
+
+    .info-icon {
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      border: 1px solid var(--border-color);
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    input[type="number"] {
+      flex: 1;
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: 'Rubik', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="number"]:focus {
+      border-color: var(--accent-blue);
+    }
+
+    /* Buttons */
+    .btn-add {
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      padding: 0 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.2s;
+    }
+    .btn-add:hover { background: #2563eb; }
+    .btn-add:active { transform: scale(0.96); }
+
+    /* Preset Buttons */
+    .presets {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .preset-btn {
+      background: rgba(255,255,255,0.08);
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .preset-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .preset-btn:active { transform: translateY(1px); }
+
+    .current-total {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: left;
+      margin-top: 4px;
+    }
+    .current-total span {
+      color: #fff;
+      font-weight: 600;
+      font-family: 'Rubik', sans-serif;
+    }
+
+    /* Summary Panel Styles */
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .summary-item:last-child { border-bottom: none; }
+
+    .sum-label { color: var(--text-muted); font-size: 0.9rem; }
+    .sum-value { font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 1.1rem; }
+    
+    .text-green { color: var(--accent-green); }
+    .text-red { color: var(--accent-red); }
+    .text-large { font-size: 1.4rem; }
+
+    .summary-section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin: 20px 0 10px 0;
+      font-weight: 600;
+    }
+
+    /* Info Tooltip */
+    .info-tooltip {
+      display: none;
+      background: #1e293b;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+      border-left: 3px solid var(--accent-blue);
+      line-height: 1.4;
+      animation: fadeIn 0.3s ease;
+    }
+    .info-tooltip.visible { display: block; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Footer Buttons */
+    .actions-bar {
+      margin-top: 30px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-danger { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .btn-danger:hover { background: rgba(239, 68, 68, 0.25); }
+    
+    .btn-secondary { background: #334155; color: white; }
+    .btn-secondary:hover { background: #475569; }
+
+    /* History Table */
+    .history-wrapper {
+      margin-top: 40px;
+      overflow-x: auto;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: right; padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+    td { padding: 12px; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+    tr:last-child td { border-bottom: none; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>סגירת רווחים 💸</h1>
+    <div class="subtitle">ניהול כספים, צ'יפים והתחשבנויות</div>
+    
+    <div class="status-badges">
+      <span class="badge" id="dateRangeText">טוען תאריכים...</span>
+      <span class="badge" style="color:#60a5fa">50/50 מאור ועידו</span>
+    </div>
+  </header>
+
+  <div class="dashboard-grid">
+    
+    <div style="order: 2;">
+      <div class="card" style="position:sticky; top:20px; border-top: 4px solid var(--accent-green);">
+        <h2 class="profit-title">תמונת מצב</h2>
+        
+        <div style="background: rgba(0,0,0,0.2); padding:15px; border-radius:12px; margin-bottom:20px;">
+           <label style="font-size:0.85rem; color:#94a3b8; display:block; margin-bottom:6px;">
+             צ'יפים במועדון כרגע (יחידות)
+           </label>
+           <div class="input-row">
+             <input type="number" id="chipsInClubInput" placeholder="0" />
+           </div>
+           <div style="font-size:0.8rem; color:#94a3b8;">
+             שווי כספי: <span id="chipsInClubMoneyValue" style="color:#fff; font-weight:bold;">0</span> ₪
+           </div>
+        </div>
+
+        <div class="summary-item">
+          <span class="sum-label">סה״כ נכנס לקופה</span>
+          <span class="sum-value" id="totalInPotValue">0</span>
+        </div>
+        <div class="summary-item">
+          <span class="sum-label">שווי צ'יפים שחולקו</span>
+          <span class="sum-value" style="color:#fcd34d" id="chipsDistributedMoneyValue">0</span>
+        </div>
+        
+        <div class="summary-section-title">שורת הרווח</div>
+        
+        <div class="summary-item">
+          <span class="sum-label">רווח כולל נקי</span>
+          <span class="sum-value text-green text-large" id="totalProfitValue">0</span>
+        </div>
+        <div class="summary-item">
+          <span class="sum-label">רווח לשחקן (50%)</span>
+          <span class="sum-value" id="perPlayerGrossValue">0</span>
+        </div>
+
+        <div class="summary-section-title">נטו לכיס (אחרי קיזוז חוב)</div>
+        
+        <div class="summary-item">
+          <div>
+            <span class="sum-label">מאור</span>
+            <div style="font-size:0.7rem; color:#94a3b8;">חוב: <span id="debtMaorSummaryValue">0</span></div>
+          </div>
+          <span class="sum-value text-green" id="maorNetProfitValue">0</span>
+        </div>
+        
+        <div class="summary-item">
+          <div>
+            <span class="sum-label">עידו</span>
+            <div style="font-size:0.7rem; color:#94a3b8;">חוב: <span id="debtIdoSummaryValue">0</span></div>
+          </div>
+          <span class="sum-value text-green" id="idoNetProfitValue">0</span>
+        </div>
+
+      </div>
+      
+      <div class="actions-bar">
+        <button class="btn-action btn-danger" id="resetAndCloseBtn">🧨 סגור תקופה ואפס</button>
+        <button class="btn-action btn-secondary" id="downloadCsvBtn">📥 הורד CSV</button>
+        <button class="btn-action btn-secondary" style="font-size:0.8rem; opacity:0.7;" id="clearAllStorageBtn">🧹 מחק הכל</button>
+      </div>
+    </div>
+
+    <div style="order: 1;">
+      
+      <div class="card">
+        <h2>💰 הכנסות (שקלים)</h2>
+        <div class="inputs-wrapper">
+          
+          <div class="input-group">
+            <div class="label-row">
+              <span>Bit מאור</span>
+              <div class="info-icon" data-target="info-bitMaor">?</div>
+            </div>
+            <div id="info-bitMaor" class="info-tooltip">הזן סכומים שנכנסו לביט של מאור.</div>
+            
+            <div class="presets">
+              <button class="preset-btn" onclick="fillInput('bitMaorAdd', 50)">50</button>
+              <button class="preset-btn" onclick="fillInput('bitMaorAdd', 100)">100</button>
+              <button class="preset-btn" onclick="fillInput('bitMaorAdd', 200)">200</button>
+            </div>
+            <div class="input-row">
+              <input type="number" id="bitMaorAdd" placeholder="סכום להוספה..." />
+              <button class="btn-add" data-add-btn="bitMaor">הוסף</button>
+            </div>
+            <div class="current-total">סה״כ: <span id="bitMaorTotal">0</span> ₪</div>
+          </div>
+
+          <div class="input-group">
+            <div class="label-row">
+              <span>Bit עידו</span>
+              <div class="info-icon" data-target="info-bitIdo">?</div>
+            </div>
+            <div id="info-bitIdo" class="info-tooltip">הזן סכומים שנכנסו לביט של עידו.</div>
+            <div class="presets">
+              <button class="preset-btn" onclick="fillInput('bitIdoAdd', 50)">50</button>
+              <button class="preset-btn" onclick="fillInput('bitIdoAdd', 100)">100</button>
+              <button class="preset-btn" onclick="fillInput('bitIdoAdd', 200)">200</button>
+            </div>
+            <div class="input-row">
+              <input type="number" id="bitIdoAdd" placeholder="סכום..." />
+              <button class="btn-add" data-add-btn="bitIdo">הוסף</button>
+            </div>
+            <div class="current-total">סה״כ: <span id="bitIdoTotal">0</span> ₪</div>
+          </div>
+
+          <div class="input-group">
+            <div class="label-row">
+              <span>Paybox</span>
+              <div class="info-icon" data-target="info-paybox">?</div>
+            </div>
+            <div id="info-paybox" class="info-tooltip"></div>
+            <div class="presets">
+              <button class="preset-btn" onclick="fillInput('payboxAdd', 50)">50</button>
+              <button class="preset-btn" onclick="fillInput('payboxAdd', 100)">100</button>
+            </div>
+            <div class="input-row">
+              <input type="number" id="payboxAdd" placeholder="סכום..." />
+              <button class="btn-add" data-add-btn="paybox">הוסף</button>
+            </div>
+            <div class="current-total">סה״כ: <span id="payboxTotal">0</span> ₪</div>
+          </div>
+
+          <div class="input-group">
+            <div class="label-row">
+              <span>מזומן (מאור)</span>
+            </div>
+            <div class="presets">
+              <button class="preset-btn" onclick="fillInput('cashMaorAdd', 50)">50</button>
+              <button class="preset-btn" onclick="fillInput('cashMaorAdd', 100)">100</button>
+              <button class="preset-btn" onclick="fillInput('cashMaorAdd', 200)">200</button>
+            </div>
+            <div class="input-row">
+              <input type="number" id="cashMaorAdd" placeholder="סכום..." />
+              <button class="btn-add" data-add-btn="cashMaor">הוסף</button>
+            </div>
+            <div class="current-total">סה״כ: <span id="cashMaorTotal">0</span> ₪</div>
+          </div>
+
+          <div class="input-group">
+            <div class="label-row">
+              <span>מזומן (עידו)</span>
+            </div>
+            <div class="presets">
+              <button class="preset-btn" onclick="fillInput('cashIdoAdd', 50)">50</button>
+              <button class="preset-btn" onclick="fillInput('cashIdoAdd', 100)">100</button>
+              <button class="preset-btn" onclick="fillInput('cashIdoAdd', 200)">200</button>
+            </div>
+            <div class="input-row">
+              <input type="number" id="cashIdoAdd" placeholder="סכום..." />
+              <button class="btn-add" data-add-btn="cashIdo">הוסף</button>
+            </div>
+            <div class="current-total">סה״כ: <span id="cashIdoTotal">0</span> ₪</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 4px solid var(--accent-red);">
+        <h2>📝 חובות וקיזוזים</h2>
+        <div class="inputs-wrapper">
+          
+          <div class="input-group">
+            <div class="label-row">
+              <span>חוב אישי עידו</span>
+              <div class="info-icon" data-target="info-debtIdo">?</div>
+            </div>
+            <div id="info-debtIdo" class="info-tooltip">חוב של עידו לקופה (יורד מהרווח בסוף).</div>
+            <div class="input-row">
+              <input type="number" id="debtIdoAdd" placeholder="סכום..." />
+              <button class="btn-add" data-add-btn="debtIdo">הוסף</button>
+            </div>
+            <div class="current-total">סה״כ חוב: <span id="debtIdoTotal" style="color:var(--accent-red)">0</span> ₪</div>
+          </div>
+
+          <div class="input-group">
+            <div class="label-row">
+              <span>חוב אישי מאור</span>
+              <div class="info-icon" data-target="info-debtMaor">?</div>
+            </div>
+            <div id="info-debtMaor" class="info-tooltip">חוב של מאור לקופה (יורד מהרווח בסוף).</div>
+            <div class="input-row">
+              <input type="number" id="debtMaorAdd" placeholder="סכום..." />
+              <button class="btn-add" data-add-btn="debtMaor">הוסף</button>
+            </div>
+            <div class="current-total">סה״כ חוב: <span id="debtMaorTotal" style="color:var(--accent-red)">0</span> ₪</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="chips-title">🎲 חלוקת צ'יפים (מומר אוטומטית לשקלים ÷10)</h2>
+        <div class="inputs-wrapper">
+          
+          <div class="input-group">
+            <div class="label-row"><span>מאור חילק (יח')</span></div>
+            <div class="presets">
+              <button class="preset-btn" onclick="fillInput('chipsMaorAdd', 500)">500</button>
+              <button class="preset-btn" onclick="fillInput('chipsMaorAdd', 1000)">1000</button>
+            </div>
+            <div class="input-row">
+              <input type="number" id="chipsMaorAdd" placeholder="כמות צ'יפים" />
+              <button class="btn-add" data-add-btn="chipsMaor">הוסף</button>
+            </div>
+            <div class="current-total">סה״כ: <span id="chipsMaorTotal">0</span></div>
+          </div>
+
+          <div class="input-group">
+            <div class="label-row"><span>עידו חילק (יח')</span></div>
+            <div class="presets">
+              <button class="preset-btn" onclick="fillInput('chipsIdoAdd', 500)">500</button>
+              <button class="preset-btn" onclick="fillInput('chipsIdoAdd', 1000)">1000</button>
+            </div>
+            <div class="input-row">
+              <input type="number" id="chipsIdoAdd" placeholder="כמות צ'יפים" />
+              <button class="btn-add" data-add-btn="chipsIdo">הוסף</button>
+            </div>
+            <div class="current-total">סה״כ: <span id="chipsIdoTotal">0</span></div>
+          </div>
+          
+          <div class="input-group">
+            <div class="label-row"><span>בונוסים לשחקנים</span></div>
+            <div class="presets">
+              <button class="preset-btn" onclick="fillInput('chipsPlayersAdd', 50)">50</button>
+              <button class="preset-btn" onclick="fillInput('chipsPlayersAdd', 100)">100</button>
+            </div>
+            <div class="input-row">
+              <input type="number" id="chipsPlayersAdd" placeholder="כמות צ'יפים" />
+              <button class="btn-add" data-add-btn="chipsPlayers">הוסף</button>
+            </div>
+            <div class="current-total">סה״כ: <span id="chipsPlayersTotal">0</span></div>
+          </div>
+
+          <div class="input-group">
+            <div class="label-row"><span>טורנירים</span></div>
+            <div class="input-row">
+              <input type="number" id="chipsTournamentsAdd" placeholder="כמות צ'יפים" />
+              <button class="btn-add" data-add-btn="chipsTournaments">הוסף</button>
+            </div>
+            <div class="current-total">סה״כ: <span id="chipsTournamentsTotal">0</span></div>
+          </div>
+
+          <div class="input-group">
+            <div class="label-row"><span>שגרירים</span></div>
+            <div class="input-row">
+              <input type="number" id="chipsAmbassadorsAdd" placeholder="כמות צ'יפים" />
+              <button class="btn-add" data-add-btn="chipsAmbassadors">הוסף</button>
+            </div>
+            <div class="current-total">סה״כ: <span id="chipsAmbassadorsTotal">0</span></div>
+          </div>
+
+          <div class="input-group">
+            <div class="label-row"><span>יום הולדת</span></div>
+            <div class="input-row">
+              <input type="number" id="chipsBirthdayAdd" placeholder="כמות צ'יפים" />
+              <button class="btn-add" data-add-btn="chipsBirthday">הוסף</button>
+            </div>
+            <div class="current-total">סה״כ: <span id="chipsBirthdayTotal">0</span></div>
+          </div>
+
+        </div>
+      </div>
+      
+      <div class="history-wrapper card">
+        <h2>📜 היסטוריית סגירות</h2>
+        <div id="historyTableWrapper"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // --- לוגיקה זהה, עיצוב חדש ---
+
+
+  // פונקציית עזר למילוי מהיר (Presets)
+  window.fillInput = function(inputId, amount) {
+    const el = document.getElementById(inputId);
+    let currentVal = Number(el.value) || 0;
+    el.value = currentVal + amount;
+    
+    // אנימציה קטנה
+    el.style.transform = "scale(1.05)";
+    setTimeout(() => el.style.transform = "scale(1)", 100);
+  }
+
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function getDateWeeksAgo(days) {
+    const d = new Date();
+    d.setDate(d.getDate() - days);
+    return d;
+  }
+
+  function getDefaultDateRange() {
+    const end = new Date();
+    const start = getDateWeeksAgo(13); 
+    return {
+      startDate: formatDate(start),
+      endDate: formatDate(end),
+    };
+  }
+
+  const CURRENT_KEY = "poker_club_current_period_v4";
+  const HISTORY_KEY = "poker_club_closures_history_v4";
+  // URL של ה-Web App ב-Google Apps Script
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxumX8N4YQBT25hoYd4XLaaScj8qyVvaOd0Q4Jqf8Syv48uw182Z3ejUdsLmuObMP_0wg/exec";
+
+  function defaultCurrentState() {
+    const now = new Date();
+    return {
+      startedAt: formatDate(now),
+      bitMaor: 0, bitIdo: 0, paybox: 0,
+      cashMaor: 0, cashIdo: 0,
+      debtIdo: 0, debtMaor: 0,
+      chipsMaor: 0, chipsIdo: 0,
+      chipsPlayers: 0, chipsTournaments: 0,
+      chipsAmbassadors: 0, chipsBirthday: 0,
+      chipsInClub: 0,
+    };
+  }
+
+  let currentState = loadCurrentState();
+  let historyData = loadHistory();
+
+  function loadCurrentState() {
+    try {
+      const raw = localStorage.getItem(CURRENT_KEY);
+      if (!raw) return defaultCurrentState();
+      return { ...defaultCurrentState(), ...JSON.parse(raw) };
+    } catch (e) { return defaultCurrentState(); }
+  }
+
+  // *** עודכן: שמירה גם ל-Google Sheets ***
+  function saveCurrentState() {
+    // שמירה מקומית כמו קודם
+    localStorage.setItem(CURRENT_KEY, JSON.stringify(currentState));
+
+    // שליחה ל-Google Sheets (אם יש URL)
+    if (!GOOGLE_SCRIPT_URL) return;
+    try {
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "saveCurrent",
+          currentState: currentState
+        }),
+      }).catch((err) => {
+        console.error("Google Sheets saveCurrent error:", err);
+      });
+    } catch (err) {
+      console.error("Google Sheets saveCurrent error:", err);
+    }
+  }
+
+  function loadHistory() {
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      if (!raw) return [];
+      return JSON.parse(raw);
+    } catch (e) { return []; }
+  }
+
+  function saveHistory() { localStorage.setItem(HISTORY_KEY, JSON.stringify(historyData)); }
+
+  // DOM Elements mapping
+  const totalElements = {
+    bitMaor: document.getElementById("bitMaorTotal"),
+    bitIdo: document.getElementById("bitIdoTotal"),
+    paybox: document.getElementById("payboxTotal"),
+    cashMaor: document.getElementById("cashMaorTotal"),
+    cashIdo: document.getElementById("cashIdoTotal"),
+    debtIdo: document.getElementById("debtIdoTotal"),
+    debtMaor: document.getElementById("debtMaorTotal"),
+    chipsMaor: document.getElementById("chipsMaorTotal"),
+    chipsIdo: document.getElementById("chipsIdoTotal"),
+    chipsPlayers: document.getElementById("chipsPlayersTotal"),
+    chipsTournaments: document.getElementById("chipsTournamentsTotal"),
+    chipsAmbassadors: document.getElementById("chipsAmbassadorsTotal"),
+    chipsBirthday: document.getElementById("chipsBirthdayTotal"),
+  };
+
+  const addInputs = {
+    bitMaor: document.getElementById("bitMaorAdd"),
+    bitIdo: document.getElementById("bitIdoAdd"),
+    paybox: document.getElementById("payboxAdd"),
+    cashMaor: document.getElementById("cashMaorAdd"),
+    cashIdo: document.getElementById("cashIdoAdd"),
+    debtIdo: document.getElementById("debtIdoAdd"),
+    debtMaor: document.getElementById("debtMaorAdd"),
+    chipsMaor: document.getElementById("chipsMaorAdd"),
+    chipsIdo: document.getElementById("chipsIdoAdd"),
+    chipsPlayers: document.getElementById("chipsPlayersAdd"),
+    chipsTournaments: document.getElementById("chipsTournamentsAdd"),
+    chipsAmbassadors: document.getElementById("chipsAmbassadorsAdd"),
+    chipsBirthday: document.getElementById("chipsBirthdayAdd"),
+  };
+
+  function formatMoney(value) {
+    const num = Number(value) || 0;
+    return num.toLocaleString('he-IL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function updateDateRangeDisplay() {
+    const { startDate, endDate } = getDefaultDateRange();
+    document.getElementById("dateRangeText").textContent = `${startDate} עד ${endDate}`;
+  }
+
+  function calculateSummary() {
+    const chipsDistributedRaw =
+      (Number(currentState.chipsMaor) || 0) +
+      (Number(currentState.chipsIdo) || 0) +
+      (Number(currentState.chipsPlayers) || 0) +
+      (Number(currentState.chipsTournaments) || 0) +
+      (Number(currentState.chipsAmbassadors) || 0) +
+      (Number(currentState.chipsBirthday) || 0);
+
+    const chipsDistributedMoney = chipsDistributedRaw / 10;
+    const chipsInClubRaw = Number(currentState.chipsInClub) || 0;
+    const chipsInClubMoney = chipsInClubRaw / 10;
+
+    const totalInPot =
+      (Number(currentState.bitMaor) || 0) +
+      (Number(currentState.bitIdo) || 0) +
+      (Number(currentState.paybox) || 0) +
+      (Number(currentState.cashMaor) || 0) +
+      (Number(currentState.cashIdo) || 0) +
+      chipsDistributedMoney;
+
+    const totalProfit = totalInPot - chipsInClubMoney;
+    const perPlayerGross = totalProfit / 2;
+
+    const debtMaor = Number(currentState.debtMaor) || 0;
+    const debtIdo = Number(currentState.debtIdo) || 0;
+
+    const maorNet = perPlayerGross - debtMaor;
+    const idoNet = perPlayerGross - debtIdo;
+
+    return {
+      chipsDistributedRaw, chipsDistributedMoney,
+      chipsInClubRaw, chipsInClubMoney,
+      totalInPot, totalProfit,
+      perPlayerGross, debtMaor, debtIdo, maorNet, idoNet
+    };
+  }
+
+  function updateUIFromState() {
+    for (const key in totalElements) {
+      if (Object.prototype.hasOwnProperty.call(totalElements, key)) {
+        // אם זה צ'יפים נציג בלי שתי ספרות אחרי הנקודה
+        if(key.startsWith('chips')) {
+            totalElements[key].textContent = (currentState[key] || 0).toLocaleString();
+        } else {
+            totalElements[key].textContent = formatMoney(currentState[key]);
+        }
+      }
+    }
+
+    const summary = calculateSummary();
+
+    const chipsInClubInput = document.getElementById("chipsInClubInput");
+    chipsInClubInput.value = currentState.chipsInClub || "";
+    
+    document.getElementById("chipsInClubMoneyValue").textContent = formatMoney(summary.chipsInClubMoney);
+    document.getElementById("chipsDistributedMoneyValue").textContent = formatMoney(summary.chipsDistributedMoney);
+    document.getElementById("totalInPotValue").textContent = formatMoney(summary.totalInPot);
+    document.getElementById("totalProfitValue").textContent = formatMoney(summary.totalProfit);
+    document.getElementById("perPlayerGrossValue").textContent = formatMoney(summary.perPlayerGross);
+    document.getElementById("maorNetProfitValue").textContent = formatMoney(summary.maorNet);
+    document.getElementById("idoNetProfitValue").textContent = formatMoney(summary.idoNet);
+    document.getElementById("debtMaorSummaryValue").textContent = formatMoney(summary.debtMaor);
+    document.getElementById("debtIdoSummaryValue").textContent = formatMoney(summary.debtIdo);
+  }
+
+  function addAmountToField(fieldKey) {
+    const input = addInputs[fieldKey];
+    if (!input) return;
+
+    const value = Number(input.value);
+    if (isNaN(value) || value === 0) return;
+
+    if (!currentState[fieldKey]) currentState[fieldKey] = 0;
+    currentState[fieldKey] = Number(currentState[fieldKey]) + value;
+
+    input.value = "";
+    saveCurrentState();
+    updateUIFromState();
+  }
+
+  function setupEventListeners() {
+    // כפתורי הוספה
+    document.querySelectorAll("button[data-add-btn]").forEach((btn) => {
+      const fieldKey = btn.getAttribute("data-add-btn");
+      btn.addEventListener("click", () => addAmountToField(fieldKey));
+    });
+
+    // Enter
+    for (const key in addInputs) {
+      addInputs[key].addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          addAmountToField(key);
+        }
+      });
+    }
+
+    // שינוי צ'יפים במועדון (עדכון חי)
+    const clubInput = document.getElementById("chipsInClubInput");
+    clubInput.addEventListener("input", () => {
+      currentState.chipsInClub = Number(clubInput.value);
+      saveCurrentState();
+      updateUIFromState();
+    });
+
+    // כפתורי מידע
+    document.querySelectorAll(".info-icon").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = document.getElementById(btn.getAttribute("data-target"));
+        if (target) target.classList.toggle("visible");
+      });
+    });
+
+    // פעולות ראשיות
+    document.getElementById("resetAndCloseBtn").addEventListener("click", closePeriod);
+    document.getElementById("downloadCsvBtn").addEventListener("click", downloadCsv);
+    document.getElementById("clearAllStorageBtn").addEventListener("click", clearAll);
+  }
+
+  // *** עודכן: סגירת תקופה גם ל-Google Sheets ***
+  function closePeriod() {
+    if (!confirm("לסגור תקופה ולאפס נתונים?")) return;
+    
+    const { startDate, endDate } = getDefaultDateRange();
+    const summary = calculateSummary();
+    const row = {
+      startDate, endDate,
+      ...currentState,
+      ...summary,
+      closedAt: formatDate(new Date())
+    };
+
+    historyData.push(row);
+    saveHistory();
+
+    // שליחת שורה להיסטוריה ב-Google Sheets
+    if (GOOGLE_SCRIPT_URL) {
+      try {
+        fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "appendHistory",
+            row: row
+          }),
+        }).catch((err) => {
+          console.error("Google Sheets appendHistory error:", err);
+        });
+      } catch (err) {
+        console.error("Google Sheets appendHistory error:", err);
+      }
+    }
+    
+    currentState = defaultCurrentState();
+    saveCurrentState();
+    updateUIFromState();
+    renderHistoryTable();
+    alert("התקופה נסגרה בהצלחה.");
+  }
+
+  function renderHistoryTable() {
+    const wrapper = document.getElementById("historyTableWrapper");
+    if (!historyData.length) {
+      wrapper.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:10px;">אין היסטוריה עדיין.</div>';
+      return;
+    }
+
+    let html = '<table><thead><tr><th>#</th><th>תאריך</th><th>רווח כולל</th><th>מאור (נטו)</th><th>עידו (נטו)</th></tr></thead><tbody>';
+    historyData.slice().reverse().forEach((row, idx) => {
+      html += `<tr>
+        <td>${historyData.length - idx}</td>
+        <td>${row.startDate}</td>
+        <td style="color:var(--accent-green)">${formatMoney(row.totalProfit)}</td>
+        <td>${formatMoney(row.maorNet)}</td>
+        <td>${formatMoney(row.idoNet)}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    wrapper.innerHTML = html;
+  }
+
+  function downloadCsv() {
+    if (!historyData.length) return alert("אין נתונים.");
+    const headers = Object.keys(historyData[0]);
+    const csvContent = [
+      headers.join(","),
+      ...historyData.map(row => headers.map(k => `"${row[k]}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "club_data.csv";
+    link.click();
+  }
+
+  function clearAll() {
+    if (confirm("בטוח שברצונך למחוק את כל ההיסטוריה והנתונים?")) {
+      localStorage.removeItem(CURRENT_KEY);
+      localStorage.removeItem(HISTORY_KEY);
+      location.reload();
+    }
+  }
+
+  // אתחול
+  updateDateRangeDisplay();
+  setupEventListeners();
+  updateUIFromState();
+  renderHistoryTable();
+
+</script>
+</body>
+</html>
