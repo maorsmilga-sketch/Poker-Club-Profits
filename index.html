@@ -622,19 +622,28 @@
     return `${year}-${month}-${day}`;
   }
 
-  function getDateWeeksAgo(days) {
-    const d = new Date();
-    d.setDate(d.getDate() - days);
-    return d;
-  }
+  // *** חדש: טווח התקופה לפי startedAt + שבועיים ***
+  function getCurrentPeriodRange() {
+    let start;
+    if (typeof currentState !== "undefined" && currentState && currentState.startedAt) {
+      const parsed = new Date(currentState.startedAt);
+      start = isNaN(parsed.getTime()) ? new Date() : parsed;
+    } else {
+      start = new Date();
+    }
 
-  function getDefaultDateRange() {
-    const end = new Date();
-    const start = getDateWeeksAgo(13); 
+    const end = new Date(start);
+    end.setDate(start.getDate() + 14); // שבועיים קדימה – מחמישי לחמישי
+
     return {
       startDate: formatDate(start),
       endDate: formatDate(end),
     };
+  }
+
+  function updateDateRangeDisplay() {
+    const { startDate, endDate } = getCurrentPeriodRange();
+    document.getElementById("dateRangeText").textContent = `${startDate} עד ${endDate}`;
   }
 
   const CURRENT_KEY = "poker_club_current_period_v4";
@@ -667,7 +676,7 @@
     } catch (e) { return defaultCurrentState(); }
   }
 
-  // *** עודכן: שמירה גם ל-Google Sheets ***
+  // *** שמירה גם ל-Google Sheets ***
   function saveCurrentState() {
     // שמירה מקומית כמו קודם
     localStorage.setItem(CURRENT_KEY, JSON.stringify(currentState));
@@ -739,11 +748,6 @@
     return num.toLocaleString('he-IL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  function updateDateRangeDisplay() {
-    const { startDate, endDate } = getDefaultDateRange();
-    document.getElementById("dateRangeText").textContent = `${startDate} עד ${endDate}`;
-  }
-
   function calculateSummary() {
     const chipsDistributedRaw =
       (Number(currentState.chipsMaor) || 0) +
@@ -808,6 +812,9 @@
     document.getElementById("idoNetProfitValue").textContent = formatMoney(summary.idoNet);
     document.getElementById("debtMaorSummaryValue").textContent = formatMoney(summary.debtMaor);
     document.getElementById("debtIdoSummaryValue").textContent = formatMoney(summary.debtIdo);
+
+    // לעדכן גם את טווח התאריכים לפי currentState.startedAt
+    updateDateRangeDisplay();
   }
 
   function addAmountToField(fieldKey) {
@@ -864,11 +871,11 @@
     document.getElementById("clearAllStorageBtn").addEventListener("click", clearAll);
   }
 
-  // *** עודכן: סגירת תקופה גם ל-Google Sheets ***
+  // סגירת תקופה גם ל-Google Sheets
   function closePeriod() {
     if (!confirm("לסגור תקופה ולאפס נתונים?")) return;
     
-    const { startDate, endDate } = getDefaultDateRange();
+    const { startDate, endDate } = getCurrentPeriodRange();
     const summary = calculateSummary();
     const row = {
       startDate, endDate,
@@ -952,7 +959,6 @@
   }
 
   // אתחול
-  updateDateRangeDisplay();
   setupEventListeners();
   updateUIFromState();
   renderHistoryTable();
@@ -960,4 +966,3 @@
 </script>
 </body>
 </html>
-
