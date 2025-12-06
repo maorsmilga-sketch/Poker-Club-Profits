@@ -677,6 +677,7 @@
     try {
       fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
+        mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "saveCurrent",
@@ -884,6 +885,7 @@
       try {
         fetch(GOOGLE_SCRIPT_URL, {
           method: "POST",
+          mode: "no-cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             action: "appendHistory",
@@ -958,4 +960,3 @@
 </script>
 </body>
 </html>
-
