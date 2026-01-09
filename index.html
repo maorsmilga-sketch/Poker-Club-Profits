@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הסניף הדיגיטלי - היועץ (PRO)</title>
+    <title>הסניף הדיגיטלי - היועץ (MULTI-WAY)</title>
     <script src="https://cdn.jsdelivr.net/npm/pokersolver@2.1.2/pokersolver.min.js"></script>
     <style>
         :root {
@@ -104,8 +104,13 @@
             position: absolute; width: 20px; height: 20px; background: #7f8c8d;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             font-size: 0.6rem; color: white; transform: translate(-50%, -50%); z-index: 3;
+            cursor: pointer; transition: all 0.2s;
         }
-        .seat.hero { background: var(--accent-gold); color: black; border: 1px solid white; width: 24px; height: 24px; z-index: 4;}
+        .seat.hero { background: var(--accent-gold); color: black; border: 1px solid white; width: 24px; height: 24px; z-index: 4; cursor: default; }
+        /* סטייל לשחקן שפרש */
+        .seat.folded { background: #444; color: #777; border: 1px dashed #555; opacity: 0.6; transform: translate(-50%, -50%) scale(0.9); }
+        .seat.folded::after { content: 'X'; position: absolute; font-size: 1rem; color: #e74c3c; }
+
         .dealer-puck {
             position: absolute; width: 14px; height: 14px; background: white; color: black;
             border-radius: 50%; font-size: 0.6rem; font-weight: bold; display: flex;
@@ -113,6 +118,7 @@
             transition: all 0.3s ease;
         }
 
+        /* --- Modals --- */
         #card-selector, #blinds-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.96); display: none; flex-direction: column;
@@ -262,14 +268,66 @@
         let sbValue = 0;
         let bbValue = 0;
         let currentTableName = "";
-        let myCards = [];
-        let boardCards = [];
+        let playersFolded = []; // מערך ששומר מי פרש (true/false)
 
         window.onload = function() {
             initRankGrid();
+            initPlayersState(); // אתחול מצב שחקנים
             renderTable();
             renderTableSelection();
         };
+
+        function initPlayersState() {
+            // מאפס את המערך לפי כמות השחקנים. כולם פעילים (false = לא פרשו)
+            playersFolded = new Array(totalPlayers).fill(false);
+        }
+
+        // === Table Visualization with Fold Logic ===
+        function renderTable() {
+            const table = document.getElementById('poker-table');
+            document.querySelectorAll('.seat').forEach(e => e.remove());
+            
+            for (let i = 0; i < totalPlayers; i++) {
+                const seat = document.createElement('div');
+                let className = 'seat';
+                if (i === 0) className += ' hero';
+                else className += ' active';
+                
+                // בדיקה אם השחקן בפורש
+                if (playersFolded[i]) className += ' folded';
+
+                seat.className = className;
+                seat.innerText = i === 0 ? 'Me' : i;
+                
+                // קליק לפרישה (רק לא אני)
+                if (i !== 0) {
+                    seat.onclick = () => toggleFold(i);
+                }
+
+                const angleDeg = 90 + (360 / totalPlayers) * i;
+                const angleRad = angleDeg * (Math.PI / 180);
+                seat.style.left = (50 + 42 * Math.cos(angleRad)) + '%';
+                seat.style.top = (50 + 40 * Math.sin(angleRad)) + '%';
+                table.appendChild(seat);
+            }
+            updateDealerVisual();
+        }
+
+        function toggleFold(playerIndex) {
+            // משנה מצב (פעיל <-> פורש)
+            playersFolded[playerIndex] = !playersFolded[playerIndex];
+            renderTable(); // מעדכן ויזואלית
+            runEngine(); // מריץ חישוב מחדש עם פחות שחקנים
+        }
+
+        function countActiveOpponents() {
+            // סופר כמה שחקנים פעילים יש (חוץ ממני)
+            let count = 0;
+            for (let i = 1; i < totalPlayers; i++) {
+                if (!playersFolded[i]) count++;
+            }
+            return count;
+        }
 
         function renderTableSelection() {
             const container = document.getElementById('table-list-container');
@@ -313,24 +371,7 @@
         
         function clearChips() { resetToBlinds(); }
 
-        function renderTable() {
-            const table = document.getElementById('poker-table');
-            document.querySelectorAll('.seat').forEach(e => e.remove());
-            for (let i = 0; i < totalPlayers; i++) {
-                const seat = document.createElement('div');
-                seat.className = i === 0 ? 'seat hero' : 'seat active';
-                seat.innerText = i === 0 ? 'Me' : i;
-                const angleDeg = 90 + (360 / totalPlayers) * i;
-                const angleRad = angleDeg * (Math.PI / 180);
-                seat.style.left = (50 + 42 * Math.cos(angleRad)) + '%';
-                seat.style.top = (50 + 40 * Math.sin(angleRad)) + '%';
-                table.appendChild(seat);
-            }
-            updateDealerVisual();
-        }
-
         function moveDealer(direction) {
-            // הוספת totalPlayers לחישוב כדי למנוע תוצאה שלילית מה-%
             dealerPosition = (dealerPosition + direction + totalPlayers) % totalPlayers;
             updateDealerVisual();
             runEngine(); 
@@ -348,6 +389,7 @@
         function changePlayerCount(delta) {
             totalPlayers = Math.min(10, Math.max(2, totalPlayers + delta));
             if (dealerPosition >= totalPlayers) dealerPosition = 0;
+            initPlayersState(); // איפוס סטטוס פרישה כשמשנים מספר שחקנים
             renderTable();
             runEngine();
         }
@@ -358,8 +400,10 @@
                 slot.className = 'card-slot';
                 slot.removeAttribute('data-value');
             });
+            initPlayersState(); // איפוס פורשים ביד חדשה
+            renderTable();
             resetToBlinds(); 
-            moveDealer(-1); // שינוי כיוון: מינוס 1 (הפוך מהקודם)
+            moveDealer(-1);
         }
 
         function getMyPositionName() {
@@ -373,7 +417,9 @@
 
         function updateStatusText() {
             const pos = getMyPositionName();
-            document.getElementById('advisor-status').innerText = `מיקום: ${pos} | שולחן: ${currentTableName}`;
+            const activeOpp = countActiveOpponents();
+            // מציג כמה יריבים פעילים נשארו
+            document.getElementById('advisor-status').innerText = `מיקום: ${pos} | יריבים פעילים: ${activeOpp}`;
             return pos;
         }
 
@@ -436,8 +482,8 @@
             document.getElementById('pot-money').innerText = `₪${(pot/10).toLocaleString()}`;
             document.getElementById('call-money').innerText = `₪${(call/10).toLocaleString()}`;
 
-            myCards = Array.from(document.querySelectorAll('#my-hand .card-slot.filled')).map(e => e.dataset.value);
-            boardCards = Array.from(document.querySelectorAll('#board .card-slot.filled')).map(e => e.dataset.value);
+            let myCards = Array.from(document.querySelectorAll('#my-hand .card-slot.filled')).map(e => e.dataset.value);
+            let boardCards = Array.from(document.querySelectorAll('#board .card-slot.filled')).map(e => e.dataset.value);
             
             const pos = updateStatusText();
             const recText = document.getElementById('recommendation-text');
@@ -467,8 +513,11 @@
 
             equityDisplay.innerText = "⏳";
             
+            // בדיקת כמות יריבים פעילים
+            const activeOpponents = countActiveOpponents();
+
             setTimeout(() => {
-                const result = calculateRealEquityAndOuts(myCards, boardCards);
+                const result = calculateRealEquityAndOuts(myCards, boardCards, activeOpponents);
                 const equity = result.equity;
                 const outs = result.outs;
 
@@ -478,9 +527,16 @@
                 let potOdds = (pot > 0 && call > 0) ? (call / (pot + call)) * 100 : 0;
                 document.getElementById('pot-odds-val').innerText = potOdds > 0 ? potOdds.toFixed(1) + "%" : "-";
 
+                // התאמת המלצות ליחס של Multi-Way
+                // כשיש יותר שחקנים, אקוויטי של 35% הוא מעולה, בעוד שב-1 על 1 הוא חלש
+                // לכן נשווה ל- (100 / מספר שחקנים) בתור בסיס?
+                // לא, נשתמש בחוק Pot Odds הקלאסי שהוא תמיד נכון.
+                
                 if (call === 0) {
-                    recText.innerText = equity > 60 ? "VALUE BET" : "CHECK";
-                    recText.style.color = equity > 60 ? "#2ecc71" : "#f1c40f";
+                    // אם אנחנו מול 4 שחקנים, 30% זה חזק מאוד. מול 1, זה חלש.
+                    const threshold = 100 / (activeOpponents + 1); // הוגן
+                    recText.innerText = equity > (threshold + 10) ? "VALUE BET" : "CHECK / FOLD";
+                    recText.style.color = equity > (threshold + 10) ? "#2ecc71" : "#f1c40f";
                     panel.style.borderColor = recText.style.color;
                 } else {
                     if (equity > potOdds + 5) {
@@ -498,11 +554,15 @@
             }, 50);
         }
 
-        function calculateRealEquityAndOuts(heroHand, board) {
+        // --- Multi-Way Logic Update ---
+        function calculateRealEquityAndOuts(heroHand, board, opponentCount) {
             if (typeof Hand === 'undefined') return { equity: "?", outs: "?" }; 
-            const hero = Hand.solve(heroHand.concat(board));
+            
+            // אם אין יריבים פעילים (כולם פרשו), ניצחת
+            if (opponentCount === 0) return { equity: 100, outs: "-" };
+
             let wins = 0;
-            let iterations = 500; 
+            let iterations = 300; // הורדנו קצת כדי לשמור על מהירות בחישוב מורכב
             const allCards = [];
             ranks.forEach(r => ['h','d','c','s'].forEach(s => allCards.push(r+s)));
             const knownCards = heroHand.concat(board);
@@ -510,26 +570,43 @@
 
             for (let i = 0; i < iterations; i++) {
                 shuffleArray(deck);
-                const oppCards = [deck[0], deck[1]];
+                
+                // יצירת ידיים לכל היריבים הפעילים
+                let currentDeckIndex = 0;
+                const opponentsHands = [];
+                for(let k=0; k < opponentCount; k++) {
+                    opponentsHands.push([deck[currentDeckIndex], deck[currentDeckIndex+1]]);
+                    currentDeckIndex += 2;
+                }
+
                 const neededBoard = 5 - board.length;
-                const simBoard = board.concat(deck.slice(2, 2 + neededBoard));
+                const simBoard = board.concat(deck.slice(currentDeckIndex, currentDeckIndex + neededBoard));
+                
                 const p1 = Hand.solve(heroHand.concat(simBoard)); 
-                const p2 = Hand.solve(oppCards.concat(simBoard)); 
-                const winner = Hand.winners([p1, p2]);
-                if (winner.length === 1 && winner[0] === p1) wins++;
-                else if (winner.length > 1) wins += 0.5;
+                
+                // פתרון ידיים ליריבים
+                const oppSolved = opponentsHands.map(h => Hand.solve(h.concat(simBoard)));
+                
+                // בדיקת מנצח מול כולם
+                const allHands = [p1, ...oppSolved];
+                const winners = Hand.winners(allHands);
+                
+                if (winners.length === 1 && winners[0] === p1) wins++;
+                else if (winners.includes(p1)) wins += (1 / winners.length); // Split pot
             }
             const equity = Math.round((wins / iterations) * 100);
 
+            // Outs Calculation (נשאר אותו דבר, כי יציאות זה ביחס לחפיסה, לא ליריבים)
             let outsCount = 0;
             deck.forEach(card => {
                 const testHand = Hand.solve(heroHand.concat(board).concat([card]));
                 const rankVal = testHand.rank; 
-                const currentRank = hero.rank;
+                const currentRank = Hand.solve(heroHand.concat(board)).rank;
                 if (rankVal > currentRank && rankVal >= 4) outsCount++;
                 else if (currentRank <= 2 && rankVal === 3) outsCount++;
             });
-            if (hero.rank >= 5) outsCount = 0; 
+            if (Hand.solve(heroHand.concat(board)).rank >= 5) outsCount = 0; 
+
             return { equity: equity, outs: outsCount };
         }
 
