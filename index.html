@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הסניף הדיגיטלי - היועץ (TOOLTIPS)</title>
+    <title>הסניף הדיגיטלי - היועץ (FIXED)</title>
     <script src="https://cdn.jsdelivr.net/npm/pokersolver@2.1.2/pokersolver.min.js"></script>
     <style>
         :root {
@@ -79,60 +79,70 @@
         .chip-btn { background: #34495e; border: 1px solid #555; color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; min-width: 50px; flex:1;}
         .chip-btn.clear { background: #c0392b; border-color: #e74c3c; flex: 0.8; }
 
-        /* --- Stats Panel with Tooltips --- */
+        /* --- Stats Panel with Tooltips FIX --- */
         .advisor-panel {
             width: 100%; max-width: 450px; text-align: center; background: #22303f;
             border: 2px solid #34495e; border-radius: 10px; 
             margin-bottom: 20px; transition: border-color 0.3s;
-            position: relative; /* For z-index context */
+            position: relative;
+            z-index: 10; /* שכבה גבוהה */
+            overflow: visible !important; /* קריטי - מאפשר לבלון לצאת */
         }
         .advisor-header { background: #2c3e50; padding: 8px; font-size: 0.9rem; color: #bdc3c7; border-top-left-radius: 10px; border-top-right-radius: 10px;}
         .advisor-content { padding: 15px; font-size: 1.6rem; font-weight: bold; min-height: 40px; display: flex; align-items: center; justify-content: center; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #444; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; overflow: hidden;}
+        .stats-grid { 
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; 
+            background: #444; 
+            border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; 
+            overflow: visible !important; /* קריטי - מאפשר לבלון לצאת */
+        }
         .stat-item { background: #2b3b4b; padding: 10px; display: flex; flex-direction: column; align-items: center; position: relative;}
         .stat-val { font-size: 1.3rem; font-weight: bold; color: var(--accent-gold); direction: ltr; margin-top: 2px;}
         
-        /* Tooltip Styles */
+        /* Tooltip Styles Fixed */
         .tooltip-container {
             position: relative;
             cursor: help;
-            border-bottom: 1px dotted #7f8c8d; /* קו מקווקו לסימון */
+            border-bottom: 1px dotted #7f8c8d;
             font-size: 0.8rem; color: #bdc3c7;
+            display: inline-block;
         }
         .tooltip-text {
             visibility: hidden;
-            width: 140px;
-            background-color: #111;
+            width: 160px;
+            background-color: #1a1a1a;
             color: #fff;
             text-align: center;
-            border-radius: 6px;
-            padding: 8px;
+            border-radius: 8px;
+            padding: 10px;
             position: absolute;
-            z-index: 100;
-            bottom: 130%; /* מופיע מעל הטקסט */
+            z-index: 9999; /* מספר גבוה מאוד */
+            bottom: 125%; 
             left: 50%;
-            margin-left: -70px; /* מרכוז */
+            transform: translateX(-50%); /* מרכוז מדויק */
             opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.75rem;
+            transition: opacity 0.2s;
+            font-size: 0.8rem;
+            font-weight: normal;
             border: 1px solid var(--accent-gold);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
             pointer-events: none;
-            line-height: 1.3;
+            line-height: 1.4;
+            white-space: normal;
         }
         .tooltip-text::after {
             content: "";
             position: absolute;
             top: 100%;
             left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
+            margin-left: -6px;
+            border-width: 6px;
             border-style: solid;
             border-color: var(--accent-gold) transparent transparent transparent;
         }
         .tooltip-container:hover .tooltip-text,
-        .tooltip-container:active .tooltip-text,
+        .tooltip-container:active .tooltip-text, /* לתמיכה בלחיצה במובייל */
         .tooltip-container:focus .tooltip-text {
             visibility: visible;
             opacity: 1;
@@ -143,6 +153,7 @@
             width: 100%; max-width: 450px; display: flex; align-items: center;
             justify-content: space-between; background: #181818; padding: 10px;
             border-radius: 15px; border: 1px solid #333;
+            position: relative; z-index: 1; /* נמוך מהפאנל */
         }
         .ctrl-col { display: flex; flex-direction: column; gap: 8px; }
         .ctrl-btn { background: #34495e; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; min-width: 80px; }
@@ -240,23 +251,23 @@
         
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="tooltip-container">
+                <div class="tooltip-container" onclick="">
                     Equity
-                    <span class="tooltip-text">סיכויי הזכייה שלך באחוזים (החלק שלך בקופה)</span>
+                    <span class="tooltip-text">הסיכוי שלך באחוזים לנצח את היד מול טווח ידיים אקראי של היריב.</span>
                 </div>
                 <div class="stat-val" id="equity-val">--%</div>
             </div>
             <div class="stat-item">
-                <div class="tooltip-container">
+                <div class="tooltip-container" onclick="">
                     Pot Odds
-                    <span class="tooltip-text">היחס בין הקופה למחיר ההשוואה. האם זה משתלם?</span>
+                    <span class="tooltip-text">היחס בין גודל הקופה למחיר ההשוואה. אם ה-Equity גבוה מהמספר הזה, שווה להשוות.</span>
                 </div>
                 <div class="stat-val" id="pot-odds-val">--%</div>
             </div>
             <div class="stat-item">
-                <div class="tooltip-container">
+                <div class="tooltip-container" onclick="">
                     Outs
-                    <span class="tooltip-text">מספר הקלפים בחבילה שישפרו את היד שלך למנצחת</span>
+                    <span class="tooltip-text">מספר הקלפים שנותרו בחפיסה ויכולים לשפר את היד שלך למנצחת.</span>
                 </div>
                 <div class="stat-val" id="outs-val" style="color:#3498db">--</div>
             </div>
@@ -395,12 +406,10 @@
         }
 
         function addChips(amount) {
-            // עדכון הקופה
             let potInput = document.getElementById('pot-size');
             let potVal = parseFloat(potInput.value) || 0;
             potInput.value = potVal + amount;
 
-            // עדכון העלות להשוות
             let callInput = document.getElementById('to-call');
             let callVal = parseFloat(callInput.value) || 0;
             callInput.value = callVal + amount;
@@ -442,7 +451,7 @@
             initPlayersState(); 
             renderTable();
             resetToBlinds(); 
-            moveDealer(1); // Clockwise
+            moveDealer(1); 
             enforceSlotOrder();
         }
 
@@ -480,7 +489,6 @@
         }
 
         function enforceSlotOrder() {
-            // My Hand
             const handSlots = document.querySelectorAll('#my-hand .card-slot');
             let handLocked = false;
             handSlots.forEach(slot => {
@@ -489,7 +497,6 @@
                 if (!slot.classList.contains('filled') && !handLocked) handLocked = true;
             });
 
-            // Board
             const boardSlots = document.querySelectorAll('#board .card-slot');
             let boardLocked = false;
             boardSlots.forEach(slot => {
