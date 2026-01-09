@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הסניף הדיגיטלי - היועץ (PRO)</title>
+    <title>הסניף הדיגיטלי - היועץ (HYBRID)</title>
     <script src="https://cdn.jsdelivr.net/npm/pokersolver@2.1.2/pokersolver.min.js"></script>
     <style>
         :root {
@@ -13,6 +13,8 @@
             --accent-green: #2ecc71;
             --accent-red: #e74c3c;
             --accent-gold: #f1c40f;
+            --accent-purple: #9b59b6;
+            --accent-blue: #3498db;
             --text-color: #ecf0f1;
             --input-bg: #2d3436;
         }
@@ -29,55 +31,60 @@
         /* --- Header --- */
         header { 
             display: flex; flex-direction: column; align-items: center; 
-            gap: 5px; margin-bottom: 10px; width: 100%;
+            gap: 5px; margin-bottom: 15px; width: 100%; max-width: 450px;
         }
-        .app-sub-title { font-size: 0.8rem; color: #bdc3c7; letter-spacing: 1.5px; font-weight: 300; }
-        .header-main-row { display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; }
-        .header-logo { height: 35px; width: auto; filter: drop-shadow(0 0 5px rgba(241, 196, 15, 0.3)); }
-        h1 { margin: 0; font-weight: 700; font-size: 1.4rem; color: var(--accent-gold); text-shadow: 0 2px 4px rgba(0,0,0,0.8); white-space: nowrap; }
+        .app-sub-title { font-size: 0.8rem; color: #bdc3c7; letter-spacing: 1.5px; font-weight: 300; margin-bottom: 5px; }
+        
+        .header-main-row { 
+            display: flex; align-items: center; justify-content: space-between; 
+            width: 100%; padding: 0 5px; box-sizing: border-box;
+        }
+        
+        .header-logo { height: 40px; width: auto; filter: drop-shadow(0 0 5px rgba(241, 196, 15, 0.3)); flex-shrink: 0;}
+        
+        h1 { 
+            margin: 0; font-weight: 700; font-size: 1.3rem; 
+            color: var(--accent-gold); text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
+            white-space: nowrap; text-align: center; flex-grow: 1;
+        }
+        .game-badge { font-size: 0.7rem; background: var(--accent-blue); color: white; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-right: 5px;}
 
-        /* --- Stack Bar (Editable) --- */
-        .stack-bar {
-            background: #2c3e50;
-            width: 100%; max-width: 450px;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #444;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        /* Stack Compact Widget */
+        .stack-compact {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(44, 62, 80, 0.6); border: 1px solid #444;
+            padding: 2px 8px; border-radius: 8px; min-width: 70px;
         }
-        .stack-label { font-size: 1rem; color: #bdc3c7; font-weight: bold; }
-        .stack-input-group { display: flex; align-items: center; gap: 5px; position: relative;}
-        .stack-input {
-            background: transparent; border: 1px solid transparent; color: var(--accent-green);
-            font-size: 1.4rem; font-weight: bold; width: 120px; text-align: left;
-            border-bottom: 1px dashed #555; padding: 2px;
-            transition: all 0.2s;
+        .stack-label-small { font-size: 0.65rem; color: #bdc3c7; }
+        .stack-val-group { display: flex; align-items: center; justify-content: center; gap: 2px; }
+        .stack-currency-small { font-size: 0.8rem; color: var(--accent-green); }
+        .stack-input-compact {
+            background: transparent; border: none; color: var(--accent-green);
+            font-size: 1.1rem; font-weight: bold; width: 60px; text-align: center;
+            padding: 0; margin: 0; -moz-appearance: textfield;
         }
-        .stack-input:focus { border-bottom: 1px solid var(--accent-gold); outline: none; color: white; }
-        .stack-currency { color: var(--accent-green); font-size: 1rem; }
+        .stack-input-compact:focus { outline: none; border-bottom: 1px solid var(--accent-gold); }
 
-        /* --- Main Sections --- */
+        /* --- Cards Section --- */
         .cards-section { width: 100%; max-width: 450px; margin-bottom: 15px; }
         .label { font-size: 0.85rem; color: #bdc3c7; margin-bottom: 4px; display: block; }
-        .cards-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
+        .cards-row { display: flex; gap: 5px; justify-content: center; margin-bottom: 12px; }
+        
         .card-slot {
             width: 17%; aspect-ratio: 2/3; max-width: 55px;
             background: rgba(255,255,255,0.08); border: 1px dashed #7f8c8d; border-radius: 6px;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
             font-size: 1.2rem; font-weight: bold; transition: background 0.2s;
         }
+        /* התאמה ל-PLO5: קלפים קצת יותר צרים */
+        .plo-mode .card-slot { width: 15%; font-size: 1rem; max-width: 48px; }
+
         .card-slot.filled { background: var(--card-bg); border: 2px solid #fff; color: #333; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
         .card-slot.red { color: #c0392b; }
         .card-slot.black { color: #2c3e50; }
 
-        .inputs-container {
-            width: 100%; max-width: 450px; background: var(--panel-bg);
-            padding: 12px; border-radius: 12px; margin-bottom: 15px;
-        }
+        /* --- Inputs & Buttons --- */
+        .inputs-container { width: 100%; max-width: 450px; background: var(--panel-bg); padding: 12px; border-radius: 12px; margin-bottom: 15px; }
         .inputs-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-end;}
         .input-group { flex: 1; position: relative; }
         input[type="number"] {
@@ -87,22 +94,18 @@
         input:focus { border-color: var(--accent-gold); outline: none; }
         .money-display { font-size: 0.75rem; position: absolute; bottom: -18px; left: 0; width: 100%; text-align: center; font-weight: bold;}
 
-        /* Win Button */
         .win-btn {
-            background: var(--accent-gold); color: black; border: none;
-            border-radius: 6px; padding: 10px 5px; font-weight: bold; cursor: pointer;
+            background: var(--accent-gold); color: black; border: none; border-radius: 6px; padding: 10px 5px; font-weight: bold; cursor: pointer;
             height: 46px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
             box-shadow: 0 4px 0 #c29d0b; transition: all 0.1s;
         }
         .win-btn:active { transform: translateY(4px); box-shadow: none; }
 
         .chips-row { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin-top: 20px;}
-        .chip-btn {
-            background: #34495e; border: 1px solid #555; color: white;
-            padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; min-width: 50px;
-        }
+        .chip-btn { background: #34495e; border: 1px solid #555; color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; min-width: 50px; }
         .chip-btn.clear { background: #c0392b; border-color: #e74c3c; }
 
+        /* --- Stats Panel --- */
         .advisor-panel {
             width: 100%; max-width: 450px; text-align: center; background: #22303f;
             border: 2px solid #34495e; border-radius: 10px; overflow: hidden;
@@ -110,56 +113,35 @@
         }
         .advisor-header { background: #2c3e50; padding: 5px; font-size: 0.8rem; color: #bdc3c7; }
         .advisor-content { padding: 12px; font-size: 1.5rem; font-weight: bold; min-height: 40px; display: flex; align-items: center; justify-content: center; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #444; }
-        .stat-item { background: #2b3b4b; padding: 8px; }
-        .stat-val { font-size: 1.1rem; font-weight: bold; color: var(--accent-gold); direction: ltr; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #444; }
+        .stat-item { background: #2b3b4b; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .stat-val { font-size: 1.2rem; font-weight: bold; color: var(--accent-gold); direction: ltr; margin-top: 2px;}
 
+        /* --- Table Controls --- */
         .table-controls-wrapper {
             width: 100%; max-width: 450px; display: flex; align-items: center;
             justify-content: space-between; background: #181818; padding: 10px;
             border-radius: 15px; border: 1px solid #333;
         }
         .ctrl-col { display: flex; flex-direction: column; gap: 8px; }
-        .ctrl-btn {
-            background: #34495e; color: white; border: none; padding: 8px 12px;
-            border-radius: 6px; cursor: pointer; font-size: 0.8rem; min-width: 80px;
-        }
+        .ctrl-btn { background: #34495e; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; min-width: 80px; }
         .dealer-ctrl { background: #e67e22; color: #fff; font-weight: bold; display: flex; justify-content: space-between; align-items: center; padding: 5px 10px;}
         .next-hand-btn { background: var(--accent-gold); color: black; font-weight: bold; height: 100%; }
 
-        .mini-table {
-            position: relative; width: 140px; height: 90px; background: #1e5f36;
-            border: 4px solid #3e2723; border-radius: 70px; margin: 0 10px; flex-shrink: 0;
-        }
-        .table-center-content {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 1; pointer-events: none;
-        }
+        .mini-table { position: relative; width: 140px; height: 90px; background: #1e5f36; border: 4px solid #3e2723; border-radius: 70px; margin: 0 10px; flex-shrink: 0; }
+        .table-center-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; pointer-events: none; }
         .table-logo { max-width: 40px; max-height: 30px; opacity: 0.85; }
         .table-text { font-size: 0.5rem; color: rgba(255,255,255,0.7); margin-top: 2px; white-space: nowrap; }
 
-        .seat {
-            position: absolute; width: 20px; height: 20px; background: #7f8c8d;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 0.6rem; color: white; transform: translate(-50%, -50%); z-index: 3;
-            cursor: pointer; transition: all 0.2s;
-        }
+        .seat { position: absolute; width: 20px; height: 20px; background: #7f8c8d; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: white; transform: translate(-50%, -50%); z-index: 3; cursor: pointer; transition: all 0.2s; }
         .seat.hero { background: var(--accent-gold); color: black; border: 1px solid white; width: 24px; height: 24px; z-index: 4; cursor: default; }
         .seat.folded { background: #444; color: #777; border: 1px dashed #555; opacity: 0.6; transform: translate(-50%, -50%) scale(0.9); }
         .seat.folded::after { content: 'X'; position: absolute; font-size: 1rem; color: #e74c3c; }
-        .dealer-puck {
-            position: absolute; width: 14px; height: 14px; background: white; color: black;
-            border-radius: 50%; font-size: 0.6rem; font-weight: bold; display: flex;
-            align-items: center; justify-content: center; z-index: 5; border: 1px solid #999;
-            transition: all 0.3s ease;
-        }
+        .dealer-puck { position: absolute; width: 14px; height: 14px; background: white; color: black; border-radius: 50%; font-size: 0.6rem; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 5; border: 1px solid #999; transition: all 0.3s ease; }
 
-        #card-selector, #blinds-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.96); display: none; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 2000;
-        }
+        /* --- Modals --- */
+        #card-selector, #main-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
+        
         .selector-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 90%; max-width: 380px; }
         .select-btn { padding: 18px; font-size: 1.4rem; background: #ecf0f1; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .suits-grid { display: none; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 70%; }
@@ -167,22 +149,25 @@
         .suit-btn:disabled { opacity: 0.2; filter: grayscale(1); }
         .cancel-btn { margin-top: 30px; padding: 10px 40px; background: transparent; border: 1px solid #7f8c8d; color: #bdc3c7; border-radius: 20px;}
 
-        /* Blinds Form Updated */
-        .blinds-form { background: #2c3e50; padding: 20px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; border: 1px solid #444; }
-        .blinds-form h2 { color: white; margin-top: 0; margin-bottom: 10px; font-weight: 300; letter-spacing: 1px;}
+        /* Modal Content */
+        .modal-content { background: #2c3e50; padding: 20px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; border: 1px solid #444; display: flex; flex-direction: column; gap: 15px;}
+        .modal-title { color: white; margin: 0; font-weight: 300; letter-spacing: 1px; font-size: 1.5rem; margin-bottom: 10px;}
         
-        /* Buy In Input in Modal */
-        .buyin-section { margin-bottom: 20px; background: #1e272e; padding: 10px; border-radius: 8px; border: 1px solid #444;}
+        /* Game Selection Buttons */
+        .game-type-btn { 
+            padding: 20px; font-size: 1.2rem; border-radius: 10px; border: 1px solid #555; 
+            background: #34495e; color: white; cursor: pointer; transition: 0.2s; font-weight: bold;
+        }
+        .game-type-btn:hover { background: #3e5871; border-color: var(--accent-gold); }
+        .game-type-btn.plo { border-right: 5px solid var(--accent-purple); }
+        .game-type-btn.nlh { border-right: 5px solid var(--accent-blue); }
+
+        .buyin-section { background: #1e272e; padding: 10px; border-radius: 8px; border: 1px solid #444;}
         .buyin-label { color: #bdc3c7; font-size: 0.9rem; display: block; margin-bottom: 5px; text-align: right;}
         .buyin-input { width: 100%; background: #2d3436; border: 1px solid #555; color: var(--accent-gold); padding: 10px; font-size: 1.2rem; border-radius: 5px; text-align: center; box-sizing: border-box;}
         
         .table-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        .table-select-btn {
-            background: #34495e; color: white; border: none; padding: 15px; border-radius: 10px;
-            text-align: right; display: flex; justify-content: space-between; align-items: center;
-            font-size: 1.1rem; cursor: pointer; border-right: 5px solid transparent; transition: all 0.2s;
-        }
-        .table-select-btn:hover { background: #3e5871; }
+        .table-select-btn { background: #34495e; color: white; border: none; padding: 15px; border-radius: 10px; text-align: right; display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; cursor: pointer; border-right: 5px solid transparent; transition: all 0.2s; }
         .table-select-btn:nth-child(1) { border-right-color: #e74c3c; }
         .table-select-btn:nth-child(2) { border-right-color: #2ecc71; }
         .table-select-btn:nth-child(3) { border-right-color: #f1c40f; }
@@ -190,6 +175,10 @@
         .table-name { font-weight: bold; font-size: 1.2rem;}
         .table-blinds { font-size: 0.9rem; color: #bdc3c7; margin-top: 2px;}
         .table-arrow { font-size: 1.5rem; color: #7f8c8d; }
+
+        /* Step Visibility */
+        .step { display: none; }
+        .step.active { display: flex; flex-direction: column; gap: 15px;}
 
     </style>
 </head>
@@ -199,25 +188,21 @@
         <div class="app-sub-title">הסניף הדיגיטלי - היועץ</div>
         <div class="header-main-row">
             <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
-            <h1 id="main-title">בחר שולחן</h1>
-            <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
+            <h1 id="main-title">בחר משחק</h1>
+            <div class="stack-compact">
+                <span class="stack-label-small">הערימה שלי</span>
+                <div class="stack-val-group">
+                    <span class="stack-currency-small">₪</span>
+                    <input type="number" id="my-stack" class="stack-input-compact" value="0" onchange="updateStackDisplay()">
+                </div>
+            </div>
         </div>
     </header>
-
-    <div class="stack-bar">
-        <div class="stack-label">הערימה שלי:</div>
-        <div class="stack-input-group">
-            <span class="stack-currency">₪</span>
-            <input type="number" id="my-stack" class="stack-input" value="0" onchange="updateStackDisplay()">
-        </div>
-    </div>
 
     <div class="cards-section">
         <span class="label">היד שלי</span>
         <div class="cards-row" id="my-hand">
-            <div class="card-slot" onclick="openSelector(this)">+</div>
-            <div class="card-slot" onclick="openSelector(this)">+</div>
-        </div>
+            </div>
 
         <span class="label">קלפי שולחן</span>
         <div class="cards-row" id="board">
@@ -232,7 +217,6 @@
     <div class="inputs-container">
         <div class="inputs-row">
             <button class="win-btn" onclick="winPot()" title="לקחתי קופה!">🏆</button>
-            
             <div class="input-group">
                 <span class="label">סה"כ קופה</span>
                 <input type="number" id="pot-size" placeholder="0" oninput="runEngine()">
@@ -257,18 +241,23 @@
     <div class="advisor-panel" id="advisor-panel">
         <div class="advisor-header" id="advisor-status">--</div>
         <div class="advisor-content" id="recommendation-text">הזן קלפים...</div>
+        
         <div class="stats-grid">
             <div class="stat-item">
                 <div class="label">Equity</div>
                 <div class="stat-val" id="equity-val">--%</div>
             </div>
             <div class="stat-item">
+                <div class="label">Pot Odds</div>
+                <div class="stat-val" id="pot-odds-val">--%</div>
+            </div>
+            <div class="stat-item">
                 <div class="label">Outs</div>
                 <div class="stat-val" id="outs-val" style="color:#3498db">--</div>
             </div>
             <div class="stat-item">
-                <div class="label">Pot Odds</div>
-                <div class="stat-val" id="pot-odds-val">--%</div>
+                <div class="label">SPR</div>
+                <div class="stat-val" id="spr-val" style="color:var(--accent-purple)">--</div>
             </div>
         </div>
     </div>
@@ -297,16 +286,24 @@
         </div>
     </div>
 
-    <div id="blinds-modal" style="display: flex;">
-        <div class="blinds-form">
-            <h2>הגדרות כניסה</h2>
-            <div class="buyin-section">
-                <span class="buyin-label">סכום כניסה (₪)</span>
-                <input type="number" id="initial-buyin-input" class="buyin-input" placeholder="כמה הבאת?">
-            </div>
+    <div id="main-modal" style="display: flex;">
+        <div class="modal-content">
             
-            <h3 style="color:#ccc; margin-bottom:10px; font-weight:300;">בחר שולחן:</h3>
-            <div class="table-list" id="table-list-container"></div>
+            <div id="step-game" class="step active">
+                <h2 class="modal-title">בחר סוג משחק</h2>
+                <button class="game-type-btn nlh" onclick="selectGame('NLH')">Texas Hold'em (NLH)</button>
+                <button class="game-type-btn plo" onclick="selectGame('PLO5')">Pot Limit Omaha (5)</button>
+            </div>
+
+            <div id="step-table" class="step">
+                <h2 class="modal-title">בחר שולחן</h2>
+                <div class="buyin-section">
+                    <span class="buyin-label">סכום כניסה (₪)</span>
+                    <input type="number" id="initial-buyin-input" class="buyin-input" placeholder="כמה הבאת?">
+                </div>
+                <div class="table-list" id="table-list-container"></div>
+            </div>
+
         </div>
     </div>
 
@@ -318,12 +315,15 @@
     </div>
 
     <script>
+        // === Presets ===
         const tablePresets = [
             { name: "High Roller", sb: 15, bb: 30, color: "#e74c3c" },
             { name: "אצל קובי", sb: 10, bb: 20, color: "#2ecc71" },
             { name: "הולדם 50₪", sb: 5, bb: 10, color: "#f1c40f" }
         ];
 
+        // === System State ===
+        let gameType = 'NLH'; // 'NLH' or 'PLO5'
         let totalPlayers = 6;
         let dealerPosition = 1; 
         let sbValue = 0;
@@ -339,6 +339,71 @@
             renderTableSelection();
         };
 
+        // === Setup Wizard Flow ===
+        function selectGame(type) {
+            gameType = type;
+            document.getElementById('step-game').classList.remove('active');
+            document.getElementById('step-table').classList.add('active');
+            
+            // Re-render hand slots based on game type
+            renderHandSlots();
+        }
+
+        function renderHandSlots() {
+            const container = document.getElementById('my-hand');
+            container.innerHTML = ''; // Clean old slots
+            const count = (gameType === 'PLO5') ? 5 : 2;
+            
+            // Adjust layout class for CSS
+            if (gameType === 'PLO5') container.classList.add('plo-mode');
+            else container.classList.remove('plo-mode');
+
+            for(let i=0; i<count; i++) {
+                let div = document.createElement('div');
+                div.className = 'card-slot';
+                div.innerText = '+';
+                div.onclick = function() { openSelector(this); };
+                container.appendChild(div);
+            }
+        }
+
+        function renderTableSelection() {
+            const container = document.getElementById('table-list-container');
+            tablePresets.forEach((table, index) => {
+                const btn = document.createElement('div');
+                btn.className = 'table-select-btn';
+                btn.onclick = () => selectTable(index);
+                btn.innerHTML = `
+                    <div class="table-info">
+                        <span class="table-name">${table.name}</span>
+                        <span class="table-blinds">בליינדים: ${table.sb}/${table.bb}</span>
+                    </div>
+                    <div class="table-arrow">❮</div>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function selectTable(index) {
+            const selected = tablePresets[index];
+            sbValue = selected.sb;
+            bbValue = selected.bb;
+            currentTableName = selected.name;
+            
+            const inputVal = document.getElementById('initial-buyin-input').value;
+            currentStack = parseFloat(inputVal) || 0;
+            document.getElementById('my-stack').value = currentStack;
+
+            document.getElementById('main-modal').style.display = 'none';
+            
+            // Update Title with Badge
+            const badge = (gameType === 'PLO5') ? '<span class="game-badge">PLO5</span>' : '';
+            document.getElementById('main-title').innerHTML = `${badge} ${selected.name}`;
+            
+            resetToBlinds();
+        }
+
+        // === Core Logic ===
         function initPlayersState() {
             playersFolded = new Array(totalPlayers).fill(false);
         }
@@ -381,40 +446,6 @@
             return count;
         }
 
-        function renderTableSelection() {
-            const container = document.getElementById('table-list-container');
-            tablePresets.forEach((table, index) => {
-                const btn = document.createElement('div');
-                btn.className = 'table-select-btn';
-                btn.onclick = () => selectTable(index);
-                btn.innerHTML = `
-                    <div class="table-info">
-                        <span class="table-name">${table.name}</span>
-                        <span class="table-blinds">בליינדים: ${table.sb}/${table.bb}</span>
-                    </div>
-                    <div class="table-arrow">❮</div>
-                `;
-                container.appendChild(btn);
-            });
-        }
-
-        function selectTable(index) {
-            const selected = tablePresets[index];
-            sbValue = selected.sb;
-            bbValue = selected.bb;
-            currentTableName = selected.name;
-            
-            // קליטת סכום כניסה (אם לא הוזן, נשאר 0)
-            const inputVal = document.getElementById('initial-buyin-input').value;
-            currentStack = parseFloat(inputVal) || 0;
-            document.getElementById('my-stack').value = currentStack;
-
-            document.getElementById('blinds-modal').style.display = 'none';
-            document.getElementById('main-title').innerText = selected.name;
-            
-            resetToBlinds();
-        }
-
         function resetToBlinds() {
             document.getElementById('pot-size').value = sbValue + bbValue;
             document.getElementById('to-call').value = bbValue;
@@ -422,8 +453,8 @@
         }
 
         function updateStackDisplay() {
-            // עדכון משתנה פנימי במידה והמשתמש ערך ידנית
             currentStack = parseFloat(document.getElementById('my-stack').value) || 0;
+            runEngine(); 
         }
 
         function winPot() {
@@ -501,6 +532,7 @@
             return pos;
         }
 
+        // --- Card Selector ---
         let currentSlot = null;
         let selectedRank = null;
         const ranks = ['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
@@ -554,9 +586,12 @@
             });
         }
         
+        // --- Engine ---
         function runEngine() {
             const pot = parseFloat(document.getElementById('pot-size').value) || 0;
             const call = parseFloat(document.getElementById('to-call').value) || 0;
+            const currentStackVal = parseFloat(document.getElementById('my-stack').value) || 0;
+
             document.getElementById('pot-money').innerText = `₪${(pot/10).toLocaleString()}`;
             document.getElementById('call-money').innerText = `₪${(call/10).toLocaleString()}`;
 
@@ -572,7 +607,9 @@
             equityDisplay.innerText = "--%";
             outsDisplay.innerText = "--";
 
-            if (myCards.length < 2) {
+            // Basic checks
+            const reqHandSize = (gameType === 'PLO5') ? 5 : 2;
+            if (myCards.length < reqHandSize) {
                 recText.innerText = "הזן קלפים...";
                 panel.style.borderColor = "#34495e";
                 recText.style.color = "white";
@@ -582,18 +619,27 @@
             if (boardCards.length === 0) {
                 equityDisplay.innerText = "Pre";
                 outsDisplay.innerText = "-";
+                // Preflop strategy is mainly for NLH in this MVP
                 const advice = getPreflopAdvice(myCards, pos);
                 recText.innerText = advice.text;
                 recText.style.color = advice.color;
                 panel.style.borderColor = advice.color;
+                document.getElementById('spr-val').innerText = "-";
                 return;
             }
 
             equityDisplay.innerText = "⏳";
             const activeOpponents = countActiveOpponents();
 
+            // Run simulation with small delay to show loader
             setTimeout(() => {
-                const result = calculateRealEquityAndOuts(myCards, boardCards, activeOpponents);
+                let result;
+                if (gameType === 'PLO5') {
+                    result = calculatePLO5Equity(myCards, boardCards, activeOpponents);
+                } else {
+                    result = calculateNLHEquity(myCards, boardCards, activeOpponents);
+                }
+                
                 const equity = result.equity;
                 const outs = result.outs;
 
@@ -602,6 +648,14 @@
 
                 let potOdds = (pot > 0 && call > 0) ? (call / (pot + call)) * 100 : 0;
                 document.getElementById('pot-odds-val').innerText = potOdds > 0 ? potOdds.toFixed(1) + "%" : "-";
+
+                let potShekels = pot / 10;
+                let sprText = "-";
+                if (potShekels > 0) {
+                    let spr = currentStackVal / potShekels;
+                    sprText = spr.toFixed(1);
+                }
+                document.getElementById('spr-val').innerText = sprText;
 
                 if (call === 0) {
                     const threshold = 100 / (activeOpponents + 1); 
@@ -624,7 +678,8 @@
             }, 50);
         }
 
-        function calculateRealEquityAndOuts(heroHand, board, opponentCount) {
+        // --- Logic: NLH ---
+        function calculateNLHEquity(heroHand, board, opponentCount) {
             if (typeof Hand === 'undefined') return { equity: "?", outs: "?" }; 
             if (opponentCount === 0) return { equity: 100, outs: "-" };
 
@@ -655,6 +710,7 @@
             }
             const equity = Math.round((wins / iterations) * 100);
 
+            // Simple Outs logic for NLH
             let outsCount = 0;
             deck.forEach(card => {
                 const testHand = Hand.solve(heroHand.concat(board).concat([card]));
@@ -667,6 +723,93 @@
             return { equity: equity, outs: outsCount };
         }
 
+        // --- Logic: PLO 5 ---
+        function calculatePLO5Equity(heroHand, board, opponentCount) {
+            // Simplified Monte Carlo for PLO5 to keep performance
+            // Rule: MUST use exactly 2 from hand and 3 from board.
+            if (typeof Hand === 'undefined') return { equity: "?", outs: "?" }; 
+            if (opponentCount === 0) return { equity: 100, outs: "-" };
+
+            let wins = 0;
+            let iterations = 150; // Lower iterations for PLO due to complexity
+            
+            const allCards = [];
+            ranks.forEach(r => ['h','d','c','s'].forEach(s => allCards.push(r+s)));
+            const knownCards = heroHand.concat(board);
+            const deck = allCards.filter(c => !knownCards.includes(c));
+
+            for (let i = 0; i < iterations; i++) {
+                shuffleArray(deck);
+                let idx = 0;
+                
+                // Opponents get 5 random cards each
+                const opponentsHands = [];
+                for(let k=0; k < opponentCount; k++) {
+                    opponentsHands.push(deck.slice(idx, idx+5));
+                    idx += 5;
+                }
+
+                const neededBoard = 5 - board.length;
+                const simBoard = board.concat(deck.slice(idx, idx + neededBoard));
+                
+                // Evaluate Best PLO Hand for Hero
+                const heroBest = getBestOmahaHand(heroHand, simBoard);
+                
+                // Evaluate Best PLO Hand for Opponents
+                const oppBests = opponentsHands.map(h => getBestOmahaHand(h, simBoard));
+                
+                const allHands = [heroBest, ...oppBests];
+                const winners = Hand.winners(allHands);
+                
+                if (winners.length === 1 && winners[0] === heroBest) wins++;
+                else if (winners.includes(heroBest)) wins += (1 / winners.length);
+            }
+            const equity = Math.round((wins / iterations) * 100);
+            
+            return { equity: equity, outs: "?" }; // Outs calc for PLO is too heavy for simple loop
+        }
+
+        // Helper: Find best hand utilizing strict Omaha rules (2 from hand, 3 from board)
+        function getBestOmahaHand(hand5, board5) {
+            // Get all 2-card combos from 5 hole cards (10 combos)
+            const handCombos = getCombinations(hand5, 2);
+            // Get all 3-card combos from 5 board cards (10 combos)
+            const boardCombos = getCombinations(board5, 3);
+            
+            let bestRank = -1;
+            let bestHandObj = null;
+
+            for (let h of handCombos) {
+                for (let b of boardCombos) {
+                    const full7 = h.concat(b); // 5 cards total actually
+                    const solved = Hand.solve(full7);
+                    // Use internal valueOf() for comparison
+                    // We rely on pokersolver's comparison logic, but since we pick best, we need a way to store it.
+                    if (!bestHandObj || solved.compare(bestHandObj) > 0) { // 1 means solved > bestHandObj
+                         bestHandObj = solved;
+                    }
+                }
+            }
+            return bestHandObj;
+        }
+
+        // Helper for combos
+        function getCombinations(array, k) {
+            let i, j, combos, head, tailcombs;
+            if (k > array.length || k <= 0) return [];
+            if (k == array.length) return [array];
+            if (k == 1) return array.map(e => [e]);
+            combos = [];
+            for (i = 0; i < array.length - k + 1; i++) {
+                head = array.slice(i, i + 1);
+                tailcombs = getCombinations(array.slice(i + 1), k - 1);
+                for (j = 0; j < tailcombs.length; j++) {
+                    combos.push(head.concat(tailcombs[j]));
+                }
+            }
+            return combos;
+        }
+
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -675,6 +818,10 @@
         }
 
         function getPreflopAdvice(cards, pos) {
+            if (gameType === 'PLO5') {
+                return {text: "PLO Pre-Flop is Complex", color: "#bdc3c7"};
+            }
+            // NLH Logic
             const r1 = cards[0][0], r2 = cards[1][0];
             const pair = r1 === r2;
             const vals = {'A':14,'K':13,'Q':12,'J':11,'T':10,'9':9,'8':8,'7':7,'6':6,'5':5};
