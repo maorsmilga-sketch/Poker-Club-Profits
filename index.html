@@ -2,18 +2,18 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>הסניף הדיגיטלי - היועץ</title>
     <style>
         :root {
-            --bg-color: #1b1b1b;
-            --table-color: #27ae60;
+            --bg-color: #121212;
+            --panel-bg: #1e272e;
             --card-bg: #ffffff;
             --accent-green: #2ecc71;
             --accent-red: #e74c3c;
             --accent-gold: #f1c40f;
             --text-color: #ecf0f1;
-            --input-bg: #34495e;
+            --input-bg: #2d3436;
         }
 
         body {
@@ -21,169 +21,127 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
+            padding: 10px;
+            padding-bottom: 50px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px;
-            box-sizing: border-box;
-            padding-bottom: 80px; /* מקום לגלילה */
+            touch-action: manipulation;
         }
 
-        /* --- Header & Logo --- */
-        header { text-align: center; margin-bottom: 15px; }
-        .logo-img { max-height: 60px; margin-bottom: 5px; }
-        h1 { margin: 0; font-weight: 300; letter-spacing: 1px; color: var(--accent-gold); font-size: 1.5rem; }
-        .sub-title { font-size: 0.9rem; color: #95a5a6; }
-
-        /* --- Table Visualization --- */
-        .poker-table-container {
-            position: relative;
-            width: 280px;
-            height: 200px; /* אליפסה */
-            background: #225f3e;
-            border: 8px solid #3e2723; /* מסגרת עץ */
-            border-radius: 140px;
-            margin: 20px auto;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+        /* --- Header --- */
+        header { 
+            display: flex; align-items: center; justify-content: center; 
+            gap: 10px; margin-bottom: 15px; width: 100%;
         }
+        .logo-img { height: 40px; }
+        h1 { margin: 0; font-weight: 600; font-size: 1.2rem; color: var(--accent-gold); }
 
-        .seat {
-            position: absolute;
-            width: 35px;
-            height: 35px;
-            background: #7f8c8d;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.5);
-            transform: translate(-50%, -50%); /* מרכוז */
-            transition: all 0.3s ease;
-        }
-
-        .seat.hero { background: var(--accent-gold); color: black; border: 2px solid white; z-index: 10; }
-        .seat.active { background: #34495e; }
-        
-        /* כפתור הדילר */
-        .dealer-btn {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: white;
-            color: black;
-            border-radius: 50%;
-            font-size: 0.7rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #bdc3c7;
-            z-index: 5;
-            transition: all 0.5s ease; /* אנימציית תזוזה */
-        }
-
-        .position-label {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            color: rgba(255,255,255,0.3);
-            font-size: 2rem;
-            font-weight: bold;
-            pointer-events: none;
-        }
-
-        /* --- Table Controls --- */
-        .table-controls {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 10px;
-            background: #2c3e50;
-            padding: 10px;
-            border-radius: 10px;
-        }
-
-        .ctrl-btn {
-            background: #34495e;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-        .next-hand-btn { background: var(--accent-gold); color: black; font-weight: bold; }
-
-        /* --- Cards & Inputs --- */
-        .section-box {
-            background: #2c3e50;
-            padding: 15px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-        }
-
-        .label { font-size: 0.9rem; color: #bdc3c7; margin-bottom: 5px; display: block; }
-
-        .cards-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 5px; }
-        
+        /* --- Cards Section --- */
+        .cards-section { width: 100%; max-width: 450px; margin-bottom: 15px; }
+        .label { font-size: 0.85rem; color: #bdc3c7; margin-bottom: 4px; display: block; }
+        .cards-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
         .card-slot {
-            width: 18%; aspect-ratio: 2/3; max-width: 55px;
-            background: rgba(255,255,255,0.1);
-            border: 2px dashed #7f8c8d; border-radius: 6px;
+            width: 17%; aspect-ratio: 2/3; max-width: 55px;
+            background: rgba(255,255,255,0.08); border: 1px dashed #7f8c8d; border-radius: 6px;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem; font-weight: bold;
+            font-size: 1.2rem; font-weight: bold; transition: background 0.2s;
         }
-        .card-slot.filled { background: var(--card-bg); border: 2px solid #fff; color: #333; }
+        .card-slot.filled { background: var(--card-bg); border: 2px solid #fff; color: #333; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
         .card-slot.red { color: #c0392b; }
         .card-slot.black { color: #2c3e50; }
 
-        /* Inputs */
-        .inputs-row { display: flex; gap: 10px; }
-        .input-group { flex: 1; }
+        /* --- Betting Inputs --- */
+        .inputs-container {
+            width: 100%; max-width: 450px; background: var(--panel-bg);
+            padding: 12px; border-radius: 12px; margin-bottom: 15px;
+        }
+        .inputs-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .input-group { flex: 1; position: relative; }
         input[type="number"] {
-            width: 100%; padding: 10px; border-radius: 6px;
-            border: none; background: var(--input-bg); color: white;
-            font-size: 1.1rem; text-align: center; box-sizing: border-box;
+            width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444;
+            background: var(--input-bg); color: white; font-size: 1.2rem; text-align: center; box-sizing: border-box;
         }
-        .money-display { font-size: 0.8rem; margin-top: 4px; font-weight: bold; opacity: 0.9; }
+        input:focus { border-color: var(--accent-gold); outline: none; }
+        .money-display { font-size: 0.75rem; position: absolute; bottom: -18px; left: 0; width: 100%; text-align: center; font-weight: bold;}
 
-        /* --- Recommendation Banner --- */
+        /* Quick Chips Buttons */
+        .chips-row { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin-top: 20px;}
+        .chip-btn {
+            background: #34495e; border: 1px solid #555; color: white;
+            padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; min-width: 50px;
+        }
+        .chip-btn.clear { background: #c0392b; border-color: #e74c3c; }
+        .chip-btn:active { transform: scale(0.95); }
+
+        /* --- Advisor Panel --- */
         .advisor-panel {
-            width: 100%; max-width: 500px;
-            text-align: center;
-            background: #22303f;
-            border: 2px solid #34495e;
-            border-radius: 10px;
-            overflow: hidden;
+            width: 100%; max-width: 450px; text-align: center; background: #22303f;
+            border: 2px solid #34495e; border-radius: 10px; overflow: hidden;
+            margin-bottom: 20px; transition: border-color 0.3s;
         }
-        .advisor-header { background: #34495e; padding: 8px; font-size: 0.9rem; color: #bdc3c7; }
-        .advisor-content { padding: 15px; font-size: 1.4rem; font-weight: bold; min-height: 40px; display: flex; align-items: center; justify-content: center;}
-        
-        /* Stats Grid */
-        .stats-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #34495e; margin-top: 10px;
-        }
-        .stat-item { background: #22303f; padding: 10px; }
-        .stat-val { font-size: 1.2rem; font-weight: bold; color: var(--accent-gold); direction: ltr; }
+        .advisor-header { background: #2c3e50; padding: 5px; font-size: 0.8rem; color: #bdc3c7; }
+        .advisor-content { padding: 12px; font-size: 1.5rem; font-weight: bold; min-height: 40px; display: flex; align-items: center; justify-content: center; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #444; }
+        .stat-item { background: #2b3b4b; padding: 8px; }
+        .stat-val { font-size: 1.1rem; font-weight: bold; color: var(--accent-gold); direction: ltr; }
 
-        /* --- Selector Modal --- */
+        /* --- Compact Table & Controls --- */
+        .table-controls-wrapper {
+            width: 100%; max-width: 450px; display: flex; align-items: center;
+            justify-content: space-between; background: #181818; padding: 10px;
+            border-radius: 15px; border: 1px solid #333;
+        }
+        .ctrl-col { display: flex; flex-direction: column; gap: 8px; }
+        .ctrl-btn {
+            background: #34495e; color: white; border: none; padding: 8px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.8rem; min-width: 80px;
+        }
+        .dealer-ctrl { background: #e67e22; color: #fff; font-weight: bold; display: flex; justify-content: space-between; align-items: center; padding: 5px 10px;}
+        .next-hand-btn { background: var(--accent-gold); color: black; font-weight: bold; height: 100%; }
+
+        /* Mini Table Visualization */
+        .mini-table {
+            position: relative; width: 140px; height: 90px; background: #1e5f36;
+            border: 4px solid #3e2723; border-radius: 70px; margin: 0 10px; flex-shrink: 0;
+        }
+        
+        /* --- Table Center Content (Logo & Text) --- */
+        .table-center-content {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 1; /* Behind seats */
+            pointer-events: none;
+        }
+        .table-logo { max-width: 40px; max-height: 30px; opacity: 0.85; }
+        .table-text { font-size: 0.5rem; color: rgba(255,255,255,0.7); margin-top: 2px; white-space: nowrap; }
+
+        .seat {
+            position: absolute; width: 20px; height: 20px; background: #7f8c8d;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 0.6rem; color: white; transform: translate(-50%, -50%); z-index: 3;
+        }
+        .seat.hero { background: var(--accent-gold); color: black; border: 1px solid white; width: 24px; height: 24px; z-index: 4;}
+        
+        .dealer-puck {
+            position: absolute; width: 14px; height: 14px; background: white; color: black;
+            border-radius: 50%; font-size: 0.6rem; font-weight: bold; display: flex;
+            align-items: center; justify-content: center; z-index: 5; border: 1px solid #999;
+            transition: all 0.3s ease;
+        }
+
+        /* --- Modal Selector --- */
         #card-selector {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); display: none;
-            flex-direction: column; align-items: center; justify-content: center; z-index: 1000;
+            background: rgba(0,0,0,0.96); display: none; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 2000;
         }
-        .selector-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 90%; max-width: 400px; }
-        .select-btn { padding: 15px; font-size: 1.4rem; background: #ecf0f1; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .suits-grid { display: none; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 60%; }
-        .suit-btn { font-size: 3.5rem; background: white; padding: 10px; border-radius: 10px; border: none; cursor: pointer; }
-        .suit-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+        .selector-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 90%; max-width: 380px; }
+        .select-btn { padding: 18px; font-size: 1.4rem; background: #ecf0f1; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .suits-grid { display: none; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 70%; }
+        .suit-btn { font-size: 4rem; background: white; padding: 15px; border-radius: 12px; border: none; cursor: pointer; }
+        .suit-btn:disabled { opacity: 0.2; filter: grayscale(1); }
+        .cancel-btn { margin-top: 30px; padding: 10px 40px; background: transparent; border: 1px solid #7f8c8d; color: #bdc3c7; border-radius: 20px;}
 
     </style>
 </head>
@@ -191,28 +149,54 @@
 
     <header>
         <img src="logo1.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
-        <h1>הסניף הדיגיטלי - היועץ</h1>
-        <div class="sub-title">מערכת ניהול משחק וסטטיסטיקה</div>
+        <div>
+            <h1>הסניף הדיגיטלי - היועץ</h1>
+        </div>
     </header>
 
-    <div class="table-controls">
-        <div>
-            <button class="ctrl-btn" onclick="changePlayerCount(-1)">- שחקן</button>
-            <span id="player-count-display" style="margin: 0 10px;">6 שחקנים</span>
-            <button class="ctrl-btn" onclick="changePlayerCount(1)">+ שחקן</button>
+    <div class="cards-section">
+        <span class="label">היד שלי</span>
+        <div class="cards-row" id="my-hand">
+            <div class="card-slot" onclick="openSelector(this)">+</div>
+            <div class="card-slot" onclick="openSelector(this)">+</div>
         </div>
-        <button class="ctrl-btn next-hand-btn" onclick="nextHand()">יד הבאה >></button>
+
+        <span class="label">קלפי שולחן</span>
+        <div class="cards-row" id="board">
+            <div class="card-slot" onclick="openSelector(this)">+</div>
+            <div class="card-slot" onclick="openSelector(this)">+</div>
+            <div class="card-slot" onclick="openSelector(this)">+</div>
+            <div class="card-slot" onclick="openSelector(this)">+</div>
+            <div class="card-slot" onclick="openSelector(this)">+</div>
+        </div>
     </div>
 
-    <div class="poker-table-container" id="poker-table">
-        <div class="position-label">TEXAS</div>
-        <div id="dealer-btn" class="dealer-btn">D</div>
-    </div>
-
-    <div class="advisor-panel">
-        <div class="advisor-header" id="advisor-status">ממתין לקלפים...</div>
-        <div class="advisor-content" id="recommendation-text">--</div>
+    <div class="inputs-container">
+        <div class="inputs-row">
+            <div class="input-group">
+                <span class="label">סה"כ קופה</span>
+                <input type="number" id="pot-size" placeholder="0" oninput="calculate()">
+                <div id="pot-money" class="money-display" style="color: var(--accent-green)">₪0</div>
+            </div>
+            <div class="input-group">
+                <span class="label">עלות להשוות</span>
+                <input type="number" id="to-call" placeholder="0" oninput="calculate()">
+                <div id="call-money" class="money-display" style="color: var(--accent-red)">₪0</div>
+            </div>
+        </div>
         
+        <div class="chips-row">
+            <button class="chip-btn" onclick="addChips(10)">+10</button>
+            <button class="chip-btn" onclick="addChips(50)">+50</button>
+            <button class="chip-btn" onclick="addChips(100)">+100</button>
+            <button class="chip-btn" onclick="addChips(500)">+500</button>
+            <button class="chip-btn clear" onclick="clearChips()">נקה</button>
+        </div>
+    </div>
+
+    <div class="advisor-panel" id="advisor-panel">
+        <div class="advisor-header" id="advisor-status">--</div>
+        <div class="advisor-content" id="recommendation-text">הזן קלפים...</div>
         <div class="stats-grid">
             <div class="stat-item">
                 <div class="label">Equity</div>
@@ -225,122 +209,104 @@
         </div>
     </div>
 
-    <br>
-
-    <div class="section-box">
-        <span class="label">היד שלי (My Hand)</span>
-        <div class="cards-row" id="my-hand">
-            <div class="card-slot" onclick="openSelector(this)">+</div>
-            <div class="card-slot" onclick="openSelector(this)">+</div>
+    <div class="table-controls-wrapper">
+        <div class="ctrl-col">
+            <button class="ctrl-btn" onclick="changePlayerCount(1)">+ שחקן</button>
+            <button class="ctrl-btn" onclick="changePlayerCount(-1)">- שחקן</button>
         </div>
 
-        <span class="label" style="margin-top:10px;">קהילה (Board)</span>
-        <div class="cards-row" id="board">
-            <div class="card-slot" onclick="openSelector(this)">+</div>
-            <div class="card-slot" onclick="openSelector(this)">+</div>
-            <div class="card-slot" onclick="openSelector(this)">+</div>
-            <div class="card-slot" onclick="openSelector(this)">+</div>
-            <div class="card-slot" onclick="openSelector(this)">+</div>
-        </div>
-    </div>
+        <div class="mini-table" id="poker-table">
+            <div class="table-center-content">
+                <img src="logo1.png" alt="Logo" class="table-logo" onerror="this.style.opacity=0">
+                <div class="table-text">הסניף הדיגיטלי</div>
+            </div>
+            
+            <div class="dealer-puck" id="dealer-btn">D</div>
+            </div>
 
-    <div class="section-box">
-        <div class="inputs-row">
-            <div class="input-group">
-                <span class="label">קופה (צ'יפים)</span>
-                <input type="number" id="pot-size" placeholder="0" oninput="calculate()">
-                <div id="pot-money" class="money-display" style="color: var(--accent-green)">₪0</div>
+        <div class="ctrl-col" style="align-items: flex-end;">
+            <div class="dealer-ctrl">
+                <span onclick="moveDealer(-1)" style="cursor:pointer; padding:0 5px;">&lt;</span>
+                <span>D</span>
+                <span onclick="moveDealer(1)" style="cursor:pointer; padding:0 5px;">&gt;</span>
             </div>
-            <div class="input-group">
-                <span class="label">להשוות (צ'יפים)</span>
-                <input type="number" id="to-call" placeholder="0" oninput="calculate()">
-                <div id="call-money" class="money-display" style="color: var(--accent-red)">₪0</div>
-            </div>
+            <button class="ctrl-btn next-hand-btn" onclick="nextHand()">יד חדשה</button>
         </div>
     </div>
 
     <div id="card-selector">
-        <h2 id="selector-title" style="color:white; margin-bottom:20px;">בחר ערך</h2>
+        <h2 id="selector-title" style="color:white; margin-bottom:20px;">בחר קלף</h2>
         <div class="selector-grid" id="ranks-grid"></div>
         <div class="suits-grid" id="suits-grid"></div>
-        <button class="ctrl-btn" style="margin-top:30px; background:transparent; border:1px solid white;" onclick="closeSelector()">ביטול</button>
+        <button class="cancel-btn" onclick="closeSelector()">ביטול</button>
     </div>
 
     <script>
-        // === הגדרות משחק ===
+        // === Global State ===
         let totalPlayers = 6;
-        let dealerPosition = 1; // מיקום הדילר (יחסי)
-        const heroSeatIndex = 0; // אנחנו תמיד במושב 0 למטה
+        let dealerPosition = 1; 
 
-        // === קלפים ונתונים ===
-        let currentSlot = null;
-        let selectedRank = null;
-        const ranks = ['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
-        const suitSymbols = {'h':'♥', 'd':'♦', 'c':'♣', 's':'♠'};
-        
-        // אתחול
+        // === Init ===
         window.onload = function() {
             initRankGrid();
             renderTable();
-            calculate(); // איפוס תצוגה
+            calculate();
         };
 
-        // --- ניהול שולחן ומיקומים ---
-        function renderTable() {
-            const table = document.getElementById('poker-table');
-            // נקה מושבים קיימים חוץ מהדילר והלייבל
-            const existingSeats = document.querySelectorAll('.seat');
-            existingSeats.forEach(s => s.remove());
-
-            const radiusX = 140; // רוחב רדיוס
-            const radiusY = 100; // גובה רדיוס
-            
-            for (let i = 0; i < totalPlayers; i++) {
-                const seat = document.createElement('div');
-                
-                // זיהוי אני
-                if (i === heroSeatIndex) {
-                    seat.className = 'seat hero';
-                    seat.innerText = 'ME';
-                } else {
-                    seat.className = 'seat active';
-                    seat.innerText = i + 1;
-                }
-
-                // חישוב מיקום במעגל (מתחילים מ-90 מעלות למטה שזה אני)
-                // הסטה כדי שאני אהיה למטה: (i - heroSeatIndex)
-                // אבל אנחנו רוצים לפזר אותם שווה בשווה.
-                // נמקם את מושב 0 ב-90 מעלות (למטה)
-                const angleDeg = 90 + (360 / totalPlayers) * i;
-                const angleRad = angleDeg * (Math.PI / 180);
-
-                const x = 50 + 50 * Math.cos(angleRad); // אחוזים
-                const y = 50 + 50 * Math.sin(angleRad); // אחוזים
-
-                seat.style.left = x + '%';
-                seat.style.top = y + '%';
-                
-                table.appendChild(seat);
-            }
-
-            // עדכון מיקום כפתור הדילר
-            updateDealerBtn();
+        // === Betting Helpers ===
+        function addChips(amount) {
+            let potInput = document.getElementById('pot-size');
+            let currentVal = parseFloat(potInput.value) || 0;
+            potInput.value = currentVal + amount;
+            calculate();
         }
 
-        function updateDealerBtn() {
-            const dealerBtn = document.getElementById('dealer-btn');
-            // חישוב המיקום של הדילר
+        function clearChips() {
+            document.getElementById('pot-size').value = '';
+            document.getElementById('to-call').value = '';
+            calculate();
+        }
+
+        // === Table Visualization (Mini) ===
+        function renderTable() {
+            const table = document.getElementById('poker-table');
+            document.querySelectorAll('.seat').forEach(e => e.remove());
+
+            for (let i = 0; i < totalPlayers; i++) {
+                const seat = document.createElement('div');
+                seat.className = i === 0 ? 'seat hero' : 'seat active';
+                seat.innerText = i === 0 ? 'Me' : i;
+                
+                const angleDeg = 90 + (360 / totalPlayers) * i;
+                const angleRad = angleDeg * (Math.PI / 180);
+                
+                const x = 50 + 42 * Math.cos(angleRad); 
+                const y = 50 + 40 * Math.sin(angleRad); 
+                
+                seat.style.left = x + '%';
+                seat.style.top = y + '%';
+                table.appendChild(seat);
+            }
+            updateDealerVisual();
+        }
+
+        function moveDealer(direction) {
+            dealerPosition = (dealerPosition + direction + totalPlayers) % totalPlayers;
+            updateDealerVisual();
+            calculate(); 
+        }
+
+        function updateDealerVisual() {
+            const btn = document.getElementById('dealer-btn');
             const angleDeg = 90 + (360 / totalPlayers) * dealerPosition;
             const angleRad = angleDeg * (Math.PI / 180);
             
-            // קצת יותר פנימה מהשחקנים
-            const x = 50 + 38 * Math.cos(angleRad); 
-            const y = 50 + 38 * Math.sin(angleRad);
+            const x = 50 + 28 * Math.cos(angleRad); 
+            const y = 50 + 28 * Math.sin(angleRad);
             
-            dealerBtn.style.left = x + '%';
-            dealerBtn.style.top = y + '%';
-
-            // עדכון טקסט סטטוס
+            btn.style.left = x + '%';
+            btn.style.top = y + '%';
+            
             updateStatusText();
         }
 
@@ -349,99 +315,43 @@
             if (newVal < 2) newVal = 2;
             if (newVal > 10) newVal = 10;
             totalPlayers = newVal;
-            
             if (dealerPosition >= totalPlayers) dealerPosition = 0;
-            
-            document.getElementById('player-count-display').innerText = totalPlayers + " שחקנים";
             renderTable();
-            calculate(); // חישוב מחדש של אסטרטגיה
+            calculate();
         }
 
         function nextHand() {
-            // ניקוי קלפים
             document.querySelectorAll('.card-slot').forEach(slot => {
                 slot.innerHTML = '+';
                 slot.className = 'card-slot';
                 slot.removeAttribute('data-value');
             });
-            
-            // איפוס קלטים
-            document.getElementById('pot-size').value = '';
-            document.getElementById('to-call').value = '';
-            
-            // הזזת דילר (נגד כיוון השעון או עם? בדרך כלל עם כיוון השעון, אבל המספרים עולים נגד. 
-            // אם אני 0, והדילר 1, הדילר זז ל-2.
-            dealerPosition = (dealerPosition + 1) % totalPlayers;
-            
-            updateDealerBtn();
-            calculate();
+            clearChips();
+            moveDealer(1);
         }
 
-        // --- לוגיקת האסטרטגיה (The Advisor) ---
+        // === Strategy Logic ===
         function getMyPositionName() {
-            // חישוב המרחק שלי מהדילר
-            // 0 = Dealer (BTN)
-            // 1 = SB
-            // 2 = BB
-            // שאר = Early/Mid
-            
-            // הנוסחה: כמה צעדים הדילר צריך ללכת אחורה כדי להגיע אליי
-            // או פשוט: איפה אני ביחס לדילר.
-            // אם דילר ב-1 ואני ב-0 -> הדילר אחריי. אני ב-Cutoff? לא.
-            
-            // בוא נפשט: המרחק בדילוגים מהדילר (נגד כיוון השעון)
-            // שחקן מימין לדילר הוא SB. משמאל?
-            // בוא נניח סדר ישיבה עם כיוון השעון 0, 1, 2...
-            // אם הדילר ב-X, אז X+1 הוא SB, X+2 הוא BB.
-            
-            let distFromDealer = (heroSeatIndex - dealerPosition + totalPlayers) % totalPlayers;
-            
-            // dist 0 = אני הדילר (BTN)
-            // dist total-1 = אני מימין לדילר (SB) ? רגע
-            
-            // תיקון לוגי פשוט לפי מרחק מהכפתור:
-            // עמדה 0 (של הדילר): BTN
-            // עמדה 1 (אחרי הדילר): SB
-            // עמדה 2: BB
-            // עמדה 3+: UTG...
-            
-            // הדילר הוא `dealerPosition`. 
-            // המיקום שלי `heroSeatIndex` (תמיד 0).
-            // המרחק היחסי שלי מהדילר (כמה מקומות הדילר צריך לזוז כדי להגיע אליי)
-            
-            // בוא נשתמש בלוגיקה של "כמה אנשים נשארו לדבר אחריי"
-            // אם אני הדילר, 0 נשארו (בפלופ). בפרה פלופ הבליינדים מדברים אחריי.
-            
-            let posName = "";
-            
-            // נחשב מיקום יחסי לדילר בצורה פשוטה:
-            // אם אני הדילר
-            if (dealerPosition === heroSeatIndex) return "BTN (Button)";
-            
-            // חישוב ה-SB (אחד אחרי הדילר)
-            let sbPos = (dealerPosition + 1) % totalPlayers;
-            if (heroSeatIndex === sbPos) return "SB (Small Blind)";
-            
-            let bbPos = (dealerPosition + 2) % totalPlayers;
-            if (heroSeatIndex === bbPos) return "BB (Big Blind)";
-            
-            // אם יש מעט שחקנים
-            if (totalPlayers <= 6) {
-                // המיקום שלפני הדילר
-                let coPos = (dealerPosition - 1 + totalPlayers) % totalPlayers;
-                if (heroSeatIndex === coPos) return "CO (Cutoff)";
-            }
-            
-            return "EP/MP (מוקדם)";
+            if (dealerPosition === 0) return "BTN";
+            if ((dealerPosition + 1) % totalPlayers === 0) return "SB";
+            if ((dealerPosition + 2) % totalPlayers === 0) return "BB";
+            if ((dealerPosition + 3) % totalPlayers === 0) return "UTG";
+            if ((0 + 1) % totalPlayers === dealerPosition) return "CO"; 
+            return "Mid/Early";
         }
 
         function updateStatusText() {
-            const posName = getMyPositionName();
-            document.getElementById('advisor-status').innerText = `המיקום שלך: ${posName} | שחקנים: ${totalPlayers}`;
-            return posName;
+            const pos = getMyPositionName();
+            document.getElementById('advisor-status').innerText = `מיקום: ${pos} | שחקנים: ${totalPlayers}`;
+            return pos;
         }
 
-        // --- בחירת קלפים (כמו קודם) ---
+        // === Card Selector Logic ===
+        let currentSlot = null;
+        let selectedRank = null;
+        const ranks = ['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
+        const suitSymbols = {'h':'♥', 'd':'♦', 'c':'♣', 's':'♠'};
+
         function initRankGrid() {
             const g = document.getElementById('ranks-grid');
             ranks.forEach(r => {
@@ -452,37 +362,26 @@
                 g.appendChild(b);
             });
         }
-        
-        function getTakenCards() {
-            const t = [];
-            document.querySelectorAll('.card-slot.filled').forEach(s => {
-                if (s !== currentSlot && s.dataset.value) t.push(s.dataset.value);
-            });
-            return t;
-        }
-
         function openSelector(el) {
             currentSlot = el;
             document.getElementById('card-selector').style.display = 'flex';
             document.getElementById('ranks-grid').style.display = 'grid';
             document.getElementById('suits-grid').style.display = 'none';
-            document.getElementById('selector-title').innerText = "בחר ערך";
         }
-
-        function closeSelector() {
-            document.getElementById('card-selector').style.display = 'none';
-            currentSlot = null;
-        }
-
+        function closeSelector() { document.getElementById('card-selector').style.display = 'none'; }
+        
         function selectRank(r) {
             selectedRank = r;
             document.getElementById('ranks-grid').style.display = 'none';
             const sg = document.getElementById('suits-grid');
             sg.style.display = 'grid';
-            document.getElementById('selector-title').innerText = "בחר צורה ל-" + r;
-            
             sg.innerHTML = '';
-            const taken = getTakenCards();
+            
+            const taken = [];
+            document.querySelectorAll('.card-slot.filled').forEach(s => {
+                if (s !== currentSlot) taken.push(s.dataset.value);
+            });
+
             ['h','d','c','s'].forEach(s => {
                 const val = selectedRank + s;
                 const btn = document.createElement('button');
@@ -501,137 +400,84 @@
             });
         }
 
-        // --- המוח המרכזי (חישוב + המלצה) ---
+        // === Calc Logic ===
         function calculate() {
-            // 1. המרת כסף
             const pot = parseFloat(document.getElementById('pot-size').value) || 0;
             const call = parseFloat(document.getElementById('to-call').value) || 0;
+            
             document.getElementById('pot-money').innerText = `₪${(pot/10).toLocaleString()}`;
             document.getElementById('call-money').innerText = `₪${(call/10).toLocaleString()}`;
 
-            // 2. בדיקת קלפים
-            const myCards = [];
-            document.querySelectorAll('#my-hand .card-slot.filled').forEach(s => myCards.push(s.dataset.value));
+            const myCards = Array.from(document.querySelectorAll('#my-hand .card-slot.filled')).map(e => e.dataset.value);
+            const board = Array.from(document.querySelectorAll('#board .card-slot.filled')).map(e => e.dataset.value);
             
-            const boardCards = [];
-            document.querySelectorAll('#board .card-slot.filled').forEach(s => boardCards.push(s.dataset.value));
-
+            const pos = updateStatusText();
             const recText = document.getElementById('recommendation-text');
-            const equityDisplay = document.getElementById('equity-val');
-            const potOddsDisplay = document.getElementById('pot-odds-val');
-            const advisorStatus = document.getElementById('advisor-status');
-
-            // עדכון כותרת מיקום
-            const myPosName = updateStatusText();
-
-            // א. אם אין לי קלפים
+            const panel = document.getElementById('advisor-panel');
+            
             if (myCards.length < 2) {
-                recText.innerText = "--";
+                recText.innerText = "הזן קלפים...";
+                panel.style.borderColor = "#34495e";
                 recText.style.color = "white";
-                equityDisplay.innerText = "--%";
-                potOddsDisplay.innerText = "--%";
                 return;
             }
 
-            // ב. האם אנחנו ב-Pre-Flop? (אין קלפי קהילה)
-            if (boardCards.length === 0) {
-                // מצב אסטרטגיה טהור (Pre-Flop)
-                equityDisplay.innerText = "Pre-Flop";
-                potOddsDisplay.innerText = "-";
-                
-                const advice = getPreflopAdvice(myCards, myPosName);
+            if (board.length === 0) {
+                document.getElementById('equity-val').innerText = "Pre";
+                document.getElementById('pot-odds-val').innerText = "-";
+                const advice = getPreflopAdvice(myCards, pos);
                 recText.innerText = advice.text;
                 recText.style.color = advice.color;
-                advisorStatus.innerText = `שלב: Pre-Flop | מיקום: ${myPosName}`;
-                return;
-            }
-
-            // ג. אנחנו ב-Post-Flop (יש קלפי קהילה)
-            // כאן נכנס חישוב מתמטי (Equity)
-            let equity = simulateEquityLogic(); // כאן תחבר בעתיד ספרייה אמיתית
-            let potOdds = 0;
-            if (pot > 0 && call > 0) potOdds = (call / (pot + call)) * 100;
-
-            equityDisplay.innerText = equity + "%";
-            potOddsDisplay.innerText = potOdds > 0 ? potOdds.toFixed(1) + "%" : "--";
-            
-            advisorStatus.innerText = `שלב: Post-Flop | ${boardCards.length} קלפי קהילה`;
-
-            if (call === 0) {
-                recText.innerText = (equity > 50) ? "VALUE BET (המר)" : "CHECK (בדוק)";
-                recText.style.color = (equity > 50) ? "#2ecc71" : "#f1c40f";
+                panel.style.borderColor = advice.color;
             } else {
-                if (equity > potOdds + 5) {
-                    recText.innerText = "🔥 RAISE / CALL";
-                    recText.style.color = "#2ecc71";
-                } else if (equity >= potOdds) {
-                    recText.innerText = "✋ CALL (גבולי)";
-                    recText.style.color = "#f1c40f";
+                let equity = simulateEquity();
+                let potOdds = (pot > 0 && call > 0) ? (call / (pot + call)) * 100 : 0;
+                
+                document.getElementById('equity-val').innerText = equity + "%";
+                document.getElementById('pot-odds-val').innerText = potOdds > 0 ? potOdds.toFixed(1) + "%" : "-";
+                
+                if (call === 0) {
+                    recText.innerText = equity > 60 ? "VALUE BET" : "CHECK";
+                    recText.style.color = equity > 60 ? "#2ecc71" : "#f1c40f";
                 } else {
-                    recText.innerText = "🗑️ FOLD";
-                    recText.style.color = "#e74c3c";
+                    if (equity > potOdds + 5) {
+                        recText.innerText = "CALL / RAISE";
+                        recText.style.color = "#2ecc71";
+                        panel.style.borderColor = "#2ecc71";
+                    } else if (equity >= potOdds) {
+                        recText.innerText = "CALL";
+                        recText.style.color = "#f1c40f";
+                        panel.style.borderColor = "#f1c40f";
+                    } else {
+                        recText.innerText = "FOLD";
+                        recText.style.color = "#e74c3c";
+                        panel.style.borderColor = "#e74c3c";
+                    }
                 }
             }
         }
 
-        // --- לוגיקת Pre-Flop פשוטה (חוקים) ---
-        function getPreflopAdvice(cards, posName) {
-            // ניתוח היד: למשל ['Ah', 'Kh']
-            const r1 = cards[0][0]; // 'A'
-            const r2 = cards[1][0]; // 'K'
-            const s1 = cards[0][1]; // 'h'
-            const s2 = cards[1][1]; // 'h'
-            
-            const isPair = (r1 === r2);
-            const isSuited = (s1 === s2);
-            
-            // המרה לערך מספרי לצורך השוואה (A=14, K=13...)
-            const valMap = {'A':14, 'K':13, 'Q':12, 'J':11, 'T':10, '9':9, '8':8, '7':7, '6':6, '5':5, '4':4, '3':3, '2':2};
-            const v1 = valMap[r1];
-            const v2 = valMap[r2];
+        function getPreflopAdvice(cards, pos) {
+            const r1 = cards[0][0], r2 = cards[1][0];
+            const pair = r1 === r2;
+            const vals = {'A':14,'K':13,'Q':12,'J':11,'T':10,'9':9,'8':8,'7':7,'6':6,'5':5};
+            const v1 = vals[r1]||0, v2 = vals[r2]||0;
             const high = Math.max(v1, v2);
-            const low = Math.min(v1, v2);
+
+            if (pair && high >= 11) return {text:"RAISE / ALL-IN", color:"#2ecc71"};
+            if (v1+v2 >= 27) return {text:"RAISE", color:"#2ecc71"};
             
-            // 1. מפלצות (תמיד Raise)
-            if (isPair && high >= 12) return {text: "🚀 ALL-IN / RAISE", color: "#2ecc71"}; // QQ+
-            if (high === 14 && low === 13) return {text: "🔥 RAISE (חזק)", color: "#2ecc71"}; // AK
-            
-            // 2. זוגות בינוניים (JJ-88)
-            if (isPair && high >= 8) return {text: "✅ RAISE", color: "#2ecc71"};
-
-            // 3. תלוי מיקום
-            const isLatePos = posName.includes("BTN") || posName.includes("CO");
-            const isBlind = posName.includes("SB") || posName.includes("BB");
-            
-            // זוגות נמוכים (סט מיינינג)
-            if (isPair) {
-                if (isLatePos) return {text: "RAISE (לגניבה)", color: "#f1c40f"};
-                return {text: "CALL (בזהירות)", color: "#f1c40f"};
-            }
-
-            // קלפים גבוהים (AQ, AJ, KQ)
-            if (high >= 13 && low >= 11) { // AJ+ KQ+
-                return {text: "RAISE / CALL", color: "#2ecc71"};
-            }
-
-            // סוטד קונקטורס (למשל 89 סוטד)
-            if (isSuited && (high - low === 1) && high > 5) {
-                if (isLatePos) return {text: "RAISE (ספקולטיבי)", color: "#3498db"}; // כחול - יצירתי
-                return {text: "FOLD / CALL זול", color: "#bdc3c7"};
-            }
-
-            // כל השאר - זבל
-            if (isLatePos) {
-                 if (high >= 13) return {text: "STEAL? (גניבה)", color: "#e67e22"}; // כתום
+            if (pos === 'BTN' || pos === 'CO') {
+                if (pair) return {text:"RAISE (Steal)", color:"#f1c40f"};
+                if (high >= 12) return {text:"RAISE / CALL", color:"#f1c40f"};
             }
             
-            return {text: "🗑️ FOLD", color: "#e74c3c"};
+            if (pair && high >= 7) return {text:"CALL", color:"#f1c40f"};
+            
+            return {text:"FOLD", color:"#e74c3c"};
         }
 
-        // סימולציה (תחלף בספרייה אמיתית)
-        function simulateEquityLogic() {
-            return Math.floor(Math.random() * 60 + 20);
-        }
+        function simulateEquity() { return Math.floor(Math.random() * 60 + 20); }
 
     </script>
 </body>
