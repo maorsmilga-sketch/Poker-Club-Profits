@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הסניף הדיגיטלי - היועץ (NLH ONLY)</title>
+    <title>הסניף הדיגיטלי - היועץ (TOOLTIPS)</title>
     <script src="https://cdn.jsdelivr.net/npm/pokersolver@2.1.2/pokersolver.min.js"></script>
     <style>
         :root {
@@ -26,7 +26,7 @@
             touch-action: manipulation;
         }
 
-        /* --- Header Symmetrical --- */
+        /* --- Header --- */
         header { 
             display: flex; flex-direction: column; align-items: center; 
             gap: 5px; margin-bottom: 20px; width: 100%; max-width: 450px;
@@ -62,14 +62,7 @@
         .card-slot.red { color: #c0392b; }
         .card-slot.black { color: #2c3e50; }
 
-        /* Locked Slot Style */
-        .card-slot.disabled {
-            opacity: 0.2;
-            cursor: not-allowed;
-            background: #000;
-            border-color: #333;
-            pointer-events: none;
-        }
+        .card-slot.disabled { opacity: 0.2; cursor: not-allowed; background: #000; border-color: #333; pointer-events: none; }
 
         /* --- Inputs --- */
         .inputs-container { width: 100%; max-width: 450px; background: var(--panel-bg); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
@@ -86,19 +79,64 @@
         .chip-btn { background: #34495e; border: 1px solid #555; color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; min-width: 50px; flex:1;}
         .chip-btn.clear { background: #c0392b; border-color: #e74c3c; flex: 0.8; }
 
-        /* --- Stats Panel --- */
+        /* --- Stats Panel with Tooltips --- */
         .advisor-panel {
             width: 100%; max-width: 450px; text-align: center; background: #22303f;
-            border: 2px solid #34495e; border-radius: 10px; overflow: hidden;
+            border: 2px solid #34495e; border-radius: 10px; 
             margin-bottom: 20px; transition: border-color 0.3s;
+            position: relative; /* For z-index context */
         }
-        .advisor-header { background: #2c3e50; padding: 8px; font-size: 0.9rem; color: #bdc3c7; }
+        .advisor-header { background: #2c3e50; padding: 8px; font-size: 0.9rem; color: #bdc3c7; border-top-left-radius: 10px; border-top-right-radius: 10px;}
         .advisor-content { padding: 15px; font-size: 1.6rem; font-weight: bold; min-height: 40px; display: flex; align-items: center; justify-content: center; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #444; }
-        .stat-item { background: #2b3b4b; padding: 10px; display: flex; flex-direction: column; align-items: center;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #444; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; overflow: hidden;}
+        .stat-item { background: #2b3b4b; padding: 10px; display: flex; flex-direction: column; align-items: center; position: relative;}
         .stat-val { font-size: 1.3rem; font-weight: bold; color: var(--accent-gold); direction: ltr; margin-top: 2px;}
-        .stat-label { font-size: 0.8rem; color: #bdc3c7; }
+        
+        /* Tooltip Styles */
+        .tooltip-container {
+            position: relative;
+            cursor: help;
+            border-bottom: 1px dotted #7f8c8d; /* קו מקווקו לסימון */
+            font-size: 0.8rem; color: #bdc3c7;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            width: 140px;
+            background-color: #111;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 100;
+            bottom: 130%; /* מופיע מעל הטקסט */
+            left: 50%;
+            margin-left: -70px; /* מרכוז */
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem;
+            border: 1px solid var(--accent-gold);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            pointer-events: none;
+            line-height: 1.3;
+        }
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--accent-gold) transparent transparent transparent;
+        }
+        .tooltip-container:hover .tooltip-text,
+        .tooltip-container:active .tooltip-text,
+        .tooltip-container:focus .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
 
         /* --- Table Controls --- */
         .table-controls-wrapper {
@@ -202,15 +240,24 @@
         
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="label">Equity</div>
+                <div class="tooltip-container">
+                    Equity
+                    <span class="tooltip-text">סיכויי הזכייה שלך באחוזים (החלק שלך בקופה)</span>
+                </div>
                 <div class="stat-val" id="equity-val">--%</div>
             </div>
             <div class="stat-item">
-                <div class="label">Pot Odds</div>
+                <div class="tooltip-container">
+                    Pot Odds
+                    <span class="tooltip-text">היחס בין הקופה למחיר ההשוואה. האם זה משתלם?</span>
+                </div>
                 <div class="stat-val" id="pot-odds-val">--%</div>
             </div>
             <div class="stat-item">
-                <div class="label">Outs</div>
+                <div class="tooltip-container">
+                    Outs
+                    <span class="tooltip-text">מספר הקלפים בחבילה שישפרו את היד שלך למנצחת</span>
+                </div>
                 <div class="stat-val" id="outs-val" style="color:#3498db">--</div>
             </div>
         </div>
@@ -255,14 +302,12 @@
     </div>
 
     <script>
-        // רשימת שולחנות הולדם בלבד
         const nlhTables = [
             { name: "High Roller", sb: 15, bb: 30, color: "#e74c3c" },
             { name: "אצל קובי", sb: 10, bb: 20, color: "#2ecc71" },
             { name: "הולדם 50₪", sb: 5, bb: 10, color: "#f1c40f" }
         ];
 
-        // System State
         let totalPlayers = 6;
         let dealerPosition = 1; 
         let sbValue = 0, bbValue = 0;
@@ -276,7 +321,6 @@
             enforceSlotOrder();
         };
 
-        // --- Setup ---
         function renderTableSelection() {
             const container = document.getElementById('table-list-container');
             container.innerHTML = '';
@@ -305,13 +349,11 @@
             resetToBlinds();
         }
 
-        // --- Core Functions ---
         function initPlayersState() { playersFolded = new Array(totalPlayers).fill(false); }
         
         function renderTable() {
             const table = document.getElementById('poker-table');
             document.querySelectorAll('.seat').forEach(e => e.remove());
-            
             for (let i = 0; i < totalPlayers; i++) {
                 const seat = document.createElement('div');
                 let className = 'seat';
@@ -353,16 +395,22 @@
         }
 
         function addChips(amount) {
+            // עדכון הקופה
             let potInput = document.getElementById('pot-size');
-            let currentVal = parseFloat(potInput.value) || 0;
-            potInput.value = currentVal + amount;
+            let potVal = parseFloat(potInput.value) || 0;
+            potInput.value = potVal + amount;
+
+            // עדכון העלות להשוות
+            let callInput = document.getElementById('to-call');
+            let callVal = parseFloat(callInput.value) || 0;
+            callInput.value = callVal + amount;
+
             runEngine();
         }
         
         function clearChips() { resetToBlinds(); }
 
         function moveDealer(direction) {
-            // Clockwise movement
             dealerPosition = (dealerPosition + direction + totalPlayers) % totalPlayers;
             updateDealerVisual();
             runEngine(); 
@@ -394,7 +442,7 @@
             initPlayersState(); 
             renderTable();
             resetToBlinds(); 
-            moveDealer(1); // Clockwise auto move
+            moveDealer(1); // Clockwise
             enforceSlotOrder();
         }
 
