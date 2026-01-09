@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הסניף הדיגיטלי - היועץ (V20)</title>
+    <title>הסניף הדיגיטלי - היועץ (NLH ONLY)</title>
     <script src="https://cdn.jsdelivr.net/npm/pokersolver@2.1.2/pokersolver.min.js"></script>
     <style>
         :root {
@@ -13,7 +13,6 @@
             --accent-green: #2ecc71;
             --accent-red: #e74c3c;
             --accent-gold: #f1c40f;
-            --accent-blue: #3498db;
             --text-color: #ecf0f1;
             --input-bg: #2d3436;
         }
@@ -42,29 +41,35 @@
         .header-logo { height: 42px; width: auto; filter: drop-shadow(0 0 5px rgba(241, 196, 15, 0.3)); }
         
         h1 { 
-            margin: 0; font-weight: 700; font-size: 1.4rem; 
+            margin: 0; font-weight: 700; font-size: 1.5rem; 
             color: var(--accent-gold); text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
             white-space: nowrap; text-align: center;
         }
-        .game-badge { font-size: 0.7rem; background: var(--accent-blue); color: white; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-right: 5px;}
 
         /* --- Cards Section --- */
         .cards-section { width: 100%; max-width: 450px; margin-bottom: 20px; }
         .label { font-size: 0.85rem; color: #bdc3c7; margin-bottom: 5px; display: block; }
-        .cards-row { display: flex; gap: 5px; justify-content: center; margin-bottom: 15px; }
+        .cards-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; }
         
         .card-slot {
             width: 17%; aspect-ratio: 2/3; max-width: 55px;
             background: rgba(255,255,255,0.08); border: 1px dashed #7f8c8d; border-radius: 6px;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; font-weight: bold; transition: background 0.2s;
+            font-size: 1.2rem; font-weight: bold; transition: all 0.2s;
         }
-        /* PLO5 adjustment */
-        .plo-mode .card-slot { width: 15%; font-size: 1rem; max-width: 48px; }
 
         .card-slot.filled { background: var(--card-bg); border: 2px solid #fff; color: #333; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
         .card-slot.red { color: #c0392b; }
         .card-slot.black { color: #2c3e50; }
+
+        /* Locked Slot Style */
+        .card-slot.disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+            background: #000;
+            border-color: #333;
+            pointer-events: none;
+        }
 
         /* --- Inputs --- */
         .inputs-container { width: 100%; max-width: 450px; background: var(--panel-bg); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
@@ -117,17 +122,12 @@
         .seat.folded::after { content: 'X'; position: absolute; font-size: 1rem; color: #e74c3c; }
         .dealer-puck { position: absolute; width: 14px; height: 14px; background: white; color: black; border-radius: 50%; font-size: 0.6rem; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 5; border: 1px solid #999; transition: all 0.3s ease; }
 
-        /* --- Modals --- */
+        /* --- Modal --- */
         #card-selector, #main-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
         
         .modal-content { background: #2c3e50; padding: 20px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; border: 1px solid #444; display: flex; flex-direction: column; gap: 15px;}
         .modal-title { color: white; margin: 0; font-weight: 300; letter-spacing: 1px; font-size: 1.5rem; margin-bottom: 10px;}
         
-        .game-type-btn { padding: 20px; font-size: 1.2rem; border-radius: 10px; border: 1px solid #555; background: #34495e; color: white; cursor: pointer; transition: 0.2s; font-weight: bold; }
-        .game-type-btn:hover { background: #3e5871; border-color: var(--accent-gold); }
-        .game-type-btn.plo { border-right: 5px solid var(--accent-blue); }
-        .game-type-btn.nlh { border-right: 5px solid var(--accent-green); }
-
         .table-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .table-select-btn { background: #34495e; color: white; border: none; padding: 15px; border-radius: 10px; text-align: right; display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; cursor: pointer; border-right: 5px solid transparent; transition: all 0.2s; }
         .table-select-btn:hover { background: #3e5871; }
@@ -143,9 +143,6 @@
         .suit-btn:disabled { opacity: 0.2; filter: grayscale(1); }
         .cancel-btn { margin-top: 30px; padding: 10px 40px; background: transparent; border: 1px solid #7f8c8d; color: #bdc3c7; border-radius: 20px;}
 
-        .step { display: none; }
-        .step.active { display: flex; flex-direction: column; gap: 15px;}
-
     </style>
 </head>
 <body>
@@ -154,7 +151,7 @@
         <div class="app-sub-title">הסניף הדיגיטלי - היועץ</div>
         <div class="header-main-row">
             <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
-            <h1 id="main-title">בחר משחק</h1>
+            <h1 id="main-title">בחר שולחן</h1>
             <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
         </div>
     </header>
@@ -162,7 +159,9 @@
     <div class="cards-section">
         <span class="label">היד שלי</span>
         <div class="cards-row" id="my-hand">
-            </div>
+            <div class="card-slot" onclick="openSelector(this)">+</div>
+            <div class="card-slot" onclick="openSelector(this)">+</div>
+        </div>
 
         <span class="label">קלפי שולחן</span>
         <div class="cards-row" id="board">
@@ -243,19 +242,8 @@
 
     <div id="main-modal" style="display: flex;">
         <div class="modal-content">
-            
-            <div id="step-game" class="step active">
-                <h2 class="modal-title">בחר סוג משחק</h2>
-                <button class="game-type-btn nlh" onclick="selectGame('NLH')">Texas Hold'em (NLH)</button>
-                <button class="game-type-btn plo" onclick="selectGame('PLO5')">Pot Limit Omaha (5)</button>
-            </div>
-
-            <div id="step-table" class="step">
-                <h2 class="modal-title">בחר שולחן</h2>
-                <div class="table-list" id="table-list-container"></div>
-                <button class="chip-btn clear" style="width:100%; margin-top:10px; font-size:1rem;" onclick="backToGameSelect()">חזרה</button>
-            </div>
-
+            <h2 class="modal-title">בחר שולחן</h2>
+            <div class="table-list" id="table-list-container"></div>
         </div>
     </div>
 
@@ -267,22 +255,14 @@
     </div>
 
     <script>
-        const gameTables = {
-            NLH: [
-                { name: "High Roller", sb: 15, bb: 30, color: "#e74c3c" },
-                { name: "אצל קובי", sb: 10, bb: 20, color: "#2ecc71" },
-                { name: "הולדם 50₪", sb: 5, bb: 10, color: "#f1c40f" }
-            ],
-            PLO5: [
-                { name: "הסלון של אוהד", sb: 15, bb: 30, color: "#e74c3c" },
-                { name: "השולחן של ניר", sb: 10, bb: 20, color: "#2ecc71" },
-                { name: "אומהה 50₪ 5", sb: 5, bb: 10, color: "#f1c40f" }
-            ]
-        };
+        // רשימת שולחנות הולדם בלבד
+        const nlhTables = [
+            { name: "High Roller", sb: 15, bb: 30, color: "#e74c3c" },
+            { name: "אצל קובי", sb: 10, bb: 20, color: "#2ecc71" },
+            { name: "הולדם 50₪", sb: 5, bb: 10, color: "#f1c40f" }
+        ];
 
         // System State
-        let gameType = 'NLH';
-        let currentTableList = [];
         let totalPlayers = 6;
         let dealerPosition = 1; 
         let sbValue = 0, bbValue = 0;
@@ -291,44 +271,16 @@
         window.onload = function() {
             initRankGrid();
             initPlayersState();
+            renderTableSelection();
             renderTable();
+            enforceSlotOrder();
         };
 
-        // --- Wizard Logic ---
-        function selectGame(type) {
-            gameType = type;
-            currentTableList = gameTables[type];
-            document.getElementById('step-game').classList.remove('active');
-            document.getElementById('step-table').classList.add('active');
-            renderTableSelection();
-            renderHandSlots();
-        }
-
-        function backToGameSelect() {
-            document.getElementById('step-table').classList.remove('active');
-            document.getElementById('step-game').classList.add('active');
-        }
-
-        function renderHandSlots() {
-            const container = document.getElementById('my-hand');
-            container.innerHTML = '';
-            const count = (gameType === 'PLO5') ? 5 : 2;
-            if (gameType === 'PLO5') container.parentElement.classList.add('plo-mode');
-            else container.parentElement.classList.remove('plo-mode');
-
-            for(let i=0; i<count; i++) {
-                let div = document.createElement('div');
-                div.className = 'card-slot';
-                div.innerText = '+';
-                div.onclick = function() { openSelector(this); };
-                container.appendChild(div);
-            }
-        }
-
+        // --- Setup ---
         function renderTableSelection() {
             const container = document.getElementById('table-list-container');
             container.innerHTML = '';
-            currentTableList.forEach((table, index) => {
+            nlhTables.forEach((table, index) => {
                 const btn = document.createElement('div');
                 btn.className = 'table-select-btn';
                 btn.style.borderRight = `5px solid ${table.color}`;
@@ -345,15 +297,11 @@
         }
 
         function selectTable(index) {
-            const selected = currentTableList[index];
+            const selected = nlhTables[index];
             sbValue = selected.sb;
             bbValue = selected.bb;
-            
             document.getElementById('main-modal').style.display = 'none';
-            const badgeColor = (gameType === 'PLO5') ? '#3498db' : '#2ecc71';
-            const badge = `<span class="game-badge" style="background:${badgeColor}">${gameType}</span>`;
-            document.getElementById('main-title').innerHTML = `${badge} ${selected.name}`;
-            
+            document.getElementById('main-title').innerText = selected.name;
             resetToBlinds();
         }
 
@@ -414,7 +362,7 @@
         function clearChips() { resetToBlinds(); }
 
         function moveDealer(direction) {
-            // Clockwise movement logic
+            // Clockwise movement
             dealerPosition = (dealerPosition + direction + totalPlayers) % totalPlayers;
             updateDealerVisual();
             runEngine(); 
@@ -446,7 +394,8 @@
             initPlayersState(); 
             renderTable();
             resetToBlinds(); 
-            moveDealer(1); // Clockwise
+            moveDealer(1); // Clockwise auto move
+            enforceSlotOrder();
         }
 
         function getMyPositionName() {
@@ -465,7 +414,7 @@
             return pos;
         }
 
-        // --- Card Selector ---
+        // --- Card Logic ---
         let currentSlot = null;
         let selectedRank = null;
         const ranks = ['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
@@ -481,7 +430,29 @@
                 g.appendChild(b);
             });
         }
+
+        function enforceSlotOrder() {
+            // My Hand
+            const handSlots = document.querySelectorAll('#my-hand .card-slot');
+            let handLocked = false;
+            handSlots.forEach(slot => {
+                if (handLocked && !slot.classList.contains('filled')) slot.classList.add('disabled');
+                else slot.classList.remove('disabled');
+                if (!slot.classList.contains('filled') && !handLocked) handLocked = true;
+            });
+
+            // Board
+            const boardSlots = document.querySelectorAll('#board .card-slot');
+            let boardLocked = false;
+            boardSlots.forEach(slot => {
+                if (boardLocked && !slot.classList.contains('filled')) slot.classList.add('disabled');
+                else slot.classList.remove('disabled');
+                if (!slot.classList.contains('filled') && !boardLocked) boardLocked = true;
+            });
+        }
+
         function openSelector(el) {
+            if (el.classList.contains('disabled')) return;
             currentSlot = el;
             document.getElementById('card-selector').style.display = 'flex';
             document.getElementById('ranks-grid').style.display = 'grid';
@@ -519,8 +490,8 @@
             });
         }
         
-        // --- Engine ---
         function runEngine() {
+            enforceSlotOrder();
             const pot = parseFloat(document.getElementById('pot-size').value) || 0;
             const call = parseFloat(document.getElementById('to-call').value) || 0;
 
@@ -537,20 +508,16 @@
             const elOuts = document.getElementById('outs-val');
             const elPotOdds = document.getElementById('pot-odds-val');
 
-            // Reset
             elEquity.innerText = "--";
             elOuts.innerText = "--";
             
-            // Check
-            const reqHandSize = (gameType === 'PLO5') ? 5 : 2;
-            if (myCards.length < reqHandSize) {
-                recText.innerText = "הזן קלפים";
-                recText.style.color = "white";
+            if (myCards.length < 2) {
+                recText.innerText = "הזן קלפים...";
                 panel.style.borderColor = "#34495e";
+                recText.style.color = "white";
                 return;
             }
 
-            // Pre-Flop
             if (boardCards.length === 0) {
                 elEquity.innerText = "Pre";
                 const advice = getPreflopAdvice(myCards, pos);
@@ -563,58 +530,45 @@
             elEquity.innerText = "⏳";
             const activeOpponents = countActiveOpponents();
 
-            // Run async
             setTimeout(() => {
-                try {
-                    let result = { equity: 0, outs: 0 };
-                    
-                    if (gameType === 'PLO5') {
-                        result = calculatePLO5Equity(myCards, boardCards, activeOpponents);
+                const result = calculateNLHEquity(myCards, boardCards, activeOpponents);
+                const equity = result.equity;
+                const outs = result.outs;
+
+                elEquity.innerText = equity + "%";
+                elOuts.innerText = outs; 
+
+                let potOdds = (pot > 0 && call > 0) ? (call / (pot + call)) * 100 : 0;
+                elPotOdds.innerText = potOdds > 0 ? potOdds.toFixed(0) + "%" : "-";
+
+                if (call === 0) {
+                    const threshold = 100 / (activeOpponents + 1);
+                    recText.innerText = equity > (threshold + 10) ? "VALUE BET" : "CHECK";
+                    recText.style.color = equity > (threshold + 10) ? "#2ecc71" : "#f1c40f";
+                    panel.style.borderColor = recText.style.color;
+                } else {
+                    if (equity > potOdds + 5) {
+                        recText.innerText = "CALL / RAISE";
+                        recText.style.color = "#2ecc71";
+                    } else if (equity >= potOdds) {
+                        recText.innerText = "CALL";
+                        recText.style.color = "#f1c40f";
                     } else {
-                        result = calculateNLHEquity(myCards, boardCards, activeOpponents);
-                    }
-
-                    // Update UI
-                    elEquity.innerText = result.equity + "%";
-                    elOuts.innerText = result.outs;
-
-                    let potOdds = (pot > 0 && call > 0) ? (call / (pot + call)) * 100 : 0;
-                    elPotOdds.innerText = potOdds > 0 ? potOdds.toFixed(0) + "%" : "-";
-
-                    // Recommendation
-                    if (call === 0) {
-                        const threshold = 100 / (activeOpponents + 1);
-                        const strong = result.equity > (threshold + 15);
-                        recText.innerText = strong ? "VALUE BET" : "CHECK";
-                        recText.style.color = strong ? "#2ecc71" : "#f1c40f";
-                    } else {
-                        if (result.equity > potOdds + 5) {
-                            recText.innerText = "RAISE / CALL";
-                            recText.style.color = "#2ecc71";
-                        } else if (result.equity >= potOdds) {
-                            recText.innerText = "CALL";
-                            recText.style.color = "#f1c40f";
-                        } else {
-                            recText.innerText = "FOLD";
-                            recText.style.color = "#e74c3c";
-                        }
+                        recText.innerText = "FOLD";
+                        recText.style.color = "#e74c3c";
                     }
                     panel.style.borderColor = recText.style.color;
-
-                } catch (e) {
-                    console.error(e);
-                    elEquity.innerText = "Err";
                 }
             }, 20);
         }
 
-        // --- Logic: NLH ---
+        // --- Logic (NLH) ---
         function calculateNLHEquity(heroHand, board, opponentCount) {
             if (typeof Hand === 'undefined') return { equity: "?", outs: "?" }; 
             if (opponentCount === 0) return { equity: 100, outs: "-" };
 
             let wins = 0;
-            let iterations = 250; 
+            let iterations = 300; 
             const allCards = [];
             ranks.forEach(r => ['h','d','c','s'].forEach(s => allCards.push(r+s)));
             const knownCards = heroHand.concat(board);
@@ -649,75 +603,6 @@
             return { equity: Math.round((wins / iterations) * 100), outs: outsCount };
         }
 
-        // --- Logic: PLO 5 ---
-        function calculatePLO5Equity(heroHand, board, opponentCount) {
-            if (typeof Hand === 'undefined') return { equity: "?", outs: "?" }; 
-            if (opponentCount === 0) return { equity: 100, outs: "-" };
-
-            let wins = 0;
-            let iterations = 80; 
-            
-            const allCards = [];
-            ranks.forEach(r => ['h','d','c','s'].forEach(s => allCards.push(r+s)));
-            const knownCards = heroHand.concat(board);
-            const deck = allCards.filter(c => !knownCards.includes(c));
-
-            for (let i = 0; i < iterations; i++) {
-                shuffleArray(deck);
-                let idx = 0;
-                const opponentsHands = [];
-                for(let k=0; k < opponentCount; k++) {
-                    opponentsHands.push(deck.slice(idx, idx+5));
-                    idx += 5;
-                }
-
-                const neededBoard = 5 - board.length;
-                const simBoard = board.concat(deck.slice(idx, idx + neededBoard));
-                const heroBest = getBestOmahaHand(heroHand, simBoard);
-                const oppBests = opponentsHands.map(h => getBestOmahaHand(h, simBoard));
-                const allHands = [heroBest, ...oppBests];
-                const winners = Hand.winners(allHands);
-                
-                if (winners.length === 1 && winners[0] === heroBest) wins++;
-                else if (winners.includes(heroBest)) wins += (1 / winners.length);
-            }
-            
-            return { equity: Math.round((wins / iterations) * 100), outs: "?" };
-        }
-
-        function getBestOmahaHand(hand5, board5) {
-            const handCombos = getCombinations(hand5, 2);
-            const boardCombos = getCombinations(board5, 3);
-            let bestHandObj = null;
-
-            for (let h of handCombos) {
-                for (let b of boardCombos) {
-                    const full = h.concat(b);
-                    const solved = Hand.solve(full);
-                    if (!bestHandObj || solved.compare(bestHandObj) > 0) { 
-                         bestHandObj = solved;
-                    }
-                }
-            }
-            return bestHandObj;
-        }
-
-        function getCombinations(array, k) {
-            let i, j, combos, head, tailcombs;
-            if (k > array.length || k <= 0) return [];
-            if (k == array.length) return [array];
-            if (k == 1) return array.map(e => [e]);
-            combos = [];
-            for (i = 0; i < array.length - k + 1; i++) {
-                head = array.slice(i, i + 1);
-                tailcombs = getCombinations(array.slice(i + 1), k - 1);
-                for (j = 0; j < tailcombs.length; j++) {
-                    combos.push(head.concat(tailcombs[j]));
-                }
-            }
-            return combos;
-        }
-
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -726,8 +611,6 @@
         }
 
         function getPreflopAdvice(cards, pos) {
-            if (gameType === 'PLO5') return {text: "Pre-Flop: See Flop Cheap", color: "#bdc3c7"};
-            
             const r1 = cards[0][0], r2 = cards[1][0];
             const pair = r1 === r2;
             const vals = {'A':14,'K':13,'Q':12,'J':11,'T':10,'9':9,'8':8,'7':7,'6':6,'5':5};
