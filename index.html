@@ -21,52 +21,46 @@
             font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            margin: 0; padding: 10px; padding-bottom: 50px;
+            margin: 0; padding: 10px; padding-bottom: 60px;
             display: flex; flex-direction: column; align-items: center;
             touch-action: manipulation;
         }
 
-        /* --- Header החדש --- */
+        /* --- Header --- */
         header { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 5px; 
-            margin-bottom: 20px; 
-            width: 100%;
+            display: flex; flex-direction: column; align-items: center; 
+            gap: 5px; margin-bottom: 10px; width: 100%;
         }
-        
-        .app-sub-title {
-            font-size: 0.9rem;
-            color: #bdc3c7;
-            letter-spacing: 1.5px;
-            font-weight: 300;
-        }
+        .app-sub-title { font-size: 0.8rem; color: #bdc3c7; letter-spacing: 1.5px; font-weight: 300; }
+        .header-main-row { display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; }
+        .header-logo { height: 35px; width: auto; filter: drop-shadow(0 0 5px rgba(241, 196, 15, 0.3)); }
+        h1 { margin: 0; font-weight: 700; font-size: 1.4rem; color: var(--accent-gold); text-shadow: 0 2px 4px rgba(0,0,0,0.8); white-space: nowrap; }
 
-        .header-main-row {
+        /* --- Stack Bar (Editable) --- */
+        .stack-bar {
+            background: #2c3e50;
+            width: 100%; max-width: 450px;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            gap: 15px;
-            width: 100%;
+            border: 1px solid #444;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-
-        .header-logo { 
-            height: 40px; 
-            width: auto;
-            filter: drop-shadow(0 0 5px rgba(241, 196, 15, 0.3)); /* זוהר עדין */
+        .stack-label { font-size: 1rem; color: #bdc3c7; font-weight: bold; }
+        .stack-input-group { display: flex; align-items: center; gap: 5px; position: relative;}
+        .stack-input {
+            background: transparent; border: 1px solid transparent; color: var(--accent-green);
+            font-size: 1.4rem; font-weight: bold; width: 120px; text-align: left;
+            border-bottom: 1px dashed #555; padding: 2px;
+            transition: all 0.2s;
         }
+        .stack-input:focus { border-bottom: 1px solid var(--accent-gold); outline: none; color: white; }
+        .stack-currency { color: var(--accent-green); font-size: 1rem; }
 
-        h1 { 
-            margin: 0; 
-            font-weight: 700; 
-            font-size: 1.6rem; 
-            color: var(--accent-gold); 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-            white-space: nowrap;
-        }
-
-        /* --- שאר העיצוב (ללא שינוי) --- */
+        /* --- Main Sections --- */
         .cards-section { width: 100%; max-width: 450px; margin-bottom: 15px; }
         .label { font-size: 0.85rem; color: #bdc3c7; margin-bottom: 4px; display: block; }
         .cards-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
@@ -84,7 +78,7 @@
             width: 100%; max-width: 450px; background: var(--panel-bg);
             padding: 12px; border-radius: 12px; margin-bottom: 15px;
         }
-        .inputs-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .inputs-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-end;}
         .input-group { flex: 1; position: relative; }
         input[type="number"] {
             width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444;
@@ -92,6 +86,15 @@
         }
         input:focus { border-color: var(--accent-gold); outline: none; }
         .money-display { font-size: 0.75rem; position: absolute; bottom: -18px; left: 0; width: 100%; text-align: center; font-weight: bold;}
+
+        /* Win Button */
+        .win-btn {
+            background: var(--accent-gold); color: black; border: none;
+            border-radius: 6px; padding: 10px 5px; font-weight: bold; cursor: pointer;
+            height: 46px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+            box-shadow: 0 4px 0 #c29d0b; transition: all 0.1s;
+        }
+        .win-btn:active { transform: translateY(4px); box-shadow: none; }
 
         .chips-row { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin-top: 20px;}
         .chip-btn {
@@ -107,7 +110,6 @@
         }
         .advisor-header { background: #2c3e50; padding: 5px; font-size: 0.8rem; color: #bdc3c7; }
         .advisor-content { padding: 12px; font-size: 1.5rem; font-weight: bold; min-height: 40px; display: flex; align-items: center; justify-content: center; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #444; }
         .stat-item { background: #2b3b4b; padding: 8px; }
         .stat-val { font-size: 1.1rem; font-weight: bold; color: var(--accent-gold); direction: ltr; }
@@ -146,7 +148,6 @@
         .seat.hero { background: var(--accent-gold); color: black; border: 1px solid white; width: 24px; height: 24px; z-index: 4; cursor: default; }
         .seat.folded { background: #444; color: #777; border: 1px dashed #555; opacity: 0.6; transform: translate(-50%, -50%) scale(0.9); }
         .seat.folded::after { content: 'X'; position: absolute; font-size: 1rem; color: #e74c3c; }
-
         .dealer-puck {
             position: absolute; width: 14px; height: 14px; background: white; color: black;
             border-radius: 50%; font-size: 0.6rem; font-weight: bold; display: flex;
@@ -166,8 +167,15 @@
         .suit-btn:disabled { opacity: 0.2; filter: grayscale(1); }
         .cancel-btn { margin-top: 30px; padding: 10px 40px; background: transparent; border: 1px solid #7f8c8d; color: #bdc3c7; border-radius: 20px;}
 
+        /* Blinds Form Updated */
         .blinds-form { background: #2c3e50; padding: 20px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; border: 1px solid #444; }
-        .blinds-form h2 { color: white; margin-top: 0; margin-bottom: 20px; font-weight: 300; letter-spacing: 1px;}
+        .blinds-form h2 { color: white; margin-top: 0; margin-bottom: 10px; font-weight: 300; letter-spacing: 1px;}
+        
+        /* Buy In Input in Modal */
+        .buyin-section { margin-bottom: 20px; background: #1e272e; padding: 10px; border-radius: 8px; border: 1px solid #444;}
+        .buyin-label { color: #bdc3c7; font-size: 0.9rem; display: block; margin-bottom: 5px; text-align: right;}
+        .buyin-input { width: 100%; background: #2d3436; border: 1px solid #555; color: var(--accent-gold); padding: 10px; font-size: 1.2rem; border-radius: 5px; text-align: center; box-sizing: border-box;}
+        
         .table-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .table-select-btn {
             background: #34495e; color: white; border: none; padding: 15px; border-radius: 10px;
@@ -196,6 +204,14 @@
         </div>
     </header>
 
+    <div class="stack-bar">
+        <div class="stack-label">הערימה שלי:</div>
+        <div class="stack-input-group">
+            <span class="stack-currency">₪</span>
+            <input type="number" id="my-stack" class="stack-input" value="0" onchange="updateStackDisplay()">
+        </div>
+    </div>
+
     <div class="cards-section">
         <span class="label">היד שלי</span>
         <div class="cards-row" id="my-hand">
@@ -215,6 +231,8 @@
 
     <div class="inputs-container">
         <div class="inputs-row">
+            <button class="win-btn" onclick="winPot()" title="לקחתי קופה!">🏆</button>
+            
             <div class="input-group">
                 <span class="label">סה"כ קופה</span>
                 <input type="number" id="pot-size" placeholder="0" oninput="runEngine()">
@@ -281,7 +299,13 @@
 
     <div id="blinds-modal" style="display: flex;">
         <div class="blinds-form">
-            <h2>בחר שולחן</h2>
+            <h2>הגדרות כניסה</h2>
+            <div class="buyin-section">
+                <span class="buyin-label">סכום כניסה (₪)</span>
+                <input type="number" id="initial-buyin-input" class="buyin-input" placeholder="כמה הבאת?">
+            </div>
+            
+            <h3 style="color:#ccc; margin-bottom:10px; font-weight:300;">בחר שולחן:</h3>
             <div class="table-list" id="table-list-container"></div>
         </div>
     </div>
@@ -306,6 +330,7 @@
         let bbValue = 0;
         let currentTableName = "";
         let playersFolded = []; 
+        let currentStack = 0; 
 
         window.onload = function() {
             initRankGrid();
@@ -378,9 +403,15 @@
             sbValue = selected.sb;
             bbValue = selected.bb;
             currentTableName = selected.name;
+            
+            // קליטת סכום כניסה (אם לא הוזן, נשאר 0)
+            const inputVal = document.getElementById('initial-buyin-input').value;
+            currentStack = parseFloat(inputVal) || 0;
+            document.getElementById('my-stack').value = currentStack;
+
             document.getElementById('blinds-modal').style.display = 'none';
-            // עדכון הכותרת הראשית בשם השולחן הנבחר
             document.getElementById('main-title').innerText = selected.name;
+            
             resetToBlinds();
         }
 
@@ -388,6 +419,26 @@
             document.getElementById('pot-size').value = sbValue + bbValue;
             document.getElementById('to-call').value = bbValue;
             runEngine();
+        }
+
+        function updateStackDisplay() {
+            // עדכון משתנה פנימי במידה והמשתמש ערך ידנית
+            currentStack = parseFloat(document.getElementById('my-stack').value) || 0;
+        }
+
+        function winPot() {
+            const potChips = parseFloat(document.getElementById('pot-size').value) || 0;
+            if (potChips > 0) {
+                const potShekels = potChips / 10;
+                currentStack += potShekels;
+                document.getElementById('my-stack').value = currentStack.toFixed(1);
+                
+                resetToBlinds();
+                
+                const btn = document.querySelector('.win-btn');
+                btn.style.backgroundColor = '#2ecc71';
+                setTimeout(() => btn.style.backgroundColor = '#f1c40f', 300);
+            }
         }
 
         function addChips(amount) {
