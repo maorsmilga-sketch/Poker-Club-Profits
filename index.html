@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poker Pro Calc</title>
+    <title>Poker Web Calc</title>
     <style>
         :root {
             --bg-color: #1b1b1b;
@@ -12,60 +12,60 @@
             --accent-red: #e74c3c;
             --accent-gold: #f1c40f;
             --text-color: #ecf0f1;
+            --input-bg: #34495e;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
+            box-sizing: border-box;
         }
 
-        h1 { margin-bottom: 20px; font-weight: 300; letter-spacing: 2px; color: var(--accent-gold); }
+        h1 { margin: 10px 0 20px 0; font-weight: 300; letter-spacing: 2px; color: var(--accent-gold); font-size: 1.8rem; }
 
-        /* אזור הקלפים */
+        /* קונטיינרים */
         .table-section {
             background: #2c3e50;
-            padding: 20px;
+            padding: 15px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             width: 100%;
-            max-width: 600px;
-            margin-bottom: 20px;
+            max-width: 500px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
         }
 
         .label { font-size: 0.9rem; color: #bdc3c7; margin-bottom: 8px; display: block; }
 
         .cards-container {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
-        /* עיצוב קלף בודד */
+        /* עיצוב קלף */
         .card-slot {
-            width: 60px;
-            height: 90px;
+            width: 18%; /* גמיש למובייל */
+            aspect-ratio: 2/3;
+            max-width: 60px;
             background: rgba(255,255,255,0.1);
             border: 2px dashed #7f8c8d;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            transition: all 0.2s;
             position: relative;
         }
-
-        .card-slot:hover { border-color: var(--accent-gold); background: rgba(255,255,255,0.2); }
         
         .card-slot.filled {
             background: var(--card-bg);
@@ -77,11 +77,10 @@
         .card-slot.red { color: #c0392b; }
         .card-slot.black { color: #2c3e50; }
 
-        /* אזור נתונים (קופה והימור) */
+        /* קלטים וכסף */
         .inputs-row {
             display: flex;
             gap: 15px;
-            margin-bottom: 20px;
         }
 
         .input-group { flex: 1; }
@@ -91,82 +90,92 @@
             padding: 12px;
             border-radius: 8px;
             border: none;
-            background: #34495e;
+            background: var(--input-bg);
             color: white;
-            font-size: 1.1rem;
-            text-align: center;
-        }
-
-        /* כפתור חישוב */
-        .action-btn {
-            width: 100%;
-            padding: 15px;
-            background: var(--accent-gold);
-            color: #1b1b1b;
-            border: none;
-            border-radius: 8px;
             font-size: 1.2rem;
+            text-align: center;
+            box-sizing: border-box; /* חשוב למניעת גלישה */
+        }
+        
+        .money-display {
+            font-size: 0.85rem;
+            margin-top: 5px;
             font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 20px;
+            opacity: 0.9;
         }
 
         /* תוצאות */
         .results {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 10px;
             width: 100%;
-            max-width: 600px;
+            max-width: 500px;
         }
 
         .result-box {
-            background: #34495e;
+            background: var(--input-bg);
             padding: 15px;
             border-radius: 10px;
             text-align: center;
         }
 
-        .result-value { font-size: 1.8rem; font-weight: bold; margin-top: 5px; }
+        .result-value { font-size: 1.8rem; font-weight: bold; margin-top: 5px; direction: ltr; }
+        
         .recommendation {
             grid-column: span 2;
-            padding: 20px;
-            font-size: 1.5rem;
-            background: #2c3e50;
+            padding: 15px;
+            font-size: 1.3rem;
+            background: #22303f;
             border: 2px solid var(--accent-gold);
+            font-weight: bold;
         }
 
-        /* Modal Selector (החלק המתוחכם) */
+        /* Modal Selector */
         #card-selector {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: none; /* מוסתר בהתחלה */
+            background: rgba(0,0,0,0.95);
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 100;
+            z-index: 999;
         }
 
         .selector-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
+            width: 90%;
             max-width: 400px;
         }
 
         .select-btn {
-            padding: 20px;
-            font-size: 1.5rem;
+            padding: 15px;
+            font-size: 1.4rem;
             background: #ecf0f1;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             color: #333;
+            font-weight: bold;
         }
         
-        .suits-grid { display: none; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .suit-btn { font-size: 3rem; background: white; padding: 20px; border-radius: 10px; cursor: pointer;}
+        .suits-grid { display: none; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 80%; max-width: 300px; }
+        .suit-btn { font-size: 3.5rem; background: white; padding: 10px; border-radius: 10px; cursor: pointer; border: none; }
+        .suit-btn:disabled { opacity: 0.3; cursor: not-allowed; filter: grayscale(100%); }
+
+        .cancel-btn {
+            margin-top: 30px;
+            padding: 10px 30px;
+            background: transparent;
+            color: white;
+            border: 1px solid white;
+            border-radius: 20px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
 
     </style>
 </head>
@@ -194,53 +203,50 @@
     <div class="table-section">
         <div class="inputs-row">
             <div class="input-group">
-                <span class="label">סה"כ בקופה כרגע ($)</span>
+                <span class="label">קופה (צ'יפים)</span>
                 <input type="number" id="pot-size" placeholder="100" oninput="calculate()">
+                <div id="pot-money" class="money-display" style="color: var(--accent-green)">₪0</div>
             </div>
             <div class="input-group">
-                <span class="label">כמה עולה להשוות? ($)</span>
+                <span class="label">להשוות (צ'יפים)</span>
                 <input type="number" id="to-call" placeholder="20" oninput="calculate()">
+                <div id="call-money" class="money-display" style="color: var(--accent-red)">₪0</div>
             </div>
         </div>
     </div>
 
     <div class="results">
         <div class="result-box">
-            <span class="label">Equity (סיכוי ניצחון)</span>
+            <span class="label">Equity (סיכוי)</span>
             <div class="result-value" id="equity-val" style="color: var(--accent-gold)">--%</div>
         </div>
         <div class="result-box">
-            <span class="label">Pot Odds (יחס קופה)</span>
+            <span class="label">Pot Odds (יחס)</span>
             <div class="result-value" id="pot-odds-val">--%</div>
         </div>
         <div class="result-box recommendation" id="recommendation-box">
-            מתין לנתונים...
+            הזן יד לחישוב
         </div>
     </div>
 
     <div id="card-selector">
-        <h2 id="selector-title">בחר ערך</h2>
+        <h2 id="selector-title" style="color:white; margin-bottom:20px;">בחר ערך</h2>
         
-        <div class="selector-grid" id="ranks-grid">
-            </div>
+        <div class="selector-grid" id="ranks-grid"></div>
 
-        <div class="suits-grid" id="suits-grid">
-            <button class="suit-btn" style="color:red" onclick="selectSuit('h')">♥</button>
-            <button class="suit-btn" style="color:red" onclick="selectSuit('d')">♦</button>
-            <button class="suit-btn" style="color:black" onclick="selectSuit('c')">♣</button>
-            <button class="suit-btn" style="color:black" onclick="selectSuit('s')">♠</button>
-        </div>
+        <div class="suits-grid" id="suits-grid"></div>
         
-        <button onclick="closeSelector()" style="margin-top: 20px; padding: 10px; background:transparent; color:white; border:1px solid white;">ביטול</button>
+        <button class="cancel-btn" onclick="closeSelector()">ביטול</button>
     </div>
 
     <script>
-        // --- לוגיקה ונתונים ---
+        // --- משתנים והגדרות ---
         let currentSlot = null;
         let selectedRank = null;
         const ranks = ['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
+        const suitSymbols = {'h':'♥', 'd':'♦', 'c':'♣', 's':'♠'};
         
-        // יצירת כפתורי המספרים דינמית
+        // יצירת גריד המספרים (רץ פעם אחת בטעינה)
         const ranksGrid = document.getElementById('ranks-grid');
         ranks.forEach(r => {
             let btn = document.createElement('button');
@@ -250,39 +256,23 @@
             ranksGrid.appendChild(btn);
         });
 
-        // פתיחת הפופ-אפ
+        // --- בדיקת קלפים תפוסים ---
+        function getTakenCards() {
+            const taken = [];
+            document.querySelectorAll('.card-slot.filled').forEach(slot => {
+                // מתעלמים מהקלף שאנחנו עורכים כרגע כדי לאפשר תיקון
+                if (slot !== currentSlot && slot.dataset.value) {
+                    taken.push(slot.dataset.value);
+                }
+            });
+            return taken;
+        }
+
+        // --- ניהול פתיחת/סגירת בורר הקלפים ---
         function openSelector(slotElement) {
             currentSlot = slotElement;
             document.getElementById('card-selector').style.display = 'flex';
             resetSelectorView();
-        }
-
-        function resetSelectorView() {
-            document.getElementById('ranks-grid').style.display = 'grid';
-            document.getElementById('suits-grid').style.display = 'none';
-            document.getElementById('selector-title').innerText = "בחר ערך";
-        }
-
-        // בחירת מספר
-        function selectRank(rank) {
-            selectedRank = rank;
-            document.getElementById('ranks-grid').style.display = 'none';
-            document.getElementById('suits-grid').style.display = 'grid';
-            document.getElementById('selector-title').innerText = "בחר צורה עבור " + rank;
-        }
-
-        // בחירת צורה וסיום
-        function selectSuit(suit) {
-            const suitSymbols = {'h':'♥', 'd':'♦', 'c':'♣', 's':'♠'};
-            const colorClass = (suit === 'h' || suit === 'd') ? 'red' : 'black';
-            
-            // עדכון ה-UI של הקלף
-            currentSlot.innerHTML = `${selectedRank}${suitSymbols[suit]}`;
-            currentSlot.className = `card-slot filled ${colorClass}`;
-            currentSlot.dataset.value = selectedRank + suit; // שמירת הערך לחישובים (למשל Ah)
-
-            closeSelector();
-            calculate(); // הפעלת חישוב אוטומטי
         }
 
         function closeSelector() {
@@ -291,61 +281,120 @@
             selectedRank = null;
         }
 
-        // --- המוח: חישובים ---
-        function calculate() {
-            // 1. חישוב Pot Odds
-            const pot = parseFloat(document.getElementById('pot-size').value) || 0;
-            const toCall = parseFloat(document.getElementById('to-call').value) || 0;
-            let potOdds = 0;
+        function resetSelectorView() {
+            document.getElementById('ranks-grid').style.display = 'grid';
+            document.getElementById('suits-grid').style.display = 'none';
+            document.getElementById('selector-title').innerText = "בחר ערך";
+        }
 
-            if (toCall > 0 && pot > 0) {
-                // הנוסחה: Call / (Pot + Call)
-                potOdds = (toCall / (pot + toCall)) * 100;
+        // --- שלב 1: נבחר מספר ---
+        function selectRank(rank) {
+            selectedRank = rank;
+            document.getElementById('ranks-grid').style.display = 'none';
+            const suitsGrid = document.getElementById('suits-grid');
+            suitsGrid.style.display = 'grid';
+            document.getElementById('selector-title').innerText = "בחר צורה עבור " + rank;
+
+            // יצירה מחדש של כפתורי הצורות כדי לטפל בחסימות
+            const takenCards = getTakenCards();
+            suitsGrid.innerHTML = ''; // ניקוי כפתורים קודמים
+            
+            const suits = ['h', 'd', 'c', 's'];
+            suits.forEach(s => {
+                const cardVal = selectedRank + s;
+                const isTaken = takenCards.includes(cardVal);
+                
+                const btn = document.createElement('button');
+                btn.className = 'suit-btn';
+                btn.innerText = suitSymbols[s];
+                // צביעת אדום/שחור
+                btn.style.color = (s === 'h' || s === 'd') ? '#e74c3c' : '#2c3e50';
+                
+                if (isTaken) {
+                    btn.disabled = true; // חסימת כפתור
+                } else {
+                    btn.onclick = () => selectSuit(s);
+                }
+                
+                suitsGrid.appendChild(btn);
+            });
+        }
+
+        // --- שלב 2: נבחרה צורה ---
+        function selectSuit(suit) {
+            const colorClass = (suit === 'h' || suit === 'd') ? 'red' : 'black';
+            
+            // עדכון ה-HTML של המשבצת
+            currentSlot.innerHTML = `${selectedRank}${suitSymbols[suit]}`;
+            currentSlot.className = `card-slot filled ${colorClass}`;
+            currentSlot.dataset.value = selectedRank + suit; 
+
+            closeSelector();
+            calculate(); // הפעלת חישוב מיידי
+        }
+
+        // --- חישובים ולוגיקה ---
+        function calculate() {
+            // 1. המרה לשקלים (יחס 1:10)
+            const potChips = parseFloat(document.getElementById('pot-size').value) || 0;
+            const callChips = parseFloat(document.getElementById('to-call').value) || 0;
+            
+            const potShekels = (potChips / 10).toLocaleString(); // המרה + פסיקים
+            const callShekels = (callChips / 10).toLocaleString();
+            
+            document.getElementById('pot-money').innerText = `שווי: ₪${potShekels}`;
+            document.getElementById('call-money').innerText = `שווי: ₪${callShekels}`;
+
+            // 2. חישוב Pot Odds
+            let potOdds = 0;
+            if (callChips > 0 && potChips > 0) {
+                potOdds = (callChips / (potChips + callChips)) * 100;
             }
 
-            // 2. חישוב Equity (כרגע דמה - במציאות מחברים ספרייה)
-            // כדי שזה יעבוד אמיתי צריך לחבר את 'pokersolver'
-            // כאן אני עושה סימולציה פשוטה כדי שתראה את ה-UI עובד
+            // 3. חישוב Equity (סימולציה כרגע)
+            // *הערה:* כאן נכנסת ספריית פוקר אמיתית בעתיד
             let equity = simulateEquityLogic(); 
 
-            // עדכון המסך
             updateDisplay(equity, potOdds);
         }
 
-        // פונקציית דמה לחישוב סיכויים (רק להמחשת הממשק)
         function simulateEquityLogic() {
-            // בודק כמה קלפים הוזנו
-            const slots = document.querySelectorAll('.card-slot.filled');
-            if (slots.length < 2) return 0;
+            // אם אין לפחות 2 קלפים ביד שלי, אין טעם לחשב
+            const myHandSlots = document.querySelectorAll('#my-hand .card-slot.filled');
+            if (myHandSlots.length < 2) return 0;
             
-            // אם יש זוג ביד - סיכוי גבוה
-            // זה רק Mockup! במציאות נשתמש בספריית מתמטיקה
+            // מספר רנדומלי בין 20 ל-80 להדגמה
             return Math.floor(Math.random() * (80 - 20) + 20); 
         }
 
         function updateDisplay(equity, potOdds) {
-            document.getElementById('equity-val').innerText = equity > 0 ? equity + "%" : "--%";
-            document.getElementById('pot-odds-val').innerText = potOdds > 0 ? potOdds.toFixed(1) + "%" : "--%";
-
+            const equityEl = document.getElementById('equity-val');
+            const potOddsEl = document.getElementById('pot-odds-val');
             const recBox = document.getElementById('recommendation-box');
-            
+
+            equityEl.innerText = equity > 0 ? equity + "%" : "--%";
+            potOddsEl.innerText = potOdds > 0 ? potOdds.toFixed(1) + "%" : "--%";
+
             if (equity === 0 || potOdds === 0) {
-                recBox.innerText = "הזן יד ונתוני קופה...";
-                recBox.style.color = "#ecf0f1";
+                recBox.innerText = "הזן נתונים...";
+                recBox.style.color = "#bdc3c7";
+                recBox.style.borderColor = "#bdc3c7";
                 return;
             }
 
-            // החוקים הפשוטים שהגדרנו
-            // אם הסיכוי שלי לנצח (Equity) גדול מהמחיר שאני צריך לשלם (Pot Odds) - שווה לשלם
-            if (equity > potOdds + 5) { // הוספתי 5% מרווח ביטחון
-                recBox.innerText = "🔥 CALL / RAISE (משתלם)";
+            // חוקי ההמלצה
+            if (equity > potOdds + 10) {
+                recBox.innerText = "🔥 RAISE / ALL-IN";
                 recBox.style.color = "#2ecc71"; // ירוק
-            } else if (equity >= potOdds) {
-                recBox.innerText = "✋ גבולי (CALL בזהירות)";
+                recBox.style.borderColor = "#2ecc71";
+            } else if (equity > potOdds) {
+                recBox.innerText = "✅ CALL (משתלם)";
                 recBox.style.color = "#f1c40f"; // צהוב
+                recBox.style.borderColor = "#f1c40f";
             } else {
-                recBox.innerText = "🗑️ FOLD (לא משתלם)";
+                recBox.innerText = "❌ FOLD (מסוכן)";
                 recBox.style.color = "#e74c3c"; // אדום
+                recBox.style.borderColor = "#e74c3c";
             }
         }
     </script>
