@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הסניף הדיגיטלי - היועץ (PURE)</title>
+    <title>הסניף הדיגיטלי - היועץ (V11)</title>
     <script src="https://cdn.jsdelivr.net/npm/pokersolver@2.1.2/pokersolver.min.js"></script>
     <style>
         :root {
@@ -13,7 +13,6 @@
             --accent-green: #2ecc71;
             --accent-red: #e74c3c;
             --accent-gold: #f1c40f;
-            --accent-blue: #3498db;
             --text-color: #ecf0f1;
             --input-bg: #2d3436;
         }
@@ -22,120 +21,146 @@
             font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            margin: 0; padding: 10px; padding-bottom: 60px;
+            margin: 0; padding: 10px; padding-bottom: 50px;
             display: flex; flex-direction: column; align-items: center;
             touch-action: manipulation;
         }
 
-        /* --- Header Clean --- */
+        /* --- Header V11 (Symmetrical) --- */
         header { 
-            display: flex; flex-direction: column; align-items: center; 
-            gap: 5px; margin-bottom: 20px; width: 100%; max-width: 450px;
-        }
-        .app-sub-title { font-size: 0.8rem; color: #bdc3c7; letter-spacing: 1.5px; font-weight: 300; margin-bottom: 5px; }
-        
-        .header-main-row { 
-            display: flex; align-items: center; justify-content: center; /* Center alignment */
-            gap: 20px; width: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 5px; 
+            margin-bottom: 20px; 
+            width: 100%;
         }
         
-        .header-logo { height: 42px; width: auto; filter: drop-shadow(0 0 5px rgba(241, 196, 15, 0.3)); }
-        
+        .app-sub-title {
+            font-size: 0.9rem;
+            color: #bdc3c7;
+            letter-spacing: 1.5px;
+            font-weight: 300;
+        }
+
+        .header-main-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .header-logo { 
+            height: 40px; 
+            width: auto;
+            filter: drop-shadow(0 0 5px rgba(241, 196, 15, 0.3));
+        }
+
         h1 { 
-            margin: 0; font-weight: 700; font-size: 1.5rem; 
-            color: var(--accent-gold); text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
-            white-space: nowrap; text-align: center;
+            margin: 0; 
+            font-weight: 700; 
+            font-size: 1.6rem; 
+            color: var(--accent-gold); 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            white-space: nowrap;
         }
-        .game-badge { font-size: 0.7rem; background: var(--accent-blue); color: white; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-right: 5px;}
 
         /* --- Cards Section --- */
-        .cards-section { width: 100%; max-width: 450px; margin-bottom: 20px; }
-        .label { font-size: 0.85rem; color: #bdc3c7; margin-bottom: 5px; display: block; }
-        .cards-row { display: flex; gap: 6px; justify-content: center; margin-bottom: 15px; }
-        
+        .cards-section { width: 100%; max-width: 450px; margin-bottom: 15px; }
+        .label { font-size: 0.85rem; color: #bdc3c7; margin-bottom: 4px; display: block; }
+        .cards-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
         .card-slot {
             width: 17%; aspect-ratio: 2/3; max-width: 55px;
             background: rgba(255,255,255,0.08); border: 1px dashed #7f8c8d; border-radius: 6px;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
             font-size: 1.2rem; font-weight: bold; transition: background 0.2s;
         }
-        /* PLO5 adjustment */
-        .plo-mode .card-slot { width: 15%; font-size: 1.1rem; max-width: 50px; }
-
         .card-slot.filled { background: var(--card-bg); border: 2px solid #fff; color: #333; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
         .card-slot.red { color: #c0392b; }
         .card-slot.black { color: #2c3e50; }
 
-        /* --- Inputs & Chips --- */
-        .inputs-container { width: 100%; max-width: 450px; background: var(--panel-bg); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
-        .inputs-row { display: flex; gap: 15px; margin-bottom: 15px; }
+        .inputs-container {
+            width: 100%; max-width: 450px; background: var(--panel-bg);
+            padding: 12px; border-radius: 12px; margin-bottom: 15px;
+        }
+        .inputs-row { display: flex; gap: 10px; margin-bottom: 10px; }
         .input-group { flex: 1; position: relative; }
         input[type="number"] {
-            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444;
-            background: var(--input-bg); color: white; font-size: 1.3rem; text-align: center; box-sizing: border-box;
+            width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444;
+            background: var(--input-bg); color: white; font-size: 1.2rem; text-align: center; box-sizing: border-box;
         }
         input:focus { border-color: var(--accent-gold); outline: none; }
-        .money-display { font-size: 0.8rem; position: absolute; bottom: -18px; left: 0; width: 100%; text-align: center; font-weight: bold; opacity: 0.9;}
+        .money-display { font-size: 0.75rem; position: absolute; bottom: -18px; left: 0; width: 100%; text-align: center; font-weight: bold;}
 
-        .chips-row { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin-top: 25px;}
-        .chip-btn { background: #34495e; border: 1px solid #555; color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; min-width: 50px; flex:1;}
-        .chip-btn.clear { background: #c0392b; border-color: #e74c3c; flex: 0.8; }
+        .chips-row { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin-top: 20px;}
+        .chip-btn {
+            background: #34495e; border: 1px solid #555; color: white;
+            padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; min-width: 50px;
+        }
+        .chip-btn.clear { background: #c0392b; border-color: #e74c3c; }
 
-        /* --- Stats Panel --- */
         .advisor-panel {
             width: 100%; max-width: 450px; text-align: center; background: #22303f;
             border: 2px solid #34495e; border-radius: 10px; overflow: hidden;
             margin-bottom: 20px; transition: border-color 0.3s;
         }
-        .advisor-header { background: #2c3e50; padding: 8px; font-size: 0.9rem; color: #bdc3c7; }
-        .advisor-content { padding: 15px; font-size: 1.6rem; font-weight: bold; min-height: 40px; display: flex; align-items: center; justify-content: center; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .advisor-header { background: #2c3e50; padding: 5px; font-size: 0.8rem; color: #bdc3c7; }
+        .advisor-content { padding: 12px; font-size: 1.5rem; font-weight: bold; min-height: 40px; display: flex; align-items: center; justify-content: center; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #444; }
-        .stat-item { background: #2b3b4b; padding: 10px; display: flex; flex-direction: column; align-items: center;}
-        .stat-val { font-size: 1.3rem; font-weight: bold; color: var(--accent-gold); direction: ltr; margin-top: 2px;}
-        .stat-label { font-size: 0.8rem; color: #bdc3c7; }
+        .stat-item { background: #2b3b4b; padding: 8px; }
+        .stat-val { font-size: 1.1rem; font-weight: bold; color: var(--accent-gold); direction: ltr; }
 
-        /* --- Table Controls --- */
         .table-controls-wrapper {
             width: 100%; max-width: 450px; display: flex; align-items: center;
             justify-content: space-between; background: #181818; padding: 10px;
             border-radius: 15px; border: 1px solid #333;
         }
         .ctrl-col { display: flex; flex-direction: column; gap: 8px; }
-        .ctrl-btn { background: #34495e; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; min-width: 80px; }
+        .ctrl-btn {
+            background: #34495e; color: white; border: none; padding: 8px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.8rem; min-width: 80px;
+        }
         .dealer-ctrl { background: #e67e22; color: #fff; font-weight: bold; display: flex; justify-content: space-between; align-items: center; padding: 5px 10px;}
         .next-hand-btn { background: var(--accent-gold); color: black; font-weight: bold; height: 100%; }
 
-        .mini-table { position: relative; width: 140px; height: 90px; background: #1e5f36; border: 4px solid #3e2723; border-radius: 70px; margin: 0 10px; flex-shrink: 0; }
-        .table-center-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; pointer-events: none; }
+        .mini-table {
+            position: relative; width: 140px; height: 90px; background: #1e5f36;
+            border: 4px solid #3e2723; border-radius: 70px; margin: 0 10px; flex-shrink: 0;
+        }
+        .table-center-content {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 1; pointer-events: none;
+        }
         .table-logo { max-width: 40px; max-height: 30px; opacity: 0.85; }
         .table-text { font-size: 0.5rem; color: rgba(255,255,255,0.7); margin-top: 2px; white-space: nowrap; }
 
-        .seat { position: absolute; width: 20px; height: 20px; background: #7f8c8d; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: white; transform: translate(-50%, -50%); z-index: 3; cursor: pointer; transition: all 0.2s; }
+        .seat {
+            position: absolute; width: 20px; height: 20px; background: #7f8c8d;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 0.6rem; color: white; transform: translate(-50%, -50%); z-index: 3;
+            cursor: pointer; transition: all 0.2s;
+        }
         .seat.hero { background: var(--accent-gold); color: black; border: 1px solid white; width: 24px; height: 24px; z-index: 4; cursor: default; }
+        /* סטייל לשחקן שפרש */
         .seat.folded { background: #444; color: #777; border: 1px dashed #555; opacity: 0.6; transform: translate(-50%, -50%) scale(0.9); }
         .seat.folded::after { content: 'X'; position: absolute; font-size: 1rem; color: #e74c3c; }
-        .dealer-puck { position: absolute; width: 14px; height: 14px; background: white; color: black; border-radius: 50%; font-size: 0.6rem; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 5; border: 1px solid #999; transition: all 0.3s ease; }
+
+        .dealer-puck {
+            position: absolute; width: 14px; height: 14px; background: white; color: black;
+            border-radius: 50%; font-size: 0.6rem; font-weight: bold; display: flex;
+            align-items: center; justify-content: center; z-index: 5; border: 1px solid #999;
+            transition: all 0.3s ease;
+        }
 
         /* --- Modals --- */
-        #card-selector, #main-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
-        
-        .modal-content { background: #2c3e50; padding: 20px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; border: 1px solid #444; display: flex; flex-direction: column; gap: 15px;}
-        .modal-title { color: white; margin: 0; font-weight: 300; letter-spacing: 1px; font-size: 1.5rem; margin-bottom: 10px;}
-        
-        .game-type-btn { padding: 20px; font-size: 1.2rem; border-radius: 10px; border: 1px solid #555; background: #34495e; color: white; cursor: pointer; transition: 0.2s; font-weight: bold; }
-        .game-type-btn:hover { background: #3e5871; border-color: var(--accent-gold); }
-        .game-type-btn.plo { border-right: 5px solid var(--accent-blue); }
-        .game-type-btn.nlh { border-right: 5px solid var(--accent-green); }
-
-        .table-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        .table-select-btn { background: #34495e; color: white; border: none; padding: 15px; border-radius: 10px; text-align: right; display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; cursor: pointer; border-right: 5px solid transparent; transition: all 0.2s; }
-        .table-select-btn:hover { background: #3e5871; }
-        .table-info span { display: block; }
-        .table-name { font-weight: bold; font-size: 1.2rem;}
-        .table-blinds { font-size: 0.9rem; color: #bdc3c7; margin-top: 2px;}
-        .table-arrow { font-size: 1.5rem; color: #7f8c8d; }
-
+        #card-selector, #blinds-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.96); display: none; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 2000;
+        }
         .selector-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 90%; max-width: 380px; }
         .select-btn { padding: 18px; font-size: 1.4rem; background: #ecf0f1; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .suits-grid { display: none; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 70%; }
@@ -143,8 +168,11 @@
         .suit-btn:disabled { opacity: 0.2; filter: grayscale(1); }
         .cancel-btn { margin-top: 30px; padding: 10px 40px; background: transparent; border: 1px solid #7f8c8d; color: #bdc3c7; border-radius: 20px;}
 
-        .step { display: none; }
-        .step.active { display: flex; flex-direction: column; gap: 15px;}
+        /* Blinds Modal */
+        .blinds-form { background: #2c3e50; padding: 25px; border-radius: 15px; width: 80%; max-width: 300px; text-align: center; border: 1px solid var(--accent-gold); }
+        .blinds-form h2 { color: var(--accent-gold); margin-top: 0; }
+        .blinds-form input { margin-bottom: 15px; }
+        .start-btn { width: 100%; padding: 15px; background: var(--accent-gold); color: black; font-weight: bold; border: none; border-radius: 8px; font-size: 1.2rem; cursor: pointer; }
 
     </style>
 </head>
@@ -154,7 +182,7 @@
         <div class="app-sub-title">הסניף הדיגיטלי - היועץ</div>
         <div class="header-main-row">
             <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
-            <h1 id="main-title">בחר משחק</h1>
+            <h1 id="main-title">בחר בליינדים</h1>
             <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
         </div>
     </header>
@@ -162,7 +190,9 @@
     <div class="cards-section">
         <span class="label">היד שלי</span>
         <div class="cards-row" id="my-hand">
-            </div>
+            <div class="card-slot" onclick="openSelector(this)">+</div>
+            <div class="card-slot" onclick="openSelector(this)">+</div>
+        </div>
 
         <span class="label">קלפי שולחן</span>
         <div class="cards-row" id="board">
@@ -200,19 +230,18 @@
     <div class="advisor-panel" id="advisor-panel">
         <div class="advisor-header" id="advisor-status">--</div>
         <div class="advisor-content" id="recommendation-text">הזן קלפים...</div>
-        
         <div class="stats-grid">
             <div class="stat-item">
-                <span class="stat-label">Equity</span>
-                <span class="stat-val" id="equity-val">--%</span>
+                <div class="label">Equity</div>
+                <div class="stat-val" id="equity-val">--%</div>
             </div>
             <div class="stat-item">
-                <span class="stat-label">Pot Odds</span>
-                <span class="stat-val" id="pot-odds-val">--%</span>
+                <div class="label">Outs</div>
+                <div class="stat-val" id="outs-val" style="color:#3498db">--</div>
             </div>
             <div class="stat-item">
-                <span class="stat-label">Outs</span>
-                <span class="stat-val" id="outs-val" style="color:#3498db">--</span>
+                <div class="label">Pot Odds</div>
+                <div class="stat-val" id="pot-odds-val">--%</div>
             </div>
         </div>
     </div>
@@ -241,21 +270,14 @@
         </div>
     </div>
 
-    <div id="main-modal" style="display: flex;">
-        <div class="modal-content">
-            
-            <div id="step-game" class="step active">
-                <h2 class="modal-title">בחר סוג משחק</h2>
-                <button class="game-type-btn nlh" onclick="selectGame('NLH')">Texas Hold'em (NLH)</button>
-                <button class="game-type-btn plo" onclick="selectGame('PLO5')">Pot Limit Omaha (5)</button>
-            </div>
-
-            <div id="step-table" class="step">
-                <h2 class="modal-title">בחר שולחן</h2>
-                <div class="table-list" id="table-list-container"></div>
-                <button class="chip-btn clear" style="width:100%; margin-top:10px; font-size:1rem;" onclick="backToGameSelect()">חזרה</button>
-            </div>
-
+    <div id="blinds-modal" style="display: flex;">
+        <div class="blinds-form">
+            <h2>הגדרת שולחן</h2>
+            <div class="label" style="text-align:right; margin-bottom:5px;">Small Blind (SB)</div>
+            <input type="number" id="sb-input" value="5">
+            <div class="label" style="text-align:right; margin-bottom:5px;">Big Blind (BB)</div>
+            <input type="number" id="bb-input" value="10">
+            <button class="start-btn" onclick="setBlinds()">התחל לשחק</button>
         </div>
     </div>
 
@@ -267,27 +289,17 @@
     </div>
 
     <script>
-        const gameTables = {
-            NLH: [
-                { name: "High Roller", sb: 15, bb: 30, color: "#e74c3c" },
-                { name: "אצל קובי", sb: 10, bb: 20, color: "#2ecc71" },
-                { name: "הולדם 50₪", sb: 5, bb: 10, color: "#f1c40f" }
-            ],
-            PLO5: [
-                { name: "הסלון של אוהד", sb: 15, bb: 30, color: "#e74c3c" },
-                { name: "השולחן של ניר", sb: 10, bb: 20, color: "#2ecc71" },
-                { name: "אומהה 50₪", sb: 5, bb: 10, color: "#f1c40f" }
-            ]
-        };
-
-        // System State
-        let gameType = 'NLH';
-        let currentTableList = [];
         let totalPlayers = 6;
         let dealerPosition = 1; 
-        let sbValue = 0, bbValue = 0;
-        let currentTableName = "";
+        let sbValue = 5;
+        let bbValue = 10;
         let playersFolded = []; 
+
+        // בחירת קלפים
+        let currentSlot = null;
+        let selectedRank = null;
+        const ranks = ['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
+        const suitSymbols = {'h':'♥', 'd':'♦', 'c':'♣', 's':'♠'};
 
         window.onload = function() {
             initRankGrid();
@@ -295,74 +307,166 @@
             renderTable();
         };
 
-        // --- Wizard Logic ---
-        function selectGame(type) {
-            gameType = type;
-            currentTableList = gameTables[type];
-            document.getElementById('step-game').classList.remove('active');
-            document.getElementById('step-table').classList.add('active');
-            renderTableSelection();
-            renderHandSlots();
-        }
+        // --- Init ---
+        function initPlayersState() { playersFolded = new Array(totalPlayers).fill(false); }
 
-        function backToGameSelect() {
-            document.getElementById('step-table').classList.remove('active');
-            document.getElementById('step-game').classList.add('active');
-        }
-
-        function renderHandSlots() {
-            const container = document.getElementById('my-hand');
-            container.innerHTML = '';
-            const count = (gameType === 'PLO5') ? 5 : 2;
-            
-            if (gameType === 'PLO5') container.parentElement.classList.add('plo-mode');
-            else container.parentElement.classList.remove('plo-mode');
-
-            for(let i=0; i<count; i++) {
-                let div = document.createElement('div');
-                div.className = 'card-slot';
-                div.innerText = '+';
-                div.onclick = function() { openSelector(this); };
-                container.appendChild(div);
+        function setBlinds() {
+            const sb = parseFloat(document.getElementById('sb-input').value);
+            const bb = parseFloat(document.getElementById('bb-input').value);
+            if (sb && bb) {
+                sbValue = sb;
+                bbValue = bb;
+                document.getElementById('blinds-modal').style.display = 'none';
+                document.getElementById('main-title').innerText = `NLH ${sb}/${bb}`;
+                resetToBlinds();
             }
         }
 
-        function renderTableSelection() {
-            const container = document.getElementById('table-list-container');
-            container.innerHTML = '';
-            currentTableList.forEach((table, index) => {
-                const btn = document.createElement('div');
-                btn.className = 'table-select-btn';
-                btn.style.borderRight = `5px solid ${table.color}`;
-                btn.onclick = () => selectTable(index);
-                btn.innerHTML = `
-                    <div class="table-info">
-                        <span class="table-name">${table.name}</span>
-                        <span class="table-blinds">בליינדים: ${table.sb}/${table.bb}</span>
-                    </div>
-                    <div class="table-arrow">❮</div>
-                `;
-                container.appendChild(btn);
+        function resetToBlinds() {
+            document.getElementById('pot-size').value = sbValue + bbValue;
+            document.getElementById('to-call').value = bbValue;
+            runEngine();
+        }
+
+        // --- Core ---
+        function runEngine() {
+            const pot = parseFloat(document.getElementById('pot-size').value) || 0;
+            const call = parseFloat(document.getElementById('to-call').value) || 0;
+            document.getElementById('pot-money').innerText = `₪${(pot/10).toLocaleString()}`;
+            document.getElementById('call-money').innerText = `₪${(call/10).toLocaleString()}`;
+
+            let myCards = Array.from(document.querySelectorAll('#my-hand .card-slot.filled')).map(e => e.dataset.value);
+            let boardCards = Array.from(document.querySelectorAll('#board .card-slot.filled')).map(e => e.dataset.value);
+            
+            const pos = updateStatusText();
+            const recText = document.getElementById('recommendation-text');
+            const panel = document.getElementById('advisor-panel');
+            const equityDisplay = document.getElementById('equity-val');
+            const outsDisplay = document.getElementById('outs-val');
+
+            equityDisplay.innerText = "--%";
+            outsDisplay.innerText = "--";
+
+            if (myCards.length < 2) {
+                recText.innerText = "הזן קלפים...";
+                panel.style.borderColor = "#34495e";
+                recText.style.color = "white";
+                return;
+            }
+
+            if (boardCards.length === 0) {
+                equityDisplay.innerText = "Pre";
+                outsDisplay.innerText = "-";
+                const advice = getPreflopAdvice(myCards, pos);
+                recText.innerText = advice.text;
+                recText.style.color = advice.color;
+                panel.style.borderColor = advice.color;
+                return;
+            }
+
+            equityDisplay.innerText = "⏳";
+            const activeOpponents = countActiveOpponents();
+
+            setTimeout(() => {
+                const result = calculateNLHEquity(myCards, boardCards, activeOpponents);
+                const equity = result.equity;
+                const outs = result.outs;
+
+                equityDisplay.innerText = equity + "%";
+                outsDisplay.innerText = outs; 
+
+                let potOdds = (pot > 0 && call > 0) ? (call / (pot + call)) * 100 : 0;
+                document.getElementById('pot-odds-val').innerText = potOdds > 0 ? potOdds.toFixed(1) + "%" : "-";
+
+                if (call === 0) {
+                    const threshold = 100 / (activeOpponents + 1);
+                    recText.innerText = equity > (threshold + 10) ? "VALUE BET" : "CHECK";
+                    recText.style.color = equity > (threshold + 10) ? "#2ecc71" : "#f1c40f";
+                    panel.style.borderColor = recText.style.color;
+                } else {
+                    if (equity > potOdds + 5) {
+                        recText.innerText = "CALL / RAISE";
+                        recText.style.color = "#2ecc71";
+                    } else if (equity >= potOdds) {
+                        recText.innerText = "CALL";
+                        recText.style.color = "#f1c40f";
+                    } else {
+                        recText.innerText = "FOLD";
+                        recText.style.color = "#e74c3c";
+                    }
+                    panel.style.borderColor = recText.style.color;
+                }
+            }, 50);
+        }
+
+        // --- NLH Logic Only (V11) ---
+        function calculateNLHEquity(heroHand, board, opponentCount) {
+            if (typeof Hand === 'undefined') return { equity: "?", outs: "?" }; 
+            if (opponentCount === 0) return { equity: 100, outs: "-" };
+
+            let wins = 0;
+            let iterations = 300; 
+            const allCards = [];
+            ranks.forEach(r => ['h','d','c','s'].forEach(s => allCards.push(r+s)));
+            const knownCards = heroHand.concat(board);
+            const deck = allCards.filter(c => !knownCards.includes(c));
+
+            for (let i = 0; i < iterations; i++) {
+                shuffleArray(deck);
+                let idx = 0;
+                const opponentsHands = [];
+                for(let k=0; k < opponentCount; k++) {
+                    opponentsHands.push([deck[idx], deck[idx+1]]);
+                    idx += 2;
+                }
+                const neededBoard = 5 - board.length;
+                const simBoard = board.concat(deck.slice(idx, idx + neededBoard));
+                const p1 = Hand.solve(heroHand.concat(simBoard)); 
+                const oppSolved = opponentsHands.map(h => Hand.solve(h.concat(simBoard)));
+                const allHands = [p1, ...oppSolved];
+                const winners = Hand.winners(allHands);
+                
+                if (winners.length === 1 && winners[0] === p1) wins++;
+                else if (winners.includes(p1)) wins += (1 / winners.length); 
+            }
+            
+            let outsCount = 0;
+            deck.forEach(card => {
+                const testHand = Hand.solve(heroHand.concat(board).concat([card]));
+                const currentRank = Hand.solve(heroHand.concat(board)).rank;
+                if (testHand.rank > currentRank && testHand.rank >= 4) outsCount++;
             });
+
+            return { equity: Math.round((wins / iterations) * 100), outs: outsCount };
         }
 
-        function selectTable(index) {
-            const selected = currentTableList[index];
-            sbValue = selected.sb;
-            bbValue = selected.bb;
-            currentTableName = selected.name;
-            
-            document.getElementById('main-modal').style.display = 'none';
-            const badgeColor = (gameType === 'PLO5') ? '#3498db' : '#2ecc71';
-            const badge = `<span class="game-badge" style="background:${badgeColor}">${gameType}</span>`;
-            document.getElementById('main-title').innerHTML = `${badge} ${selected.name}`;
-            
-            resetToBlinds();
+        // --- Helpers ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
         }
 
-        // --- Core Functions ---
-        function initPlayersState() { playersFolded = new Array(totalPlayers).fill(false); }
-        
+        function getPreflopAdvice(cards, pos) {
+            const r1 = cards[0][0], r2 = cards[1][0];
+            const pair = r1 === r2;
+            const vals = {'A':14,'K':13,'Q':12,'J':11,'T':10,'9':9,'8':8,'7':7,'6':6,'5':5};
+            const v1 = vals[r1]||0, v2 = vals[r2]||0;
+            const high = Math.max(v1, v2);
+
+            if (pair && high >= 11) return {text:"RAISE / ALL-IN", color:"#2ecc71"};
+            if (v1+v2 >= 27) return {text:"RAISE", color:"#2ecc71"}; 
+            
+            if (pos === 'BTN' || pos === 'CO') {
+                if (pair) return {text:"RAISE (Steal)", color:"#f1c40f"};
+                if (high >= 12) return {text:"RAISE / CALL", color:"#f1c40f"};
+            }
+            if (pair && high >= 7) return {text:"CALL", color:"#f1c40f"};
+            return {text:"FOLD", color:"#e74c3c"};
+        }
+
+        // --- Table & Controls ---
         function renderTable() {
             const table = document.getElementById('poker-table');
             document.querySelectorAll('.seat').forEach(e => e.remove());
@@ -399,12 +503,6 @@
                 if (!playersFolded[i]) count++;
             }
             return count;
-        }
-
-        function resetToBlinds() {
-            document.getElementById('pot-size').value = sbValue + bbValue;
-            document.getElementById('to-call').value = bbValue;
-            runEngine();
         }
 
         function addChips(amount) {
@@ -463,16 +561,11 @@
         function updateStatusText() {
             const pos = getMyPositionName();
             const activeOpp = countActiveOpponents();
-            document.getElementById('advisor-status').innerText = `מיקום: ${pos} | יריבים: ${activeOpp}`;
+            document.getElementById('advisor-status').innerText = `מיקום: ${pos} | יריבים פעילים: ${activeOpp}`;
             return pos;
         }
 
-        // --- Card Selector ---
-        let currentSlot = null;
-        let selectedRank = null;
-        const ranks = ['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
-        const suitSymbols = {'h':'♥', 'd':'♦', 'c':'♣', 's':'♠'};
-
+        // --- Selectors ---
         function initRankGrid() {
             const g = document.getElementById('ranks-grid');
             ranks.forEach(r => {
@@ -519,226 +612,6 @@
                 };
                 sg.appendChild(btn);
             });
-        }
-        
-        // --- Engine ---
-        function runEngine() {
-            const pot = parseFloat(document.getElementById('pot-size').value) || 0;
-            const call = parseFloat(document.getElementById('to-call').value) || 0;
-
-            document.getElementById('pot-money').innerText = `₪${(pot/10).toLocaleString()}`;
-            document.getElementById('call-money').innerText = `₪${(call/10).toLocaleString()}`;
-
-            let myCards = Array.from(document.querySelectorAll('#my-hand .card-slot.filled')).map(e => e.dataset.value);
-            let boardCards = Array.from(document.querySelectorAll('#board .card-slot.filled')).map(e => e.dataset.value);
-            
-            const pos = updateStatusText();
-            const recText = document.getElementById('recommendation-text');
-            const panel = document.getElementById('advisor-panel');
-            const elEquity = document.getElementById('equity-val');
-            const elOuts = document.getElementById('outs-val');
-            const elPotOdds = document.getElementById('pot-odds-val');
-
-            // Reset
-            elEquity.innerText = "--";
-            elOuts.innerText = "--";
-            
-            // Check
-            const reqHandSize = (gameType === 'PLO5') ? 5 : 2;
-            if (myCards.length < reqHandSize) {
-                recText.innerText = "הזן קלפים";
-                recText.style.color = "white";
-                panel.style.borderColor = "#34495e";
-                return;
-            }
-
-            // Pre-Flop
-            if (boardCards.length === 0) {
-                elEquity.innerText = "Pre";
-                const advice = getPreflopAdvice(myCards, pos);
-                recText.innerText = advice.text;
-                recText.style.color = advice.color;
-                panel.style.borderColor = advice.color;
-                return;
-            }
-
-            elEquity.innerText = "⏳";
-            const activeOpponents = countActiveOpponents();
-
-            // Run async
-            setTimeout(() => {
-                try {
-                    let result = { equity: 0, outs: 0 };
-                    
-                    if (gameType === 'PLO5') {
-                        result = calculatePLO5Equity(myCards, boardCards, activeOpponents);
-                    } else {
-                        result = calculateNLHEquity(myCards, boardCards, activeOpponents);
-                    }
-
-                    // Update UI
-                    elEquity.innerText = result.equity + "%";
-                    elOuts.innerText = result.outs;
-
-                    let potOdds = (pot > 0 && call > 0) ? (call / (pot + call)) * 100 : 0;
-                    elPotOdds.innerText = potOdds > 0 ? potOdds.toFixed(0) + "%" : "-";
-
-                    // Recommendation
-                    if (call === 0) {
-                        const threshold = 100 / (activeOpponents + 1);
-                        const strong = result.equity > (threshold + 15);
-                        recText.innerText = strong ? "VALUE BET" : "CHECK";
-                        recText.style.color = strong ? "#2ecc71" : "#f1c40f";
-                    } else {
-                        if (result.equity > potOdds + 5) {
-                            recText.innerText = "RAISE / CALL";
-                            recText.style.color = "#2ecc71";
-                        } else if (result.equity >= potOdds) {
-                            recText.innerText = "CALL";
-                            recText.style.color = "#f1c40f";
-                        } else {
-                            recText.innerText = "FOLD";
-                            recText.style.color = "#e74c3c";
-                        }
-                    }
-                    panel.style.borderColor = recText.style.color;
-
-                } catch (e) {
-                    console.error(e);
-                    elEquity.innerText = "Err";
-                }
-            }, 20);
-        }
-
-        // --- Logic: NLH ---
-        function calculateNLHEquity(heroHand, board, opponentCount) {
-            if (typeof Hand === 'undefined') return { equity: "?", outs: "?" }; 
-            if (opponentCount === 0) return { equity: 100, outs: "-" };
-
-            let wins = 0;
-            let iterations = 250; 
-            const allCards = [];
-            ranks.forEach(r => ['h','d','c','s'].forEach(s => allCards.push(r+s)));
-            const knownCards = heroHand.concat(board);
-            const deck = allCards.filter(c => !knownCards.includes(c));
-
-            for (let i = 0; i < iterations; i++) {
-                shuffleArray(deck);
-                let idx = 0;
-                const opponentsHands = [];
-                for(let k=0; k < opponentCount; k++) {
-                    opponentsHands.push([deck[idx], deck[idx+1]]);
-                    idx += 2;
-                }
-                const neededBoard = 5 - board.length;
-                const simBoard = board.concat(deck.slice(idx, idx + neededBoard));
-                const p1 = Hand.solve(heroHand.concat(simBoard)); 
-                const oppSolved = opponentsHands.map(h => Hand.solve(h.concat(simBoard)));
-                const allHands = [p1, ...oppSolved];
-                const winners = Hand.winners(allHands);
-                
-                if (winners.length === 1 && winners[0] === p1) wins++;
-                else if (winners.includes(p1)) wins += (1 / winners.length); 
-            }
-            
-            let outsCount = 0;
-            deck.forEach(card => {
-                const testHand = Hand.solve(heroHand.concat(board).concat([card]));
-                const currentRank = Hand.solve(heroHand.concat(board)).rank;
-                if (testHand.rank > currentRank && testHand.rank >= 4) outsCount++;
-            });
-
-            return { equity: Math.round((wins / iterations) * 100), outs: outsCount };
-        }
-
-        // --- Logic: PLO 5 ---
-        function calculatePLO5Equity(heroHand, board, opponentCount) {
-            if (typeof Hand === 'undefined') return { equity: "?", outs: "?" }; 
-            if (opponentCount === 0) return { equity: 100, outs: "-" };
-
-            let wins = 0;
-            let iterations = 80; // Optimized for performance
-            
-            const allCards = [];
-            ranks.forEach(r => ['h','d','c','s'].forEach(s => allCards.push(r+s)));
-            const knownCards = heroHand.concat(board);
-            const deck = allCards.filter(c => !knownCards.includes(c));
-
-            for (let i = 0; i < iterations; i++) {
-                shuffleArray(deck);
-                let idx = 0;
-                const opponentsHands = [];
-                for(let k=0; k < opponentCount; k++) {
-                    opponentsHands.push(deck.slice(idx, idx+5));
-                    idx += 5;
-                }
-
-                const neededBoard = 5 - board.length;
-                const simBoard = board.concat(deck.slice(idx, idx + neededBoard));
-                const heroBest = getBestOmahaHand(heroHand, simBoard);
-                const oppBests = opponentsHands.map(h => getBestOmahaHand(h, simBoard));
-                const allHands = [heroBest, ...oppBests];
-                const winners = Hand.winners(allHands);
-                
-                if (winners.length === 1 && winners[0] === heroBest) wins++;
-                else if (winners.includes(heroBest)) wins += (1 / winners.length);
-            }
-            
-            return { equity: Math.round((wins / iterations) * 100), outs: "?" };
-        }
-
-        function getBestOmahaHand(hand5, board5) {
-            const handCombos = getCombinations(hand5, 2);
-            const boardCombos = getCombinations(board5, 3);
-            let bestHandObj = null;
-
-            for (let h of handCombos) {
-                for (let b of boardCombos) {
-                    const full = h.concat(b);
-                    const solved = Hand.solve(full);
-                    if (!bestHandObj || solved.compare(bestHandObj) > 0) { 
-                         bestHandObj = solved;
-                    }
-                }
-            }
-            return bestHandObj;
-        }
-
-        function getCombinations(array, k) {
-            let i, j, combos, head, tailcombs;
-            if (k > array.length || k <= 0) return [];
-            if (k == array.length) return [array];
-            if (k == 1) return array.map(e => [e]);
-            combos = [];
-            for (i = 0; i < array.length - k + 1; i++) {
-                head = array.slice(i, i + 1);
-                tailcombs = getCombinations(array.slice(i + 1), k - 1);
-                for (j = 0; j < tailcombs.length; j++) {
-                    combos.push(head.concat(tailcombs[j]));
-                }
-            }
-            return combos;
-        }
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-
-        function getPreflopAdvice(cards, pos) {
-            if (gameType === 'PLO5') return {text: "Pre-Flop: See Flop Cheap", color: "#bdc3c7"};
-            
-            const r1 = cards[0][0], r2 = cards[1][0];
-            const pair = r1 === r2;
-            const vals = {'A':14,'K':13,'Q':12,'J':11,'T':10,'9':9,'8':8,'7':7,'6':6,'5':5};
-            const high = Math.max(vals[r1]||0, vals[r2]||0);
-
-            if (pair && high >= 11) return {text:"RAISE / ALL-IN", color:"#2ecc71"};
-            if (high >= 13 && vals[r1]+vals[r2] >= 25) return {text:"RAISE", color:"#2ecc71"}; 
-            if (pair) return {text:"CALL / SET MINE", color:"#f1c40f"};
-            return {text:"FOLD / LIMP", color:"#e74c3c"};
         }
     </script>
 </body>
