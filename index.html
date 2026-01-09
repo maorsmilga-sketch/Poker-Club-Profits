@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הסניף הדיגיטלי - היועץ (MULTI-WAY)</title>
+    <title>הסניף הדיגיטלי - היועץ (PRO)</title>
     <script src="https://cdn.jsdelivr.net/npm/pokersolver@2.1.2/pokersolver.min.js"></script>
     <style>
         :root {
@@ -26,10 +26,47 @@
             touch-action: manipulation;
         }
 
-        header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; width: 100%; }
-        .logo-img { height: 40px; }
-        h1 { margin: 0; font-weight: 600; font-size: 1.2rem; color: var(--accent-gold); }
+        /* --- Header החדש --- */
+        header { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 5px; 
+            margin-bottom: 20px; 
+            width: 100%;
+        }
+        
+        .app-sub-title {
+            font-size: 0.9rem;
+            color: #bdc3c7;
+            letter-spacing: 1.5px;
+            font-weight: 300;
+        }
 
+        .header-main-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .header-logo { 
+            height: 40px; 
+            width: auto;
+            filter: drop-shadow(0 0 5px rgba(241, 196, 15, 0.3)); /* זוהר עדין */
+        }
+
+        h1 { 
+            margin: 0; 
+            font-weight: 700; 
+            font-size: 1.6rem; 
+            color: var(--accent-gold); 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            white-space: nowrap;
+        }
+
+        /* --- שאר העיצוב (ללא שינוי) --- */
         .cards-section { width: 100%; max-width: 450px; margin-bottom: 15px; }
         .label { font-size: 0.85rem; color: #bdc3c7; margin-bottom: 4px; display: block; }
         .cards-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
@@ -107,7 +144,6 @@
             cursor: pointer; transition: all 0.2s;
         }
         .seat.hero { background: var(--accent-gold); color: black; border: 1px solid white; width: 24px; height: 24px; z-index: 4; cursor: default; }
-        /* סטייל לשחקן שפרש */
         .seat.folded { background: #444; color: #777; border: 1px dashed #555; opacity: 0.6; transform: translate(-50%, -50%) scale(0.9); }
         .seat.folded::after { content: 'X'; position: absolute; font-size: 1rem; color: #e74c3c; }
 
@@ -118,7 +154,6 @@
             transition: all 0.3s ease;
         }
 
-        /* --- Modals --- */
         #card-selector, #blinds-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.96); display: none; flex-direction: column;
@@ -153,9 +188,11 @@
 <body>
 
     <header>
-        <img src="logo1.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
-        <div>
-            <h1>הסניף הדיגיטלי - היועץ</h1>
+        <div class="app-sub-title">הסניף הדיגיטלי - היועץ</div>
+        <div class="header-main-row">
+            <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
+            <h1 id="main-title">בחר שולחן</h1>
+            <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
         </div>
     </header>
 
@@ -268,21 +305,19 @@
         let sbValue = 0;
         let bbValue = 0;
         let currentTableName = "";
-        let playersFolded = []; // מערך ששומר מי פרש (true/false)
+        let playersFolded = []; 
 
         window.onload = function() {
             initRankGrid();
-            initPlayersState(); // אתחול מצב שחקנים
+            initPlayersState();
             renderTable();
             renderTableSelection();
         };
 
         function initPlayersState() {
-            // מאפס את המערך לפי כמות השחקנים. כולם פעילים (false = לא פרשו)
             playersFolded = new Array(totalPlayers).fill(false);
         }
 
-        // === Table Visualization with Fold Logic ===
         function renderTable() {
             const table = document.getElementById('poker-table');
             document.querySelectorAll('.seat').forEach(e => e.remove());
@@ -292,17 +327,11 @@
                 let className = 'seat';
                 if (i === 0) className += ' hero';
                 else className += ' active';
-                
-                // בדיקה אם השחקן בפורש
                 if (playersFolded[i]) className += ' folded';
 
                 seat.className = className;
                 seat.innerText = i === 0 ? 'Me' : i;
-                
-                // קליק לפרישה (רק לא אני)
-                if (i !== 0) {
-                    seat.onclick = () => toggleFold(i);
-                }
+                if (i !== 0) seat.onclick = () => toggleFold(i);
 
                 const angleDeg = 90 + (360 / totalPlayers) * i;
                 const angleRad = angleDeg * (Math.PI / 180);
@@ -314,14 +343,12 @@
         }
 
         function toggleFold(playerIndex) {
-            // משנה מצב (פעיל <-> פורש)
             playersFolded[playerIndex] = !playersFolded[playerIndex];
-            renderTable(); // מעדכן ויזואלית
-            runEngine(); // מריץ חישוב מחדש עם פחות שחקנים
+            renderTable();
+            runEngine(); 
         }
 
         function countActiveOpponents() {
-            // סופר כמה שחקנים פעילים יש (חוץ ממני)
             let count = 0;
             for (let i = 1; i < totalPlayers; i++) {
                 if (!playersFolded[i]) count++;
@@ -352,7 +379,8 @@
             bbValue = selected.bb;
             currentTableName = selected.name;
             document.getElementById('blinds-modal').style.display = 'none';
-            document.querySelector('h1').innerText = selected.name;
+            // עדכון הכותרת הראשית בשם השולחן הנבחר
+            document.getElementById('main-title').innerText = selected.name;
             resetToBlinds();
         }
 
@@ -389,7 +417,7 @@
         function changePlayerCount(delta) {
             totalPlayers = Math.min(10, Math.max(2, totalPlayers + delta));
             if (dealerPosition >= totalPlayers) dealerPosition = 0;
-            initPlayersState(); // איפוס סטטוס פרישה כשמשנים מספר שחקנים
+            initPlayersState();
             renderTable();
             runEngine();
         }
@@ -400,7 +428,7 @@
                 slot.className = 'card-slot';
                 slot.removeAttribute('data-value');
             });
-            initPlayersState(); // איפוס פורשים ביד חדשה
+            initPlayersState(); 
             renderTable();
             resetToBlinds(); 
             moveDealer(-1);
@@ -418,7 +446,6 @@
         function updateStatusText() {
             const pos = getMyPositionName();
             const activeOpp = countActiveOpponents();
-            // מציג כמה יריבים פעילים נשארו
             document.getElementById('advisor-status').innerText = `מיקום: ${pos} | יריבים פעילים: ${activeOpp}`;
             return pos;
         }
@@ -512,8 +539,6 @@
             }
 
             equityDisplay.innerText = "⏳";
-            
-            // בדיקת כמות יריבים פעילים
             const activeOpponents = countActiveOpponents();
 
             setTimeout(() => {
@@ -527,14 +552,8 @@
                 let potOdds = (pot > 0 && call > 0) ? (call / (pot + call)) * 100 : 0;
                 document.getElementById('pot-odds-val').innerText = potOdds > 0 ? potOdds.toFixed(1) + "%" : "-";
 
-                // התאמת המלצות ליחס של Multi-Way
-                // כשיש יותר שחקנים, אקוויטי של 35% הוא מעולה, בעוד שב-1 על 1 הוא חלש
-                // לכן נשווה ל- (100 / מספר שחקנים) בתור בסיס?
-                // לא, נשתמש בחוק Pot Odds הקלאסי שהוא תמיד נכון.
-                
                 if (call === 0) {
-                    // אם אנחנו מול 4 שחקנים, 30% זה חזק מאוד. מול 1, זה חלש.
-                    const threshold = 100 / (activeOpponents + 1); // הוגן
+                    const threshold = 100 / (activeOpponents + 1); 
                     recText.innerText = equity > (threshold + 10) ? "VALUE BET" : "CHECK / FOLD";
                     recText.style.color = equity > (threshold + 10) ? "#2ecc71" : "#f1c40f";
                     panel.style.borderColor = recText.style.color;
@@ -554,15 +573,12 @@
             }, 50);
         }
 
-        // --- Multi-Way Logic Update ---
         function calculateRealEquityAndOuts(heroHand, board, opponentCount) {
             if (typeof Hand === 'undefined') return { equity: "?", outs: "?" }; 
-            
-            // אם אין יריבים פעילים (כולם פרשו), ניצחת
             if (opponentCount === 0) return { equity: 100, outs: "-" };
 
             let wins = 0;
-            let iterations = 300; // הורדנו קצת כדי לשמור על מהירות בחישוב מורכב
+            let iterations = 300; 
             const allCards = [];
             ranks.forEach(r => ['h','d','c','s'].forEach(s => allCards.push(r+s)));
             const knownCards = heroHand.concat(board);
@@ -570,33 +586,24 @@
 
             for (let i = 0; i < iterations; i++) {
                 shuffleArray(deck);
-                
-                // יצירת ידיים לכל היריבים הפעילים
                 let currentDeckIndex = 0;
                 const opponentsHands = [];
                 for(let k=0; k < opponentCount; k++) {
                     opponentsHands.push([deck[currentDeckIndex], deck[currentDeckIndex+1]]);
                     currentDeckIndex += 2;
                 }
-
                 const neededBoard = 5 - board.length;
                 const simBoard = board.concat(deck.slice(currentDeckIndex, currentDeckIndex + neededBoard));
-                
                 const p1 = Hand.solve(heroHand.concat(simBoard)); 
-                
-                // פתרון ידיים ליריבים
                 const oppSolved = opponentsHands.map(h => Hand.solve(h.concat(simBoard)));
-                
-                // בדיקת מנצח מול כולם
                 const allHands = [p1, ...oppSolved];
                 const winners = Hand.winners(allHands);
                 
                 if (winners.length === 1 && winners[0] === p1) wins++;
-                else if (winners.includes(p1)) wins += (1 / winners.length); // Split pot
+                else if (winners.includes(p1)) wins += (1 / winners.length); 
             }
             const equity = Math.round((wins / iterations) * 100);
 
-            // Outs Calculation (נשאר אותו דבר, כי יציאות זה ביחס לחפיסה, לא ליריבים)
             let outsCount = 0;
             deck.forEach(card => {
                 const testHand = Hand.solve(heroHand.concat(board).concat([card]));
@@ -606,7 +613,6 @@
                 else if (currentRank <= 2 && rankVal === 3) outsCount++;
             });
             if (Hand.solve(heroHand.concat(board)).rank >= 5) outsCount = 0; 
-
             return { equity: equity, outs: outsCount };
         }
 
