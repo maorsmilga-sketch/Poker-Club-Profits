@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הסניף הדיגיטלי - V30</title>
+    <title>הסניף הדיגיטלי - V31</title>
     <script src="https://cdn.jsdelivr.net/npm/pokersolver@2.1.2/pokersolver.min.js"></script>
     <style>
         :root {
@@ -12,7 +12,7 @@
             --card-bg: #ffffff;
             --accent-green: #2ecc71;
             --accent-red: #e74c3c;
-            --accent-gold: #f1c40f; /* צבע זהב */
+            --accent-gold: #f1c40f;
             --accent-orange: #e67e22;
             --text-color: #ecf0f1;
             --input-bg: #2d3436;
@@ -28,12 +28,10 @@
             transition: all 0.3s ease;
         }
 
-        /* --- Accessibility Mode --- */
         body.a11y-mode { --text-color: #ffffff; font-size: 1.1em; }
         body.a11y-mode .card-slot { border: 2px solid #fff; font-size: 1.4rem; font-weight: 900; }
         body.a11y-mode .advisor-content { font-size: 2rem; color: #fff !important; background: #000; border: 2px solid var(--accent-gold); }
 
-        /* --- NEW Modern Header --- */
         header { 
             display: flex; flex-direction: column; align-items: center; 
             gap: 10px; margin-bottom: 25px; width: 100%; max-width: 450px;
@@ -46,7 +44,7 @@
 
         .header-logo { 
             height: 45px; width: auto; 
-            filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.4)); /* זוהר ללוגו */
+            filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.4));
             transition: transform 0.3s;
         }
         .header-logo:hover { transform: scale(1.1) rotate(5deg); }
@@ -57,7 +55,7 @@
 
         .main-brand {
             font-size: 1.8rem; font-weight: 800;
-            background: linear-gradient(135deg, #f1c40f 0%, #fff 50%, #e67e22 100%); /* גרדיאנט זהב-לבן */
+            background: linear-gradient(135deg, #f1c40f 0%, #fff 50%, #e67e22 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0px 4px 12px rgba(230, 126, 34, 0.3);
@@ -67,20 +65,17 @@
 
         .sub-brand {
             font-size: 0.9rem; letter-spacing: 5px; color: #bdc3c7;
-            text-transform: uppercase; font-weight: 300;
-            opacity: 0.8;
+            text-transform: uppercase; font-weight: 300; opacity: 0.8;
         }
 
         .current-table-badge {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid #333; padding: 4px 12px;
             border-radius: 20px; font-size: 0.9rem; color: #bdc3c7;
-            display: flex; align-items: center; gap: 5px;
-            margin-top: 5px;
+            display: flex; align-items: center; gap: 5px; margin-top: 5px;
         }
         .live-dot { height: 8px; width: 8px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 5px var(--accent-green); }
 
-        /* --- Info Buttons --- */
         .info-btn {
             background: transparent; border: 1px solid #7f8c8d; color: #bdc3c7;
             width: 20px; height: 20px; border-radius: 50%; font-size: 0.7rem;
@@ -89,7 +84,6 @@
             font-family: serif; font-style: italic; font-weight: bold;
         }
 
-        /* --- Cards Section --- */
         .cards-section { width: 100%; max-width: 450px; margin-bottom: 20px; }
         .section-header { display: flex; align-items: center; margin-bottom: 5px; }
         .label { font-size: 0.85rem; color: #bdc3c7; display: block; flex-grow: 1;}
@@ -106,7 +100,6 @@
         .card-slot.black { color: #2c3e50; }
         .card-slot.disabled { opacity: 0.2; cursor: not-allowed; background: #000; border-color: #333; pointer-events: none; }
 
-        /* --- Inputs --- */
         .inputs-container { width: 100%; max-width: 450px; background: var(--panel-bg); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
         .inputs-row { display: flex; gap: 15px; margin-bottom: 15px; }
         .input-group { flex: 1; position: relative; }
@@ -120,7 +113,6 @@
         .chip-btn { background: #34495e; border: 1px solid #555; color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; min-width: 50px; flex:1;}
         .chip-btn.clear { background: #c0392b; border-color: #e74c3c; flex: 0.8; }
 
-        /* --- Stats Panel --- */
         .advisor-panel {
             width: 100%; max-width: 450px; text-align: center; background: #22303f;
             border: 2px solid #34495e; border-radius: 10px; 
@@ -135,7 +127,6 @@
         .stat-item { background: #2b3b4b; padding: 10px; display: flex; flex-direction: column; align-items: center; position: relative;}
         .stat-val { font-size: 1.3rem; font-weight: bold; color: var(--accent-gold); direction: ltr; margin-top: 2px;}
         
-        /* Tooltips */
         .tooltip-container { position: relative; cursor: help; border-bottom: 1px dotted #7f8c8d; font-size: 0.8rem; color: #bdc3c7; display: inline-block; }
         .tooltip-text {
             visibility: hidden; width: 160px; background-color: #1a1a1a; color: #fff;
@@ -147,7 +138,6 @@
         .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: var(--accent-gold) transparent transparent transparent; }
         .tooltip-container:hover .tooltip-text, .tooltip-container:active .tooltip-text, .tooltip-container:focus .tooltip-text { visibility: visible; opacity: 1; }
 
-        /* --- Controls --- */
         .table-controls-wrapper {
             width: 100%; max-width: 450px; display: flex; align-items: center;
             justify-content: space-between; background: #181818; padding: 10px;
@@ -178,7 +168,6 @@
         #a11y-btn:hover { background: var(--accent-blue); transform: scale(1.1); }
         #a11y-btn.active { background: var(--accent-gold); color: black; border-color: black; }
 
-        /* --- Modals --- */
         #card-selector, #main-modal, #info-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
         .modal-content { background: #2c3e50; padding: 20px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; border: 1px solid #444; display: flex; flex-direction: column; gap: 15px; max-height: 80vh; overflow-y: auto;}
         .modal-title { color: white; margin: 0; font-weight: 300; letter-spacing: 1px; font-size: 1.5rem; margin-bottom: 10px;}
@@ -343,14 +332,12 @@
     </div>
 
     <script>
-        // --- 1. Configurations ---
         const nlhTables = [
             { name: "High Roller", sb: 15, bb: 30, color: "#e74c3c" },
             { name: "אצל קובי", sb: 10, bb: 20, color: "#2ecc71" },
             { name: "הולדם 50₪", sb: 5, bb: 10, color: "#f1c40f" }
         ];
 
-        // --- 2. UI Logic (Info & Access) ---
         function showInfo(type) {
             const modal = document.getElementById('info-modal');
             const title = document.getElementById('info-title');
@@ -358,22 +345,28 @@
             modal.style.display = 'flex';
             
             if (type === 'cards') {
-                title.innerText = "מדריך קלפים";
+                title.innerText = "מדריך ואחריות";
                 content.innerHTML = `
+                    <p><strong>אודות:</strong> הסניף הדיגיטלי הוא כלי עזר סטטיסטי שנועד לעזור לך לקבל החלטות מושכלות ולשחק 'על בטוח'.</p>
+                    <hr style="border-color:#555; margin: 10px 0;">
                     <ul>
-                        <li><strong>היד שלי:</strong> הזן את שני הקלפים שקיבלת.</li>
-                        <li><strong>קלפי שולחן:</strong> הזן את הפלופ, הטרן והריבר (מימין לשמאל).</li>
-                        <li><strong>Equity:</strong> אחוז הסיכוי לנצח את היד.</li>
-                        <li><strong>Outs:</strong> מספר הקלפים שמשפרים את היד למנצחת.</li>
-                    </ul>`;
+                        <li><strong>היד שלי:</strong> הקלפים שקיבלת.</li>
+                        <li><strong>שולחן:</strong> פלופ, טרן וריבר (מימין לשמאל).</li>
+                        <li><strong>Equity:</strong> סיכויי הזכייה שלך.</li>
+                    </ul>
+                    <div style="margin-top: 15px; background: rgba(231, 76, 60, 0.1); padding: 10px; border-right: 3px solid #e74c3c; font-size: 0.85rem;">
+                        <strong>הצהרת אחריות:</strong><br>
+                        האפליקציה היא כלי מייעץ בלבד. ההחלטה הסופית והאחריות על תוצאות המשחק הן של המשתמש בלבד. המפתחים אינם אחראים לכל הפסד כספי או אחר. שחקו באחריות.
+                    </div>
+                `;
             } else if (type === 'table') {
                 title.innerText = "מדריך שולחן";
                 content.innerHTML = `
                     <ul>
-                        <li><strong>שחקנים:</strong> שנה את כמות השחקנים עם +/-.</li>
-                        <li><strong>Fold:</strong> לחץ על שחקן (בעיגול) כדי לסמן שפרש.</li>
-                        <li><strong>דילר (D):</strong> זז אוטומטית או ידנית. קובע פוזיציה.</li>
-                        <li><strong>יד חדשה:</strong> מאפס הכל לסיבוב הבא.</li>
+                        <li><strong>שחקנים:</strong> קבע את גודל השולחן.</li>
+                        <li><strong>Fold:</strong> לחץ על שחקן כדי להוציאו מהיד.</li>
+                        <li><strong>דילר (D):</strong> קובע את הפוזיציה שלך (משפיע על ההמלצות).</li>
+                        <li><strong>יד חדשה:</strong> מנקה את הלוח ומזיז דילר.</li>
                     </ul>`;
             }
         }
@@ -383,7 +376,6 @@
             document.getElementById('a11y-btn').classList.toggle('active');
         }
 
-        // --- 3. Strategy Engine ---
         const preflopRanges = {
             premium: ['AA','KK','QQ','JJ','AKs','AKo'],
             strong: ['TT','99','AQs','AQo','AJs','KQs'],
@@ -458,7 +450,6 @@
             return {text: "FOLD", color: "#7f8c8d", advice: "יד זבל - זרוק"};
         }
 
-        // --- 4. Core Logic ---
         let totalPlayers = 6;
         let dealerPosition = 1; 
         let sbValue = 0, bbValue = 0;
@@ -496,7 +487,7 @@
             sbValue = selected.sb;
             bbValue = selected.bb;
             document.getElementById('main-modal').style.display = 'none';
-            document.getElementById('table-name-display').innerText = selected.name; // UPDATED ID
+            document.getElementById('table-name-display').innerText = selected.name; 
             resetToBlinds();
         }
 
@@ -613,7 +604,6 @@
             return pos;
         }
 
-        // --- Card Selector ---
         let currentSlot = null;
         let selectedRank = null;
         const ranks = ['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
@@ -769,7 +759,6 @@
             }, 20);
         }
 
-        // --- Logic Engine ---
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
