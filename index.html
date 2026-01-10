@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הסניף הדיגיטלי - V31</title>
+    <title>הסניף הדיגיטלי - V32</title>
     <script src="https://cdn.jsdelivr.net/npm/pokersolver@2.1.2/pokersolver.min.js"></script>
     <style>
         :root {
@@ -13,7 +13,7 @@
             --accent-green: #2ecc71;
             --accent-red: #e74c3c;
             --accent-gold: #f1c40f;
-            --accent-orange: #e67e22;
+            --accent-blue: #3498db; /* צבע ל-Check */
             --text-color: #ecf0f1;
             --input-bg: #2d3436;
         }
@@ -49,28 +49,20 @@
         }
         .header-logo:hover { transform: scale(1.1) rotate(5deg); }
 
-        .brand-text-block {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
+        .brand-text-block { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
         .main-brand {
             font-size: 1.8rem; font-weight: 800;
             background: linear-gradient(135deg, #f1c40f 0%, #fff 50%, #e67e22 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-shadow: 0px 4px 12px rgba(230, 126, 34, 0.3);
-            line-height: 1; margin-bottom: 2px;
-            white-space: nowrap;
+            line-height: 1; margin-bottom: 2px; white-space: nowrap;
         }
 
-        .sub-brand {
-            font-size: 0.9rem; letter-spacing: 5px; color: #bdc3c7;
-            text-transform: uppercase; font-weight: 300; opacity: 0.8;
-        }
+        .sub-brand { font-size: 0.9rem; letter-spacing: 5px; color: #bdc3c7; text-transform: uppercase; font-weight: 300; opacity: 0.8; }
 
         .current-table-badge {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #333; padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid #333; padding: 4px 12px;
             border-radius: 20px; font-size: 0.9rem; color: #bdc3c7;
             display: flex; align-items: center; gap: 5px; margin-top: 5px;
         }
@@ -191,15 +183,12 @@
     <header>
         <div class="brand-container">
             <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.opacity=0">
-            
             <div class="brand-text-block">
                 <span class="main-brand">הסניף הדיגיטלי</span>
                 <span class="sub-brand">היועץ</span>
             </div>
-
             <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.opacity=0">
         </div>
-
         <div class="current-table-badge">
             <span class="live-dot"></span>
             <span id="table-name-display">בחר שולחן</span>
@@ -401,10 +390,18 @@
             return 'trash';
         }
 
-        function getPreflopAction(card1, card2, position, action, stackDepth = 100) {
+        function getPreflopAction(card1, card2, position, action, callAmount) {
             const handStr = getHandString(card1, card2);
             const category = getHandCategory(handStr);
             
+            // Logic for "Free Play" in BB (or if called already)
+            const isFreePlay = (callAmount === 0);
+
+            // Default advice for "trash" if free play
+            if (category === 'trash' && isFreePlay) {
+                return {text: "CHECK", color: "#3498db", advice: "יד זבל - אבל חינם, תבדוק"};
+            }
+
             if (category === 'premium') {
                 if (action === 'facing_raise' || action === 'facing_3bet') return {text: "ALL-IN / 4BET", color: "#8b0000", advice: "יד פרימיום - שחק אגרסיבית"};
                 if (action === 'facing_limp') return {text: "RAISE 4-5BB", color: "#c0392b", advice: "בנה קופה גדולה"};
@@ -419,35 +416,41 @@
                 if (action === 'facing_raise') return ['EP','MP'].includes(position) ? {text: "FOLD", color: "#95a5a6", advice: "חלש מדי בפוזיציה מוקדמת"} : {text: "CALL", color: "#f39c12", advice: "אפשרי בפוזיציה"};
                 if (action === 'clean' && ['MP','CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "פתיחה מפוזיציה"};
                 if (action === 'facing_limp' && position === 'BTN') return {text: "RAISE 4BB", color: "#e74c3c", advice: "בודד את הלימפרים"};
-                return {text: "FOLD / LIMP", color: "#95a5a6", advice: "חלש מדי"};
+                if (isFreePlay) return {text: "CHECK", color: "#3498db", advice: "בדוק בחינם"};
+                return {text: "FOLD", color: "#95a5a6", advice: "חלש מדי"};
             }
             if (category === 'suited_connectors') {
                 if (action === 'facing_raise') return {text: "FOLD", color: "#95a5a6", advice: "לא משתלם מול רייז"};
-                if (action === 'multi_limpers' && ['CO','BTN','SB','BB'].includes(position)) return {text: "CALL", color: "#3498db", advice: "מצוין למולטיוויי (רצפים/צבע)"};
+                if (action === 'multi_limpers' && ['CO','BTN','SB','BB'].includes(position)) return {text: "CALL", color: "#3498db", advice: "מצוין למולטיוויי"};
                 if (action === 'clean' && ['CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גניבת בליינדים"};
+                if (isFreePlay) return {text: "CHECK", color: "#3498db", advice: "בדוק בחינם"};
                 return {text: "FOLD", color: "#95a5a6", advice: "צריך פוזיציה טובה"};
             }
             if (category === 'medium_pairs') {
                 if (action === 'facing_raise') return {text: "CALL (SET MINE)", color: "#3498db", advice: "חפש את ה-Set בפלופ"};
                 if (action === 'multi_limpers') return {text: "CALL", color: "#3498db", advice: "זול לראות פלופ"};
                 if (action === 'clean' && ['CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גניבת בליינדים"};
-                return {text: "FOLD / LIMP", color: "#95a5a6", advice: "חלש בלי פוזיציה"};
+                if (isFreePlay) return {text: "CHECK", color: "#3498db", advice: "בדוק בחינם"};
+                return {text: "FOLD", color: "#95a5a6", advice: "חלש בלי פוזיציה"};
             }
             if (category === 'suited_aces') {
                 if (action === 'facing_raise') return {text: "FOLD", color: "#95a5a6", advice: "חלש מדי מול כוח"};
                 if (action === 'multi_limpers' && ['BTN','SB','BB'].includes(position)) return {text: "CALL", color: "#3498db", advice: "פוטנציאל ל-Nut Flush"};
                 if (action === 'clean' && position === 'BTN') return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גניבה מהכפתור"};
+                if (isFreePlay) return {text: "CHECK", color: "#3498db", advice: "בדוק בחינם"};
                 return {text: "FOLD", color: "#95a5a6", advice: "חלש מדי"};
             }
             if (category === 'broadway') {
                 if (action === 'facing_raise') return {text: "FOLD", color: "#95a5a6", advice: "יד נשלטת (Dominated)"};
                 if (action === 'clean' && ['CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גניבה מאוחרת"};
-                return {text: "FOLD / LIMP", color: "#95a5a6", advice: "בעייתי בלי פוזיציה"};
+                if (isFreePlay) return {text: "CHECK", color: "#3498db", advice: "בדוק בחינם"};
+                return {text: "FOLD", color: "#95a5a6", advice: "בעייתי בלי פוזיציה"};
             }
             
-            if (action === 'clean' && position === 'BTN' && stackDepth < 40) return {text: "ALL-IN (SHORT)", color: "#e67e22", advice: "דחיפה בסטאק קצר"};
-            if (action === 'multi_limpers' && position === 'BB') return {text: "CHECK", color: "#3498db", advice: "תבדוק בחינם"};
-            return {text: "FOLD", color: "#7f8c8d", advice: "יד זבל - זרוק"};
+            // Weak
+            if (action === 'clean' && position === 'BTN') return {text: "ALL-IN (SHORT)", color: "#e67e22", advice: "דחיפה בסטאק קצר"};
+            if (isFreePlay) return {text: "CHECK", color: "#3498db", advice: "כבר בפוט - תבדוק בחינם"};
+            return {text: "FOLD", color: "#7f8c8d", advice: "יד חלשה"};
         }
 
         let totalPlayers = 6;
@@ -532,7 +535,15 @@
 
         function resetToBlinds() {
             document.getElementById('pot-size').value = sbValue + bbValue;
-            document.getElementById('to-call').value = bbValue;
+            
+            // SMART RESET: Set Call amount based on Position
+            const pos = getMyPositionName();
+            let initialCall = bbValue;
+            if (pos === 'BB') initialCall = 0; // already paid
+            else if (pos === 'SB') initialCall = bbValue - sbValue; // complete blind
+            // others = bbValue
+
+            document.getElementById('to-call').value = initialCall;
             runEngine();
         }
 
@@ -712,7 +723,8 @@
                 if (call > 0) action = 'facing_raise';
                 else if (pot > (sbValue + bbValue) * 3) action = 'multi_limpers'; 
 
-                const advice = getPreflopAction(myCards[0], myCards[1], pos, action);
+                // Pass the 'call' amount to know if free play is possible
+                const advice = getPreflopAction(myCards[0], myCards[1], pos, action, call);
                 recText.innerText = advice.text;
                 recText.style.color = advice.color;
                 subRecText.innerText = advice.advice; 
@@ -734,13 +746,22 @@
                 let potOdds = (pot > 0 && call > 0) ? (call / (pot + call)) * 100 : 0;
                 elPotOdds.innerText = potOdds > 0 ? potOdds.toFixed(0) + "%" : "-";
 
+                // --- POST FLOP SMART LOGIC ---
                 if (call === 0) {
+                    // Free play - never say Fold
                     const threshold = 100 / (activeOpponents + 1);
-                    recText.innerText = equity > (threshold + 10) ? "VALUE BET" : "CHECK";
-                    recText.style.color = equity > (threshold + 10) ? "#2ecc71" : "#f1c40f";
-                    subRecText.innerText = equity > (threshold + 10) ? "יד חזקה - נסה להוציא ערך" : "אין עלות, תבדוק בחינם";
+                    if (equity > (threshold + 15)) {
+                        recText.innerText = "VALUE BET";
+                        recText.style.color = "#2ecc71";
+                        subRecText.innerText = "יש לך יד חזקה, נסה להוציא ערך";
+                    } else {
+                        recText.innerText = "CHECK";
+                        recText.style.color = "#3498db"; // Blue
+                        subRecText.innerText = "אין עלות, תבדוק בחינם";
+                    }
                     panel.style.borderColor = recText.style.color;
                 } else {
+                    // Facing a bet
                     if (equity > potOdds + 5) {
                         recText.innerText = "CALL / RAISE";
                         recText.style.color = "#2ecc71";
