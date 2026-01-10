@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הסניף הדיגיטלי - V33</title>
+    <title>הסניף הדיגיטלי - V34</title>
     <script src="https://cdn.jsdelivr.net/npm/pokersolver@2.1.2/pokersolver.min.js"></script>
     <style>
         :root {
@@ -28,29 +28,26 @@
             transition: all 0.3s ease;
         }
 
+        /* Accessibilty Mode */
         body.a11y-mode { --text-color: #ffffff; font-size: 1.1em; }
         body.a11y-mode .card-slot { border: 2px solid #fff; font-size: 1.4rem; font-weight: 900; }
         body.a11y-mode .advisor-content { font-size: 2rem; color: #fff !important; background: #000; border: 2px solid var(--accent-gold); }
 
+        /* Header */
         header { 
             display: flex; flex-direction: column; align-items: center; 
             gap: 10px; margin-bottom: 25px; width: 100%; max-width: 450px;
         }
-
         .brand-container {
             display: flex; align-items: center; justify-content: center;
             gap: 15px; width: 100%;
         }
-
         .header-logo { 
             height: 45px; width: auto; 
             filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.4));
             transition: transform 0.3s;
         }
-        .header-logo:hover { transform: scale(1.1) rotate(5deg); }
-
         .brand-text-block { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-
         .main-brand {
             font-size: 1.8rem; font-weight: 800;
             background: linear-gradient(135deg, #f1c40f 0%, #fff 50%, #e67e22 100%);
@@ -58,9 +55,7 @@
             text-shadow: 0px 4px 12px rgba(230, 126, 34, 0.3);
             line-height: 1; margin-bottom: 2px; white-space: nowrap;
         }
-
         .sub-brand { font-size: 0.9rem; letter-spacing: 5px; color: #bdc3c7; text-transform: uppercase; font-weight: 300; opacity: 0.8; }
-
         .current-table-badge {
             background: rgba(255, 255, 255, 0.05); border: 1px solid #333; padding: 4px 12px;
             border-radius: 20px; font-size: 0.9rem; color: #bdc3c7;
@@ -68,6 +63,7 @@
         }
         .live-dot { height: 8px; width: 8px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 5px var(--accent-green); }
 
+        /* Buttons & Inputs */
         .info-btn {
             background: transparent; border: 1px solid #7f8c8d; color: #bdc3c7;
             width: 20px; height: 20px; border-radius: 50%; font-size: 0.7rem;
@@ -75,12 +71,12 @@
             cursor: pointer; margin-right: 8px; vertical-align: middle;
             font-family: serif; font-style: italic; font-weight: bold;
         }
-
+        
+        /* Cards */
         .cards-section { width: 100%; max-width: 450px; margin-bottom: 20px; }
         .section-header { display: flex; align-items: center; margin-bottom: 5px; }
         .label { font-size: 0.85rem; color: #bdc3c7; display: block; flex-grow: 1;}
         .cards-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; }
-        
         .card-slot {
             width: 17%; aspect-ratio: 2/3; max-width: 55px;
             background: rgba(255,255,255,0.08); border: 1px dashed #7f8c8d; border-radius: 6px;
@@ -92,6 +88,7 @@
         .card-slot.black { color: #2c3e50; }
         .card-slot.disabled { opacity: 0.2; cursor: not-allowed; background: #000; border-color: #333; pointer-events: none; }
 
+        /* Money Inputs */
         .inputs-container { width: 100%; max-width: 450px; background: var(--panel-bg); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
         .inputs-row { display: flex; gap: 15px; margin-bottom: 15px; }
         .input-group { flex: 1; position: relative; }
@@ -105,6 +102,7 @@
         .chip-btn { background: #34495e; border: 1px solid #555; color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; min-width: 50px; flex:1;}
         .chip-btn.clear { background: #c0392b; border-color: #e74c3c; flex: 0.8; }
 
+        /* Advisor Panel */
         .advisor-panel {
             width: 100%; max-width: 450px; text-align: center; background: #22303f;
             border: 2px solid #34495e; border-radius: 10px; 
@@ -160,6 +158,7 @@
         #a11y-btn:hover { background: var(--accent-blue); transform: scale(1.1); }
         #a11y-btn.active { background: var(--accent-gold); color: black; border-color: black; }
 
+        /* Modals & Selectors */
         #card-selector, #main-modal, #info-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
         .modal-content { background: #2c3e50; padding: 20px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; border: 1px solid #444; display: flex; flex-direction: column; gap: 15px; max-height: 80vh; overflow-y: auto;}
         .modal-title { color: white; margin: 0; font-weight: 300; letter-spacing: 1px; font-size: 1.5rem; margin-bottom: 10px;}
@@ -167,8 +166,18 @@
         .modal-text ul { padding-right: 20px; margin: 0; }
         .modal-text li { margin-bottom: 8px; }
         .close-modal-btn { background: var(--accent-red); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;}
+        
         .table-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        .table-select-btn { background: #34495e; color: white; border: none; padding: 15px; border-radius: 10px; text-align: right; display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; cursor: pointer; border-right: 5px solid transparent; transition: all 0.2s; }
+        /* FIXED: Changed to button for better touch handling */
+        .table-select-btn { 
+            background: #34495e; color: white; border: none; padding: 15px; 
+            border-radius: 10px; text-align: right; display: flex; 
+            justify-content: space-between; align-items: center; font-size: 1.1rem; 
+            cursor: pointer; border-right: 5px solid transparent; transition: all 0.2s;
+            width: 100%; /* Ensure full width */
+        }
+        .table-select-btn:active { transform: scale(0.98); background: #3e5871; }
+
         .selector-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 90%; max-width: 380px; }
         .select-btn { padding: 18px; font-size: 1.4rem; background: #ecf0f1; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .suits-grid { display: none; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 70%; }
@@ -327,6 +336,7 @@
             { name: "הולדם 50₪", sb: 5, bb: 10, color: "#f1c40f" }
         ];
 
+        // --- Modals & Info ---
         function showInfo(type) {
             const modal = document.getElementById('info-modal');
             const title = document.getElementById('info-title');
@@ -365,7 +375,7 @@
             document.getElementById('a11y-btn').classList.toggle('active');
         }
 
-        // --- Range and Values ---
+        // --- Strategy & Ranges ---
         const preflopRanges = {
             premium: ['AA','KK','QQ','JJ','AKs','AKo'],
             strong: ['TT','99','AQs','AQo','AJs','KQs'],
@@ -394,8 +404,6 @@
         function getPreflopAction(card1, card2, position, action, callAmount) {
             const handStr = getHandString(card1, card2);
             const category = getHandCategory(handStr);
-            
-            // Critical Rule: If Call is 0, never say Fold
             const isFreePlay = (callAmount === 0);
 
             if (category === 'trash') {
@@ -422,7 +430,7 @@
             }
             if (category === 'suited_connectors') {
                 if (action === 'facing_raise') return {text: "FOLD", color: "#95a5a6", advice: "לא משתלם מול רייז"};
-                if (action === 'multi_limpers' && ['CO','BTN','SB','BB'].includes(position)) return {text: "CALL", color: "#3498db", advice: "מצוין למולטיוויי"};
+                if (action === 'multi_limpers') && ['CO','BTN','SB','BB'].includes(position)) return {text: "CALL", color: "#3498db", advice: "מצוין למולטיוויי"};
                 if (action === 'clean' && ['CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גניבת בליינדים"};
                 if (isFreePlay) return {text: "CHECK", color: "#3498db", advice: "בדוק בחינם"};
                 return {text: "FOLD", color: "#95a5a6", advice: "צריך פוזיציה טובה"};
@@ -436,7 +444,7 @@
             }
             if (category === 'suited_aces') {
                 if (action === 'facing_raise') return {text: "FOLD", color: "#95a5a6", advice: "חלש מדי מול כוח"};
-                if (action === 'multi_limpers' && ['BTN','SB','BB'].includes(position)) return {text: "CALL", color: "#3498db", advice: "פוטנציאל ל-Nut Flush"};
+                if (action === 'multi_limpers') && ['BTN','SB','BB'].includes(position)) return {text: "CALL", color: "#3498db", advice: "פוטנציאל ל-Nut Flush"};
                 if (action === 'clean' && position === 'BTN') return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גניבה מהכפתור"};
                 if (isFreePlay) return {text: "CHECK", color: "#3498db", advice: "בדוק בחינם"};
                 return {text: "FOLD", color: "#95a5a6", advice: "חלש מדי"};
@@ -449,16 +457,17 @@
             }
             
             // Weak
-            if (action === 'clean' && position === 'BTN' && stackDepth < 40) return {text: "ALL-IN (SHORT)", color: "#e67e22", advice: "דחיפה בסטאק קצר"};
+            if (action === 'clean' && position === 'BTN') return {text: "ALL-IN (SHORT)", color: "#e67e22", advice: "דחיפה בסטאק קצר"};
             if (isFreePlay) return {text: "CHECK / FOLD", color: "#3498db", advice: "כבר בפוט - תבדוק בחינם"};
             return {text: "FOLD", color: "#7f8c8d", advice: "יד חלשה"};
         }
 
+        // --- Core Logic ---
         let totalPlayers = 6;
         let dealerPosition = 1; 
         let sbValue = 0, bbValue = 0;
         let playersFolded = []; 
-        let lastBoardLength = 0; // To track phase changes
+        let lastBoardLength = 0;
 
         window.onload = function() {
             initRankGrid();
@@ -468,20 +477,23 @@
             enforceSlotOrder();
         };
 
+        // FIXED: Using Button element for mobile touch support
         function renderTableSelection() {
             const container = document.getElementById('table-list-container');
             container.innerHTML = '';
             nlhTables.forEach((table, index) => {
-                const btn = document.createElement('div');
+                const btn = document.createElement('button'); // Changed from div to button
                 btn.className = 'table-select-btn';
                 btn.style.borderRight = `5px solid ${table.color}`;
+                // Double binding for robustness
                 btn.onclick = () => selectTable(index);
+                btn.ontouchstart = () => selectTable(index); 
                 btn.innerHTML = `
-                    <div class="table-info">
-                        <span class="table-name">${table.name}</span>
-                        <span class="table-blinds">בליינדים: ${table.sb}/${table.bb}</span>
+                    <div class="table-info" style="pointer-events:none;">
+                        <span class="table-name" style="pointer-events:none;">${table.name}</span>
+                        <span class="table-blinds" style="pointer-events:none;">בליינדים: ${table.sb}/${table.bb}</span>
                     </div>
-                    <div class="table-arrow">❮</div>
+                    <div class="table-arrow" style="pointer-events:none;">❮</div>
                 `;
                 container.appendChild(btn);
             });
@@ -536,23 +548,14 @@
         }
 
         function updatePreflopCost() {
-            // New logic: Check Dealer relative to Hero (Seat 0)
             const heroSeat = 0;
-            
-            // In a ring of 'totalPlayers', Dealer is at 'dealerPosition'.
-            // SB is (dealerPosition + 1) % totalPlayers
-            // BB is (dealerPosition + 2) % totalPlayers
-            
-            const sbSeat = (dealerPosition + 1) % totalPlayers;
-            const bbSeat = (dealerPosition + 2) % totalPlayers;
+            const dealerIndex = dealerPosition; 
+            const sbSeat = (dealerIndex + 1) % totalPlayers;
+            const bbSeat = (dealerIndex + 2) % totalPlayers;
 
-            let cost = bbValue; // Default call amount
-            
-            if (heroSeat === bbSeat) {
-                cost = 0; // BB already paid, cost to check is 0
-            } else if (heroSeat === sbSeat) {
-                cost = bbValue - sbValue; // SB needs to complete
-            }
+            let cost = bbValue; 
+            if (heroSeat === bbSeat) cost = 0;
+            else if (heroSeat === sbSeat) cost = bbValue - sbValue;
 
             document.getElementById('to-call').value = cost;
             document.getElementById('pot-size').value = sbValue + bbValue;
@@ -560,7 +563,7 @@
 
         function resetToBlinds() {
             updatePreflopCost();
-            lastBoardLength = 0; // Reset board tracker
+            lastBoardLength = 0; 
             runEngine();
         }
 
@@ -579,7 +582,7 @@
         function moveDealer(direction) {
             dealerPosition = (dealerPosition + direction + totalPlayers) % totalPlayers;
             updateDealerVisual();
-            updatePreflopCost(); // Update costs when dealer moves
+            updatePreflopCost();
             runEngine(); 
         }
 
@@ -597,7 +600,7 @@
             if (dealerPosition >= totalPlayers) dealerPosition = 0;
             initPlayersState();
             renderTable();
-            updatePreflopCost(); // Recalc on player change
+            updatePreflopCost(); 
             runEngine();
         }
 
@@ -609,9 +612,7 @@
             });
             initPlayersState(); 
             renderTable();
-            // Move Dealer
             moveDealer(1);
-            // enforceSlotOrder(); // Will happen in runEngine
         }
 
         function getMyPositionName() {
@@ -634,7 +635,6 @@
             return pos;
         }
 
-        // --- Card Selector ---
         let currentSlot = null;
         let selectedRank = null;
 
@@ -716,13 +716,10 @@
             let myCards = Array.from(document.querySelectorAll('#my-hand .card-slot.filled')).map(e => e.dataset.value);
             let boardCards = Array.from(document.querySelectorAll('#board .card-slot.filled')).map(e => e.dataset.value);
             
-            // Check for Flop Reset (3 cards entered)
             if (boardCards.length === 3 && lastBoardLength === 0) {
-                // Flop just opened
-                document.getElementById('to-call').value = 0; // Reset call to 0
-                // runEngine will run again next input or we let it proceed with 0 call
+                document.getElementById('to-call').value = 0; 
             }
-            lastBoardLength = boardCards.length; // Update tracker
+            lastBoardLength = boardCards.length; 
 
             const pos = updateStatusText();
             const recText = document.getElementById('recommendation-text');
@@ -746,9 +743,7 @@
             if (boardCards.length === 0) {
                 elEquity.innerText = "Pre";
                 let action = 'clean';
-                // Strict check: if cost > 0 it's a raise/limp cost.
                 if (call > 0) action = 'facing_raise';
-                // If pot is big relative to blinds, assume limpers
                 else if (pot > (sbValue + bbValue) * 3) action = 'multi_limpers'; 
 
                 const advice = getPreflopAction(myCards[0], myCards[1], pos, action, call);
@@ -761,8 +756,6 @@
 
             elEquity.innerText = "⏳";
             const activeOpponents = countActiveOpponents();
-
-            // Use call value directly from input (which might have been reset to 0)
             const currentCall = parseFloat(document.getElementById('to-call').value) || 0;
 
             setTimeout(() => {
@@ -776,7 +769,6 @@
                 let potOdds = (pot > 0 && currentCall > 0) ? (currentCall / (pot + currentCall)) * 100 : 0;
                 elPotOdds.innerText = potOdds > 0 ? potOdds.toFixed(0) + "%" : "-";
 
-                // Post-Flop Logic (Strict)
                 if (currentCall === 0) {
                     const threshold = 100 / (activeOpponents + 1);
                     if (equity > (threshold + 15)) {
