@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הסניף הדיגיטלי - V32</title>
+    <title>הסניף הדיגיטלי - V33</title>
     <script src="https://cdn.jsdelivr.net/npm/pokersolver@2.1.2/pokersolver.min.js"></script>
     <style>
         :root {
@@ -13,7 +13,7 @@
             --accent-green: #2ecc71;
             --accent-red: #e74c3c;
             --accent-gold: #f1c40f;
-            --accent-blue: #3498db; /* צבע ל-Check */
+            --accent-blue: #3498db;
             --text-color: #ecf0f1;
             --input-bg: #2d3436;
         }
@@ -365,6 +365,7 @@
             document.getElementById('a11y-btn').classList.toggle('active');
         }
 
+        // --- Range and Values ---
         const preflopRanges = {
             premium: ['AA','KK','QQ','JJ','AKs','AKo'],
             strong: ['TT','99','AQs','AQo','AJs','KQs'],
@@ -394,12 +395,12 @@
             const handStr = getHandString(card1, card2);
             const category = getHandCategory(handStr);
             
-            // Logic for "Free Play" in BB (or if called already)
+            // Critical Rule: If Call is 0, never say Fold
             const isFreePlay = (callAmount === 0);
 
-            // Default advice for "trash" if free play
-            if (category === 'trash' && isFreePlay) {
-                return {text: "CHECK", color: "#3498db", advice: "יד זבל - אבל חינם, תבדוק"};
+            if (category === 'trash') {
+                if (isFreePlay) return {text: "CHECK / FOLD", color: "#3498db", advice: "יד זבל - אבל חינם, תבדוק"};
+                return {text: "FOLD", color: "#7f8c8d", advice: "יד חלשה"};
             }
 
             if (category === 'premium') {
@@ -417,7 +418,7 @@
                 if (action === 'clean' && ['MP','CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "פתיחה מפוזיציה"};
                 if (action === 'facing_limp' && position === 'BTN') return {text: "RAISE 4BB", color: "#e74c3c", advice: "בודד את הלימפרים"};
                 if (isFreePlay) return {text: "CHECK", color: "#3498db", advice: "בדוק בחינם"};
-                return {text: "FOLD", color: "#95a5a6", advice: "חלש מדי"};
+                return {text: "FOLD / LIMP", color: "#95a5a6", advice: "חלש מדי"};
             }
             if (category === 'suited_connectors') {
                 if (action === 'facing_raise') return {text: "FOLD", color: "#95a5a6", advice: "לא משתלם מול רייז"};
@@ -431,7 +432,7 @@
                 if (action === 'multi_limpers') return {text: "CALL", color: "#3498db", advice: "זול לראות פלופ"};
                 if (action === 'clean' && ['CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גניבת בליינדים"};
                 if (isFreePlay) return {text: "CHECK", color: "#3498db", advice: "בדוק בחינם"};
-                return {text: "FOLD", color: "#95a5a6", advice: "חלש בלי פוזיציה"};
+                return {text: "FOLD / LIMP", color: "#95a5a6", advice: "חלש בלי פוזיציה"};
             }
             if (category === 'suited_aces') {
                 if (action === 'facing_raise') return {text: "FOLD", color: "#95a5a6", advice: "חלש מדי מול כוח"};
@@ -444,12 +445,12 @@
                 if (action === 'facing_raise') return {text: "FOLD", color: "#95a5a6", advice: "יד נשלטת (Dominated)"};
                 if (action === 'clean' && ['CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גניבה מאוחרת"};
                 if (isFreePlay) return {text: "CHECK", color: "#3498db", advice: "בדוק בחינם"};
-                return {text: "FOLD", color: "#95a5a6", advice: "בעייתי בלי פוזיציה"};
+                return {text: "FOLD / LIMP", color: "#95a5a6", advice: "בעייתי בלי פוזיציה"};
             }
             
             // Weak
-            if (action === 'clean' && position === 'BTN') return {text: "ALL-IN (SHORT)", color: "#e67e22", advice: "דחיפה בסטאק קצר"};
-            if (isFreePlay) return {text: "CHECK", color: "#3498db", advice: "כבר בפוט - תבדוק בחינם"};
+            if (action === 'clean' && position === 'BTN' && stackDepth < 40) return {text: "ALL-IN (SHORT)", color: "#e67e22", advice: "דחיפה בסטאק קצר"};
+            if (isFreePlay) return {text: "CHECK / FOLD", color: "#3498db", advice: "כבר בפוט - תבדוק בחינם"};
             return {text: "FOLD", color: "#7f8c8d", advice: "יד חלשה"};
         }
 
@@ -457,6 +458,7 @@
         let dealerPosition = 1; 
         let sbValue = 0, bbValue = 0;
         let playersFolded = []; 
+        let lastBoardLength = 0; // To track phase changes
 
         window.onload = function() {
             initRankGrid();
@@ -533,17 +535,32 @@
             return count;
         }
 
-        function resetToBlinds() {
-            document.getElementById('pot-size').value = sbValue + bbValue;
+        function updatePreflopCost() {
+            // New logic: Check Dealer relative to Hero (Seat 0)
+            const heroSeat = 0;
             
-            // SMART RESET: Set Call amount based on Position
-            const pos = getMyPositionName();
-            let initialCall = bbValue;
-            if (pos === 'BB') initialCall = 0; // already paid
-            else if (pos === 'SB') initialCall = bbValue - sbValue; // complete blind
-            // others = bbValue
+            // In a ring of 'totalPlayers', Dealer is at 'dealerPosition'.
+            // SB is (dealerPosition + 1) % totalPlayers
+            // BB is (dealerPosition + 2) % totalPlayers
+            
+            const sbSeat = (dealerPosition + 1) % totalPlayers;
+            const bbSeat = (dealerPosition + 2) % totalPlayers;
 
-            document.getElementById('to-call').value = initialCall;
+            let cost = bbValue; // Default call amount
+            
+            if (heroSeat === bbSeat) {
+                cost = 0; // BB already paid, cost to check is 0
+            } else if (heroSeat === sbSeat) {
+                cost = bbValue - sbValue; // SB needs to complete
+            }
+
+            document.getElementById('to-call').value = cost;
+            document.getElementById('pot-size').value = sbValue + bbValue;
+        }
+
+        function resetToBlinds() {
+            updatePreflopCost();
+            lastBoardLength = 0; // Reset board tracker
             runEngine();
         }
 
@@ -562,6 +579,7 @@
         function moveDealer(direction) {
             dealerPosition = (dealerPosition + direction + totalPlayers) % totalPlayers;
             updateDealerVisual();
+            updatePreflopCost(); // Update costs when dealer moves
             runEngine(); 
         }
 
@@ -579,6 +597,7 @@
             if (dealerPosition >= totalPlayers) dealerPosition = 0;
             initPlayersState();
             renderTable();
+            updatePreflopCost(); // Recalc on player change
             runEngine();
         }
 
@@ -590,9 +609,9 @@
             });
             initPlayersState(); 
             renderTable();
-            resetToBlinds(); 
-            moveDealer(1); 
-            enforceSlotOrder();
+            // Move Dealer
+            moveDealer(1);
+            // enforceSlotOrder(); // Will happen in runEngine
         }
 
         function getMyPositionName() {
@@ -615,10 +634,9 @@
             return pos;
         }
 
+        // --- Card Selector ---
         let currentSlot = null;
         let selectedRank = null;
-        const ranks = ['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
-        const suitSymbols = {'h':'♥', 'd':'♦', 'c':'♣', 's':'♠'};
 
         function initRankGrid() {
             const g = document.getElementById('ranks-grid');
@@ -698,6 +716,14 @@
             let myCards = Array.from(document.querySelectorAll('#my-hand .card-slot.filled')).map(e => e.dataset.value);
             let boardCards = Array.from(document.querySelectorAll('#board .card-slot.filled')).map(e => e.dataset.value);
             
+            // Check for Flop Reset (3 cards entered)
+            if (boardCards.length === 3 && lastBoardLength === 0) {
+                // Flop just opened
+                document.getElementById('to-call').value = 0; // Reset call to 0
+                // runEngine will run again next input or we let it proceed with 0 call
+            }
+            lastBoardLength = boardCards.length; // Update tracker
+
             const pos = updateStatusText();
             const recText = document.getElementById('recommendation-text');
             const subRecText = document.getElementById('recommendation-sub');
@@ -720,10 +746,11 @@
             if (boardCards.length === 0) {
                 elEquity.innerText = "Pre";
                 let action = 'clean';
+                // Strict check: if cost > 0 it's a raise/limp cost.
                 if (call > 0) action = 'facing_raise';
+                // If pot is big relative to blinds, assume limpers
                 else if (pot > (sbValue + bbValue) * 3) action = 'multi_limpers'; 
 
-                // Pass the 'call' amount to know if free play is possible
                 const advice = getPreflopAction(myCards[0], myCards[1], pos, action, call);
                 recText.innerText = advice.text;
                 recText.style.color = advice.color;
@@ -735,6 +762,9 @@
             elEquity.innerText = "⏳";
             const activeOpponents = countActiveOpponents();
 
+            // Use call value directly from input (which might have been reset to 0)
+            const currentCall = parseFloat(document.getElementById('to-call').value) || 0;
+
             setTimeout(() => {
                 const result = calculateNLHEquity(myCards, boardCards, activeOpponents);
                 const equity = result.equity;
@@ -743,37 +773,35 @@
                 elEquity.innerText = equity + "%";
                 elOuts.innerText = outs; 
 
-                let potOdds = (pot > 0 && call > 0) ? (call / (pot + call)) * 100 : 0;
+                let potOdds = (pot > 0 && currentCall > 0) ? (currentCall / (pot + currentCall)) * 100 : 0;
                 elPotOdds.innerText = potOdds > 0 ? potOdds.toFixed(0) + "%" : "-";
 
-                // --- POST FLOP SMART LOGIC ---
-                if (call === 0) {
-                    // Free play - never say Fold
+                // Post-Flop Logic (Strict)
+                if (currentCall === 0) {
                     const threshold = 100 / (activeOpponents + 1);
                     if (equity > (threshold + 15)) {
                         recText.innerText = "VALUE BET";
                         recText.style.color = "#2ecc71";
-                        subRecText.innerText = "יש לך יד חזקה, נסה להוציא ערך";
+                        subRecText.innerText = "יד חזקה - להוציא ערך";
                     } else {
-                        recText.innerText = "CHECK";
-                        recText.style.color = "#3498db"; // Blue
-                        subRecText.innerText = "אין עלות, תבדוק בחינם";
+                        recText.innerText = "CHECK / FOLD";
+                        recText.style.color = "#3498db";
+                        subRecText.innerText = "יד חלשה/בינונית - בדוק בחינם";
                     }
                     panel.style.borderColor = recText.style.color;
                 } else {
-                    // Facing a bet
                     if (equity > potOdds + 5) {
                         recText.innerText = "CALL / RAISE";
                         recText.style.color = "#2ecc71";
-                        subRecText.innerText = "סיכויים טובים לטווח ארוך";
+                        subRecText.innerText = "יחס סיכוי מצוין";
                     } else if (equity >= potOdds) {
                         recText.innerText = "CALL";
                         recText.style.color = "#f1c40f";
-                        subRecText.innerText = "השוואה גבולית אך חיובית";
+                        subRecText.innerText = "השוואה גבולית";
                     } else {
                         recText.innerText = "FOLD";
                         recText.style.color = "#e74c3c";
-                        subRecText.innerText = "יקר מדי ביחס לסיכויים";
+                        subRecText.innerText = "לא משתלם מתמטית";
                     }
                     panel.style.borderColor = recText.style.color;
                 }
