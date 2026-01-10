@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הסניף הדיגיטלי - V29</title>
+    <title>הסניף הדיגיטלי - V30</title>
     <script src="https://cdn.jsdelivr.net/npm/pokersolver@2.1.2/pokersolver.min.js"></script>
     <style>
         :root {
@@ -12,13 +12,14 @@
             --card-bg: #ffffff;
             --accent-green: #2ecc71;
             --accent-red: #e74c3c;
-            --accent-gold: #f1c40f;
+            --accent-gold: #f1c40f; /* צבע זהב */
+            --accent-orange: #e67e22;
             --text-color: #ecf0f1;
             --input-bg: #2d3436;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0; padding: 10px; padding-bottom: 60px;
@@ -27,35 +28,57 @@
             transition: all 0.3s ease;
         }
 
-        /* --- Accessibility Mode Enhancements --- */
-        body.a11y-mode {
-            --text-color: #ffffff;
-            font-size: 1.1em;
-        }
+        /* --- Accessibility Mode --- */
+        body.a11y-mode { --text-color: #ffffff; font-size: 1.1em; }
         body.a11y-mode .card-slot { border: 2px solid #fff; font-size: 1.4rem; font-weight: 900; }
         body.a11y-mode .advisor-content { font-size: 2rem; color: #fff !important; background: #000; border: 2px solid var(--accent-gold); }
-        body.a11y-mode .stat-val { font-size: 1.6rem; color: #fff; }
-        body.a11y-mode .label { color: #fff; font-size: 1rem; font-weight: bold; }
 
-        /* --- Header --- */
+        /* --- NEW Modern Header --- */
         header { 
             display: flex; flex-direction: column; align-items: center; 
-            gap: 5px; margin-bottom: 20px; width: 100%; max-width: 450px;
+            gap: 10px; margin-bottom: 25px; width: 100%; max-width: 450px;
         }
-        .app-sub-title { font-size: 0.8rem; color: #bdc3c7; letter-spacing: 1.5px; font-weight: 300; margin-bottom: 5px; }
-        
-        .header-main-row { 
-            display: flex; align-items: center; justify-content: center; 
-            gap: 20px; width: 100%; 
+
+        .brand-container {
+            display: flex; align-items: center; justify-content: center;
+            gap: 15px; width: 100%;
         }
-        
-        .header-logo { height: 42px; width: auto; filter: drop-shadow(0 0 5px rgba(241, 196, 15, 0.3)); }
-        
-        h1 { 
-            margin: 0; font-weight: 700; font-size: 1.5rem; 
-            color: var(--accent-gold); text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
-            white-space: nowrap; text-align: center;
+
+        .header-logo { 
+            height: 45px; width: auto; 
+            filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.4)); /* זוהר ללוגו */
+            transition: transform 0.3s;
         }
+        .header-logo:hover { transform: scale(1.1) rotate(5deg); }
+
+        .brand-text-block {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .main-brand {
+            font-size: 1.8rem; font-weight: 800;
+            background: linear-gradient(135deg, #f1c40f 0%, #fff 50%, #e67e22 100%); /* גרדיאנט זהב-לבן */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 4px 12px rgba(230, 126, 34, 0.3);
+            line-height: 1; margin-bottom: 2px;
+            white-space: nowrap;
+        }
+
+        .sub-brand {
+            font-size: 0.9rem; letter-spacing: 5px; color: #bdc3c7;
+            text-transform: uppercase; font-weight: 300;
+            opacity: 0.8;
+        }
+
+        .current-table-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333; padding: 4px 12px;
+            border-radius: 20px; font-size: 0.9rem; color: #bdc3c7;
+            display: flex; align-items: center; gap: 5px;
+            margin-top: 5px;
+        }
+        .live-dot { height: 8px; width: 8px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 5px var(--accent-green); }
 
         /* --- Info Buttons --- */
         .info-btn {
@@ -65,7 +88,6 @@
             cursor: pointer; margin-right: 8px; vertical-align: middle;
             font-family: serif; font-style: italic; font-weight: bold;
         }
-        .info-btn:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
 
         /* --- Cards Section --- */
         .cards-section { width: 100%; max-width: 450px; margin-bottom: 20px; }
@@ -79,7 +101,6 @@
             cursor: pointer; display: flex; align-items: center; justify-content: center;
             font-size: 1.2rem; font-weight: bold; transition: all 0.2s;
         }
-
         .card-slot.filled { background: var(--card-bg); border: 2px solid #fff; color: #333; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
         .card-slot.red { color: #c0392b; }
         .card-slot.black { color: #2c3e50; }
@@ -95,7 +116,6 @@
         }
         input:focus { border-color: var(--accent-gold); outline: none; }
         .money-display { font-size: 0.8rem; position: absolute; bottom: -18px; left: 0; width: 100%; text-align: center; font-weight: bold; opacity: 0.9;}
-
         .chips-row { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin-top: 25px;}
         .chip-btn { background: #34495e; border: 1px solid #555; color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; min-width: 50px; flex:1;}
         .chip-btn.clear { background: #c0392b; border-color: #e74c3c; flex: 0.8; }
@@ -108,50 +128,30 @@
             position: relative; z-index: 10; overflow: visible !important; 
         }
         .advisor-header { background: #2c3e50; padding: 8px; font-size: 0.9rem; color: #bdc3c7; border-top-left-radius: 10px; border-top-right-radius: 10px;}
-        
-        .advisor-content { 
-            padding: 10px; min-height: 50px; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-        }
+        .advisor-content { padding: 10px; min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .main-rec { font-size: 1.6rem; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1.2;}
         .sub-rec { font-size: 0.85rem; color: #bdc3c7; margin-top: 5px; font-weight: normal; }
-        
-        .stats-grid { 
-            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; 
-            background: #444; 
-            border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; 
-            overflow: visible !important;
-        }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #444; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; overflow: visible !important; }
         .stat-item { background: #2b3b4b; padding: 10px; display: flex; flex-direction: column; align-items: center; position: relative;}
         .stat-val { font-size: 1.3rem; font-weight: bold; color: var(--accent-gold); direction: ltr; margin-top: 2px;}
         
         /* Tooltips */
-        .tooltip-container {
-            position: relative; cursor: help;
-            border-bottom: 1px dotted #7f8c8d; font-size: 0.8rem; color: #bdc3c7; display: inline-block;
-        }
+        .tooltip-container { position: relative; cursor: help; border-bottom: 1px dotted #7f8c8d; font-size: 0.8rem; color: #bdc3c7; display: inline-block; }
         .tooltip-text {
             visibility: hidden; width: 160px; background-color: #1a1a1a; color: #fff;
             text-align: center; border-radius: 8px; padding: 10px;
             position: absolute; z-index: 9999; bottom: 125%; left: 50%; transform: translateX(-50%);
             opacity: 0; transition: opacity 0.2s; font-size: 0.8rem; font-weight: normal;
-            border: 1px solid var(--accent-gold); box-shadow: 0 5px 15px rgba(0,0,0,0.8);
-            pointer-events: none; line-height: 1.4; white-space: normal;
+            border: 1px solid var(--accent-gold); box-shadow: 0 5px 15px rgba(0,0,0,0.8); pointer-events: none;
         }
-        .tooltip-text::after {
-            content: ""; position: absolute; top: 100%; left: 50%; margin-left: -6px;
-            border-width: 6px; border-style: solid; border-color: var(--accent-gold) transparent transparent transparent;
-        }
-        .tooltip-container:hover .tooltip-text, .tooltip-container:active .tooltip-text, .tooltip-container:focus .tooltip-text {
-            visibility: visible; opacity: 1;
-        }
+        .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: var(--accent-gold) transparent transparent transparent; }
+        .tooltip-container:hover .tooltip-text, .tooltip-container:active .tooltip-text, .tooltip-container:focus .tooltip-text { visibility: visible; opacity: 1; }
 
-        /* --- Table Controls --- */
+        /* --- Controls --- */
         .table-controls-wrapper {
             width: 100%; max-width: 450px; display: flex; align-items: center;
             justify-content: space-between; background: #181818; padding: 10px;
-            border-radius: 15px; border: 1px solid #333;
-            position: relative; z-index: 1; margin-bottom: 10px;
+            border-radius: 15px; border: 1px solid #333; position: relative; z-index: 1; margin-bottom: 10px;
         }
         .ctrl-col { display: flex; flex-direction: column; gap: 8px; }
         .ctrl-btn { background: #34495e; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; min-width: 80px; }
@@ -162,14 +162,12 @@
         .table-center-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; pointer-events: none; }
         .table-logo { max-width: 40px; max-height: 30px; opacity: 0.85; }
         .table-text { font-size: 0.5rem; color: rgba(255,255,255,0.7); margin-top: 2px; white-space: nowrap; }
-
         .seat { position: absolute; width: 20px; height: 20px; background: #7f8c8d; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: white; transform: translate(-50%, -50%); z-index: 3; cursor: pointer; transition: all 0.2s; }
         .seat.hero { background: var(--accent-gold); color: black; border: 1px solid white; width: 24px; height: 24px; z-index: 4; cursor: default; }
         .seat.folded { background: #444; color: #777; border: 1px dashed #555; opacity: 0.6; transform: translate(-50%, -50%) scale(0.9); }
         .seat.folded::after { content: 'X'; position: absolute; font-size: 1rem; color: #e74c3c; }
         .dealer-puck { position: absolute; width: 14px; height: 14px; background: white; color: black; border-radius: 50%; font-size: 0.6rem; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 5; border: 1px solid #999; transition: all 0.3s ease; }
 
-        /* --- Accessibilty Button --- */
         #a11y-btn {
             position: fixed; bottom: 20px; left: 20px; width: 40px; height: 40px;
             background: #2c3e50; border: 2px solid #bdc3c7; border-radius: 50%;
@@ -177,19 +175,17 @@
             cursor: pointer; z-index: 3000; box-shadow: 0 2px 10px rgba(0,0,0,0.5);
             transition: all 0.3s;
         }
-        #a11y-btn:hover { background: var(--accent-blue); border-color: white; transform: scale(1.1); }
+        #a11y-btn:hover { background: var(--accent-blue); transform: scale(1.1); }
         #a11y-btn.active { background: var(--accent-gold); color: black; border-color: black; }
 
-        /* --- Modal --- */
+        /* --- Modals --- */
         #card-selector, #main-modal, #info-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
-        
         .modal-content { background: #2c3e50; padding: 20px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; border: 1px solid #444; display: flex; flex-direction: column; gap: 15px; max-height: 80vh; overflow-y: auto;}
         .modal-title { color: white; margin: 0; font-weight: 300; letter-spacing: 1px; font-size: 1.5rem; margin-bottom: 10px;}
         .modal-text { color: #ecf0f1; font-size: 0.95rem; line-height: 1.6; text-align: right; }
         .modal-text ul { padding-right: 20px; margin: 0; }
         .modal-text li { margin-bottom: 8px; }
         .close-modal-btn { background: var(--accent-red); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;}
-
         .table-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .table-select-btn { background: #34495e; color: white; border: none; padding: 15px; border-radius: 10px; text-align: right; display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; cursor: pointer; border-right: 5px solid transparent; transition: all 0.2s; }
         .selector-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 90%; max-width: 380px; }
@@ -204,11 +200,20 @@
 <body>
 
     <header>
-        <div class="app-sub-title">הסניף הדיגיטלי - היועץ</div>
-        <div class="header-main-row">
-            <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
-            <h1 id="main-title">בחר שולחן</h1>
-            <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
+        <div class="brand-container">
+            <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.opacity=0">
+            
+            <div class="brand-text-block">
+                <span class="main-brand">הסניף הדיגיטלי</span>
+                <span class="sub-brand">היועץ</span>
+            </div>
+
+            <img src="logo1.png" alt="Logo" class="header-logo" onerror="this.style.opacity=0">
+        </div>
+
+        <div class="current-table-badge">
+            <span class="live-dot"></span>
+            <span id="table-name-display">בחר שולחן</span>
         </div>
     </header>
 
@@ -338,19 +343,18 @@
     </div>
 
     <script>
-        // --- System Logic ---
+        // --- 1. Configurations ---
         const nlhTables = [
             { name: "High Roller", sb: 15, bb: 30, color: "#e74c3c" },
             { name: "אצל קובי", sb: 10, bb: 20, color: "#2ecc71" },
             { name: "הולדם 50₪", sb: 5, bb: 10, color: "#f1c40f" }
         ];
 
-        // --- Info & Accessibility Logic ---
+        // --- 2. UI Logic (Info & Access) ---
         function showInfo(type) {
             const modal = document.getElementById('info-modal');
             const title = document.getElementById('info-title');
             const content = document.getElementById('info-content');
-            
             modal.style.display = 'flex';
             
             if (type === 'cards') {
@@ -358,35 +362,28 @@
                 content.innerHTML = `
                     <ul>
                         <li><strong>היד שלי:</strong> הזן את שני הקלפים שקיבלת.</li>
-                        <li><strong>קלפי שולחן:</strong> הזן את הפלופ, הטרן והריבר לפי הסדר (מימין לשמאל).</li>
-                        <li><strong>Equity:</strong> אחוז הסיכוי שלך לנצח את היד.</li>
-                        <li><strong>Outs:</strong> מספר הקלפים בחפיסה שישפרו את היד שלך.</li>
-                    </ul>
-                `;
+                        <li><strong>קלפי שולחן:</strong> הזן את הפלופ, הטרן והריבר (מימין לשמאל).</li>
+                        <li><strong>Equity:</strong> אחוז הסיכוי לנצח את היד.</li>
+                        <li><strong>Outs:</strong> מספר הקלפים שמשפרים את היד למנצחת.</li>
+                    </ul>`;
             } else if (type === 'table') {
                 title.innerText = "מדריך שולחן";
                 content.innerHTML = `
                     <ul>
-                        <li><strong>שחקנים:</strong> השתמש בכפתורי +/- כדי להתאים את כמות השחקנים בשולחן.</li>
-                        <li><strong>שחקן פרש:</strong> לחץ על העיגול של השחקן כדי לסמן שהוא יצא מהיד (Fold).</li>
-                        <li><strong>דילר (D):</strong> זז אוטומטית ב"יד חדשה", או ידנית עם החצים.</li>
-                        <li><strong>יד חדשה:</strong> מאפס את הלוח ומזיז את הדילר.</li>
-                    </ul>
-                `;
+                        <li><strong>שחקנים:</strong> שנה את כמות השחקנים עם +/-.</li>
+                        <li><strong>Fold:</strong> לחץ על שחקן (בעיגול) כדי לסמן שפרש.</li>
+                        <li><strong>דילר (D):</strong> זז אוטומטית או ידנית. קובע פוזיציה.</li>
+                        <li><strong>יד חדשה:</strong> מאפס הכל לסיבוב הבא.</li>
+                    </ul>`;
             }
         }
-
-        function closeInfo() {
-            document.getElementById('info-modal').style.display = 'none';
-        }
-
+        function closeInfo() { document.getElementById('info-modal').style.display = 'none'; }
         function toggleA11y() {
             document.body.classList.toggle('a11y-mode');
-            const btn = document.getElementById('a11y-btn');
-            btn.classList.toggle('active');
+            document.getElementById('a11y-btn').classList.toggle('active');
         }
 
-        // --- Main Logic (Same as V28) ---
+        // --- 3. Strategy Engine ---
         const preflopRanges = {
             premium: ['AA','KK','QQ','JJ','AKs','AKo'],
             strong: ['TT','99','AQs','AQo','AJs','KQs'],
@@ -397,29 +394,18 @@
             broadway: ['KTs','QTs','JTo','KJo','QJo'],
             weak: ['K9s','Q9s','J9s','T8s','97s','86s','75s']
         };
-
-        const cardValues = {
-            'A': 14, 'K': 13, 'Q': 12, 'J': 11, 'T': 10,
-            '9': 9, '8': 8, '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2
-        };
+        const cardValues = {'A':14,'K':13,'Q':12,'J':11,'T':10,'9':9,'8':8,'7':7,'6':6,'5':5,'4':4,'3':3,'2':2};
 
         function getHandString(card1, card2) {
-            const r1 = card1[0]; const s1 = card1[1];
-            const r2 = card2[0]; const s2 = card2[1];
-            const v1 = cardValues[r1]; const v2 = cardValues[r2];
-            
+            const r1 = card1[0], s1 = card1[1], r2 = card2[0], s2 = card2[1];
+            const v1 = cardValues[r1], v2 = cardValues[r2];
             if (v1 === v2) return r1 + r2;
-            
             const suited = (s1 === s2);
-            const high = v1 > v2 ? r1 : r2;
-            const low = v1 > v2 ? r2 : r1;
-            return high + low + (suited ? 's' : 'o');
+            return (v1 > v2 ? r1 + r2 : r2 + r1) + (suited ? 's' : 'o');
         }
 
         function getHandCategory(handStr) {
-            for (let category in preflopRanges) {
-                if (preflopRanges[category].includes(handStr)) return category;
-            }
+            for (let c in preflopRanges) if (preflopRanges[c].includes(handStr)) return c;
             return 'trash';
         }
 
@@ -428,58 +414,51 @@
             const category = getHandCategory(handStr);
             
             if (category === 'premium') {
-                if (action === 'facing_raise' || action === 'facing_3bet') return {text: "ALL-IN / 4BET", color: "#8b0000", advice: "יד פרימיום - שחק אגרסיבית מאוד"};
-                if (action === 'facing_limp') return {text: "RAISE 4-5BB", color: "#c0392b", advice: "בנה את הפוט עם היד החזקה שלך"};
-                return {text: "RAISE 3BB", color: "#c0392b", advice: "פתח ברייז סטנדרטי"};
+                if (action === 'facing_raise' || action === 'facing_3bet') return {text: "ALL-IN / 4BET", color: "#8b0000", advice: "יד פרימיום - שחק אגרסיבית"};
+                if (action === 'facing_limp') return {text: "RAISE 4-5BB", color: "#c0392b", advice: "בנה קופה גדולה"};
+                return {text: "RAISE 3BB", color: "#c0392b", advice: "פתיחה חזקה וסטנדרטית"};
             }
             if (category === 'strong') {
-                if (action === 'facing_raise') {
-                    if (position === 'EP' || position === 'MP') return {text: "FOLD / CALL", color: "#f39c12", advice: "בפוזיציה מוקדמת - זהירות מול רייז"};
-                    return {text: "CALL / 3BET", color: "#e67e22", advice: "בפוזיציה טובה - שקול 3bet"};
-                }
+                if (action === 'facing_raise') return position === 'EP' || position === 'MP' ? {text: "FOLD / CALL", color: "#f39c12", advice: "זהירות מול רייז מוקדם"} : {text: "CALL / 3BET", color: "#e67e22", advice: "שקול 3bet בפוזיציה"};
                 if (action === 'clean') return {text: "RAISE 3BB", color: "#e74c3c", advice: "רייז סטנדרטי"};
-                return {text: "CALL", color: "#f39c12", advice: "יד טובה לראות פלופ"};
+                return {text: "CALL", color: "#f39c12", advice: "יד טובה לפלופ"};
             }
             if (category === 'playable') {
-                if (action === 'facing_raise') {
-                    if (['EP','MP'].includes(position)) return {text: "FOLD", color: "#95a5a6", advice: "חלש מדי לקול מול רייז בפוזיציה מוקדמת"};
-                    if (['CO','BTN'].includes(position)) return {text: "CALL", color: "#f39c12", advice: "בפוזיציה - ניתן לקול"};
-                    return {text: "FOLD / CALL", color: "#f39c12", advice: "תלוי בקריאה שלך על היריב"};
-                }
-                if (action === 'clean' && ['MP','CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "פתח בפוזיציה טובה"};
-                if (action === 'facing_limp' && position === 'BTN') return {text: "RAISE 4BB", color: "#e74c3c", advice: "בודד limpers"};
-                return {text: "FOLD / LIMP", color: "#95a5a6", advice: "חלש מדי לרייז"};
+                if (action === 'facing_raise') return ['EP','MP'].includes(position) ? {text: "FOLD", color: "#95a5a6", advice: "חלש מדי בפוזיציה מוקדמת"} : {text: "CALL", color: "#f39c12", advice: "אפשרי בפוזיציה"};
+                if (action === 'clean' && ['MP','CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "פתיחה מפוזיציה"};
+                if (action === 'facing_limp' && position === 'BTN') return {text: "RAISE 4BB", color: "#e74c3c", advice: "בודד את הלימפרים"};
+                return {text: "FOLD / LIMP", color: "#95a5a6", advice: "חלש מדי"};
             }
             if (category === 'suited_connectors') {
                 if (action === 'facing_raise') return {text: "FOLD", color: "#95a5a6", advice: "לא משתלם מול רייז"};
-                if (action === 'multi_limpers' && ['CO','BTN','SB','BB'].includes(position)) return {text: "CALL", color: "#3498db", advice: "מצוין למולטיוויי - פוטנציאל לסטרייטים/פלאש"};
-                if (action === 'clean' && ['CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גנוב blinds מפוזיציה"};
-                return {text: "FOLD", color: "#95a5a6", advice: "דורש מולטיוויי / פוזיציה טובה"};
+                if (action === 'multi_limpers' && ['CO','BTN','SB','BB'].includes(position)) return {text: "CALL", color: "#3498db", advice: "מצוין למולטיוויי (רצפים/צבע)"};
+                if (action === 'clean' && ['CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גניבת בליינדים"};
+                return {text: "FOLD", color: "#95a5a6", advice: "צריך פוזיציה טובה"};
             }
             if (category === 'medium_pairs') {
-                if (action === 'facing_raise') return {text: "CALL (SET MINING)", color: "#3498db", advice: "ציד סטים - קווה ל-Set בפלופ"};
-                if (action === 'multi_limpers') return {text: "CALL", color: "#3498db", advice: "טוב למולטיוויי - אם תפגע סט תזכה בפוט גדול"};
-                if (action === 'clean' && ['CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גנוב blinds"};
-                return {text: "FOLD / LIMP", color: "#95a5a6", advice: "חלש מדי ללא פוזיציה"};
+                if (action === 'facing_raise') return {text: "CALL (SET MINE)", color: "#3498db", advice: "חפש את ה-Set בפלופ"};
+                if (action === 'multi_limpers') return {text: "CALL", color: "#3498db", advice: "זול לראות פלופ"};
+                if (action === 'clean' && ['CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גניבת בליינדים"};
+                return {text: "FOLD / LIMP", color: "#95a5a6", advice: "חלש בלי פוזיציה"};
             }
             if (category === 'suited_aces') {
-                if (action === 'facing_raise') return {text: "FOLD", color: "#95a5a6", advice: "Ace-rag suited חלש מדי מול רייז"};
-                if (action === 'multi_limpers' && ['BTN','SB','BB'].includes(position)) return {text: "CALL", color: "#3498db", advice: "פוטנציאל לנאט פלאש"};
-                if (action === 'clean' && position === 'BTN') return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גנוב blinds מהכפתור"};
-                return {text: "FOLD", color: "#95a5a6", advice: "חלש מדי ללא פוזיציה מושלמת"};
+                if (action === 'facing_raise') return {text: "FOLD", color: "#95a5a6", advice: "חלש מדי מול כוח"};
+                if (action === 'multi_limpers' && ['BTN','SB','BB'].includes(position)) return {text: "CALL", color: "#3498db", advice: "פוטנציאל ל-Nut Flush"};
+                if (action === 'clean' && position === 'BTN') return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גניבה מהכפתור"};
+                return {text: "FOLD", color: "#95a5a6", advice: "חלש מדי"};
             }
             if (category === 'broadway') {
-                if (action === 'facing_raise') return {text: "FOLD", color: "#95a5a6", advice: "נשלט על ידי ידיים חזקות יותר"};
-                if (action === 'clean' && ['CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "רייז גנבה מפוזיציה מאוחרת"};
-                return {text: "FOLD / LIMP", color: "#95a5a6", advice: "בעייתי ללא פוזיציה"};
+                if (action === 'facing_raise') return {text: "FOLD", color: "#95a5a6", advice: "יד נשלטת (Dominated)"};
+                if (action === 'clean' && ['CO','BTN'].includes(position)) return {text: "RAISE 2.5BB", color: "#e74c3c", advice: "גניבה מאוחרת"};
+                return {text: "FOLD / LIMP", color: "#95a5a6", advice: "בעייתי בלי פוזיציה"};
             }
             
-            // Weak / Trash
-            if (action === 'clean' && position === 'BTN' && stackDepth < 40) return {text: "ALL-IN (SHORT)", color: "#e67e22", advice: "עם סטאק קצר - push/fold"};
-            if (action === 'multi_limpers' && position === 'BB') return {text: "CHECK", color: "#3498db", advice: "כבר בפוט - תבדוק בחינם"};
-            return {text: "FOLD", color: "#7f8c8d", advice: "יד חלשה - לא שווה השקעה"};
+            if (action === 'clean' && position === 'BTN' && stackDepth < 40) return {text: "ALL-IN (SHORT)", color: "#e67e22", advice: "דחיפה בסטאק קצר"};
+            if (action === 'multi_limpers' && position === 'BB') return {text: "CHECK", color: "#3498db", advice: "תבדוק בחינם"};
+            return {text: "FOLD", color: "#7f8c8d", advice: "יד זבל - זרוק"};
         }
 
+        // --- 4. Core Logic ---
         let totalPlayers = 6;
         let dealerPosition = 1; 
         let sbValue = 0, bbValue = 0;
@@ -517,7 +496,7 @@
             sbValue = selected.sb;
             bbValue = selected.bb;
             document.getElementById('main-modal').style.display = 'none';
-            document.getElementById('main-title').innerText = selected.name;
+            document.getElementById('table-name-display').innerText = selected.name; // UPDATED ID
             resetToBlinds();
         }
 
@@ -570,11 +549,9 @@
             let potInput = document.getElementById('pot-size');
             let potVal = parseFloat(potInput.value) || 0;
             potInput.value = potVal + amount;
-
             let callInput = document.getElementById('to-call');
             let callVal = parseFloat(callInput.value) || 0;
             callInput.value = callVal + amount;
-
             runEngine();
         }
         
@@ -622,9 +599,7 @@
             if (dist === 1) return 'SB';
             if (dist === 2) return 'BB';
             if (totalPlayers === 6) {
-                if (dist === 3) return 'EP'; // UTG
-                if (dist === 4) return 'MP';
-                if (dist === 5) return 'CO';
+                if (dist === 3) return 'EP'; if (dist === 4) return 'MP'; if (dist === 5) return 'CO';
             }
             if (dist === totalPlayers - 1) return 'CO';
             if (dist === totalPlayers - 2) return 'MP';
@@ -638,6 +613,7 @@
             return pos;
         }
 
+        // --- Card Selector ---
         let currentSlot = null;
         let selectedRank = null;
         const ranks = ['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
@@ -662,7 +638,6 @@
                 else slot.classList.remove('disabled');
                 if (!slot.classList.contains('filled') && !handLocked) handLocked = true;
             });
-
             const boardSlots = document.querySelectorAll('#board .card-slot');
             let boardLocked = false;
             boardSlots.forEach(slot => {
@@ -744,14 +719,10 @@
             if (boardCards.length === 0) {
                 elEquity.innerText = "Pre";
                 let action = 'clean';
-                if (call > 0) {
-                    action = 'facing_raise';
-                } else if (pot > (sbValue + bbValue) * 3) {
-                    action = 'multi_limpers'; 
-                }
+                if (call > 0) action = 'facing_raise';
+                else if (pot > (sbValue + bbValue) * 3) action = 'multi_limpers'; 
 
                 const advice = getPreflopAction(myCards[0], myCards[1], pos, action);
-                
                 recText.innerText = advice.text;
                 recText.style.color = advice.color;
                 subRecText.innerText = advice.advice; 
@@ -777,17 +748,17 @@
                     const threshold = 100 / (activeOpponents + 1);
                     recText.innerText = equity > (threshold + 10) ? "VALUE BET" : "CHECK";
                     recText.style.color = equity > (threshold + 10) ? "#2ecc71" : "#f1c40f";
-                    subRecText.innerText = equity > (threshold + 10) ? "יש לך יד חזקה, נסה להוציא ערך" : "אין עלות, תבדוק בחינם";
+                    subRecText.innerText = equity > (threshold + 10) ? "יד חזקה - נסה להוציא ערך" : "אין עלות, תבדוק בחינם";
                     panel.style.borderColor = recText.style.color;
                 } else {
                     if (equity > potOdds + 5) {
                         recText.innerText = "CALL / RAISE";
                         recText.style.color = "#2ecc71";
-                        subRecText.innerText = "הסיכויים לטובתך בטווח הארוך";
+                        subRecText.innerText = "סיכויים טובים לטווח ארוך";
                     } else if (equity >= potOdds) {
                         recText.innerText = "CALL";
                         recText.style.color = "#f1c40f";
-                        subRecText.innerText = "השוואה גבולית אך משתלמת";
+                        subRecText.innerText = "השוואה גבולית אך חיובית";
                     } else {
                         recText.innerText = "FOLD";
                         recText.style.color = "#e74c3c";
@@ -798,6 +769,7 @@
             }, 20);
         }
 
+        // --- Logic Engine ---
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -824,11 +796,7 @@
 
             const ranks = ['2','3','4','5','6','7','8','9','T','J','Q','K','A'];
             const allCards = [];
-            ranks.forEach(r => {
-                ['h','d','c','s'].forEach(s => {
-                    allCards.push(r + s);
-                });
-            });
+            ranks.forEach(r => { ['h','d','c','s'].forEach(s => { allCards.push(r + s); }); });
 
             const knownCards = new Set([...heroHand, ...board]);
             const deck = allCards.filter(c => !knownCards.has(c));
@@ -869,28 +837,17 @@
                 try {
                     const currentHero = Hand.solve(heroHand.concat(board));
                     const currentRank = currentHero.rank;
-                    
                     deck.forEach(card => {
                         const testBoard = board.concat([card]);
                         const newHero = Hand.solve(heroHand.concat(testBoard));
-                        
-                        if (newHero.rank > currentRank) {
-                            outsCount++;
-                        } else if (newHero.rank === currentRank) {
-                            if (compareCards(newHero, currentHero) > 0) {
-                                outsCount++;
-                            }
+                        if (newHero.rank > currentRank) outsCount++;
+                        else if (newHero.rank === currentRank) {
+                            if (compareCards(newHero, currentHero) > 0) outsCount++;
                         }
                     });
-                } catch(e) {
-                    console.error("Outs calc error", e);
-                }
+                } catch(e) {}
             }
-
-            return { 
-                equity: Math.round((wins / iterations) * 100), 
-                outs: board.length === 5 ? "-" : outsCount 
-            };
+            return { equity: Math.round((wins / iterations) * 100), outs: board.length === 5 ? "-" : outsCount };
         }
     </script>
 </body>
